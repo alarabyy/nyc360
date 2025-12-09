@@ -1,0 +1,79 @@
+<div class="page-container">
+  
+  <div class="page-header">
+    <div class="title-section">
+      <h2>Posts Management</h2>
+      <p>Manage your news articles and content.</p>
+    </div>
+    <a routerLink="/admin/posts/create" class="btn-add">
+      <i class="bi bi-plus-lg"></i> Create New Post
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="state-container">
+    <div class="spinner-border text-gold" role="status"></div>
+    <p>Loading Posts...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="state-container text-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && posts.length === 0 && !errorMessage" class="state-container">
+    <i class="bi bi-journal-text"></i>
+    <p>No posts available. Start by creating one.</p>
+  </div>
+
+  <div *ngIf="!isLoading && posts.length > 0" class="posts-grid">
+    <div class="post-card" *ngFor="let post of posts">
+      
+      <div class="card-img-wrapper">
+        <img *ngIf="post.imageUrl && post.imageUrl.startsWith('http')" 
+             [src]="post.imageUrl" 
+             alt="{{ post.title }}" 
+             loading="lazy">
+        
+        <img *ngIf="post.imageUrl && !post.imageUrl.startsWith('http')" 
+             [src]="environment.apiBaseUrl2 + '/posts/' + post.imageUrl" 
+             alt="{{ post.title }}" 
+             loading="lazy">
+        
+        <div *ngIf="!post.imageUrl" class="img-placeholder">
+          <i class="bi bi-image"></i>
+        </div>
+
+        <span class="category-badge">{{ getCategoryName(post.category) }}</span>
+      </div>
+
+      <div class="card-body">
+        <div class="meta-info">
+          <span class="date"><i class="bi bi-calendar3"></i> {{ post.createdAt | date:'mediumDate' }}</span>
+        </div>
+
+        <h3 class="post-title" title="{{ post.title }}">{{ post.title }}</h3>
+        
+        <p class="post-excerpt">
+          {{ (post.content | slice:0:100) }}...
+        </p>
+      </div>
+
+      <div class="card-footer">
+        <a [routerLink]="['/admin/posts/details', post.id]" class="btn-action view" title="View Details">
+          View Post <i class="bi bi-arrow-right"></i>
+        </a>
+        
+        <div class="action-buttons">
+          <a [routerLink]="['/admin/posts/edit', post.id]" class="btn-icon edit" title="Edit">
+            <i class="bi bi-pencil-square"></i>
+          </a>
+          <button (click)="onDelete(post.id)" class="btn-icon delete" title="Delete">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

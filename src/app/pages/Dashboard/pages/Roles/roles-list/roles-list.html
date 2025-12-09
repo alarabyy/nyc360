@@ -1,0 +1,83 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="title-section">
+      <h2>Roles & Permissions</h2>
+      <p>Manage system roles and access levels.</p>
+    </div>
+
+    <a routerLink="/admin/roles/create" class="btn-add">
+      <i class="bi bi-plus-lg"></i> Add New Role
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="state-container">
+    <div class="spinner-border text-gold"></div>
+    <p>Processing...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="state-container text-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Roles Grid -->
+  <div *ngIf="!isLoading && roles.length > 0" class="roles-grid">
+    <div class="role-card" *ngFor="let role of roles">
+
+      <div class="card-header-row">
+        <div class="role-icon">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+
+        <div class="role-title">
+          <h3>{{ role.name }}</h3>
+          <span class="perm-count">{{ role.permissions.length }} Permissions</span>
+        </div>
+
+        <div class="actions-group">
+          <a [routerLink]="['/admin/roles/edit', role.id]" class="btn-icon edit">
+            <i class="bi bi-pencil-square"></i>
+          </a>
+
+          <button class="btn-icon delete" (click)="onDelete(role)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="content-limit-section">
+        <p class="section-title">Content Limit:</p>
+        <span class="limit-value">{{ role.contentLimit | number }} KB</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="permissions-section">
+        <p class="section-title">Access Capabilities:</p>
+        <div class="tags-container">
+          <span class="perm-tag" *ngFor="let perm of role.permissions">
+            {{ perm.split('.')[1] || '' }}.{{ perm.split('.')[2] || perm }}
+          </span>
+
+          <span *ngIf="role.permissions.length === 0" class="no-perm">
+            No permissions assigned
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- No Data -->
+  <div *ngIf="!isLoading && roles.length === 0 && !errorMessage" class="state-container">
+    <i class="bi bi-shield-slash"></i>
+    <p>No roles found.</p>
+  </div>
+
+</div>

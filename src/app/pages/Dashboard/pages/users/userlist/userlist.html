@@ -1,0 +1,137 @@
+<div class="page-container">
+  
+  <div class="page-header">
+    <div class="title-section">
+      <h2>Users Management</h2>
+      <p>Total Users: <span class="highlight">{{ totalCount }}</span></p>
+    </div>
+
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner-border text-gold" role="status"></div>
+    <p>Loading Users...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="users-list-container">
+    <div class="user-row" *ngFor="let user of users">
+      
+      <div class="row-avatar">
+        <div class="avatar-wrapper">
+          <img *ngIf="user.avatarUrl" 
+               [src]="environment.apiBaseUrl2 + '/avatars/' + user.avatarUrl" 
+               class="avatar-img" 
+               alt="Avatar">
+          
+          <div *ngIf="!user.avatarUrl" class="avatar-placeholder">
+            {{ getInitials(user.firstName + ' ' + user.lastName) }}
+          </div>
+
+          <div class="status-dot" 
+               [class.active]="user.emailConfirmed" 
+               [title]="user.emailConfirmed ? 'Verified' : 'Pending'">
+          </div>
+        </div>
+      </div>
+
+      <div class="row-info">
+        <div class="info-header">
+          <h3 class="user-name">{{ user.firstName }} {{ user.lastName }}</h3>
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+        <p class="user-bio" *ngIf="user.bio">"{{ user.bio }}"</p>
+        <p class="user-bio empty" *ngIf="!user.bio">No biography.</p>
+      </div>
+
+      <div class="row-meta">
+        <span class="badge-role" [class.super]="user.role === 'SuperAdmin'">
+          {{ user.role || 'No Role' }}
+        </span>
+        <span class="badge-locked" *ngIf="user.lockoutEnd">
+          <i class="bi bi-lock-fill"></i> Locked
+        </span>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn-action edit" (click)="openEditProfile(user)" title="Edit Profile">
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn-action role" (click)="openRoleManager(user)" title="Change Role">
+          <i class="bi bi-person-badge"></i>
+        </button>
+        <button class="btn-action delete" (click)="onDelete(user)" title="Delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="showProfileModal">
+    <div class="modal-content fade-in">
+      <div class="modal-header">
+        <h3>Edit Profile</h3>
+        <button class="close-btn" (click)="closeModals()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input formControlName="firstName" type="text">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input formControlName="lastName" type="text">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input formControlName="email" type="email">
+          </div>
+          <div class="form-group">
+            <label>Bio</label>
+            <textarea formControlName="bio" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Update Avatar</label>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModals()">Cancel</button>
+          <button type="submit" class="btn-save" [disabled]="isSaving">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="showRoleModal">
+    <div class="modal-content fade-in role-modal">
+      <div class="modal-header">
+        <h3>Change Role</h3>
+        <p>Select a role for <strong>{{ selectedUser?.firstName }}</strong></p>
+      </div>
+      <div class="modal-body">
+        <div class="roles-radio-list">
+          <label *ngFor="let role of availableRoles" class="radio-item" [class.selected]="selectedRoleName === role.name">
+            <input type="radio" name="roleSelection" [value]="role.name" [(ngModel)]="selectedRoleName">
+            <span class="radio-label">{{ role.name }}</span>
+            <i class="bi bi-check-circle-fill check-icon" *ngIf="selectedRoleName === role.name"></i>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModals()">Cancel</button>
+        <button class="btn-save" (click)="saveRoles()" [disabled]="isSaving">Update Role</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination-container" *ngIf="!isLoading">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="btn-page">Prev</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages" class="btn-page">Next</button>
+  </div>
+
+</div>

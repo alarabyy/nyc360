@@ -1,0 +1,650 @@
+// --- Variables (Pure Black & Gold Professional Theme) ---
+$bg-page: #000; // Pure black background for a premium feel
+$card-bg: #111; // Very dark grey for cards to contrast slightly
+$gold: #FFD700; // The accent color for prestige
+$text: #fff; // Primary text color
+$text-muted: #aaa; // Secondary text color, slightly lighter than before
+$border: #222; // Subtle borders
+$input-bg: #0a0a0a; // Darker input background
+
+// --- Global Reset & Typography ---
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif; // Modern, clean font stack
+  -webkit-font-smoothing: antialiased; // Smoother fonts on WebKit browsers
+  -moz-osx-font-smoothing: grayscale; // Smoother fonts on macOS
+}
+
+// --- Layout & Container ---
+.page-container {
+  min-height: 100vh;
+  padding: 50px 20px; // Increased top/bottom padding
+  background-color: $bg-page;
+  // A subtle radial gradient to give depth, still appearing black
+  background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000 70%);
+  color: $text;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; // Align items to the top
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr; // Slightly wider sidebar
+  gap: 40px; // Increased gap between columns
+  max-width: 1200px;
+  width: 100%;
+  
+  // Responsive design for smaller screens
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr; // Stack columns vertically
+    gap: 30px;
+  }
+}
+
+// --- Common Card Styles ---
+%card-style {
+  background-color: $card-bg;
+  border: 1px solid $border;
+  border-radius: 20px; // More rounded corners
+  padding: 40px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7); // Deeper, softer shadow
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // Smooth hover effects
+
+  // Subtle hover effect for cards
+  &:hover {
+    // transform: translateY(-3px); // Optional: lift card slightly on hover
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  }
+}
+
+// --- Sidebar (User Card) ---
+.profile-sidebar {
+  // Sticky sidebar implementation
+  @media (min-width: 1025px) {
+    position: sticky;
+    top: 40px;
+    align-self: start;
+  }
+
+  .user-card {
+    @extend %card-style;
+    text-align: center;
+    animation: slideInLeft 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; // Professional entrance animation
+  }
+
+  .avatar-container {
+    width: 150px; // Larger avatar
+    height: 150px;
+    margin: 0 auto 25px;
+    position: relative;
+
+    .avatar-img, .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid $gold;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.25); // Stronger gold glow
+    }
+
+    .avatar-placeholder {
+      background: linear-gradient(135deg, #222, #111); // Gradient background
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: $gold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); // Text shadow for depth
+    }
+
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 40px;
+      height: 40px;
+      background: $gold;
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        transform: scale(1.1) rotate(15deg); // A bit more dynamic hover
+        background-color: lighten($gold, 10%);
+      }
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .user-name {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, #fff, #ccc); // Subtle text gradient
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .user-role {
+    color: $gold;
+    font-size: 0.95rem;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, $border, transparent); // Fading divider
+    margin: 30px 0;
+  }
+
+  // 2FA Section
+  .security-section {
+    background: rgba(255, 255, 255, 0.02); // Extremely subtle background
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid $border;
+    text-align: left;
+
+    .sec-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      
+      .label {
+        color: $text-muted;
+        font-weight: 500;
+      }
+      
+      .status {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background: rgba(220, 53, 69, 0.1);
+        color: #ff4d4d; // Bright red
+        border: 1px solid #ff4d4d;
+
+        &.on {
+          background: rgba(40, 167, 69, 0.1);
+          color: #2ecc71; // Bright green
+          border-color: #2ecc71;
+        }
+      }
+    }
+
+    .btn-toggle-2fa {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid $border;
+      background: transparent;
+      color: $text;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: lighten($border, 10%);
+      }
+
+      // Active State (Enabled)
+      &.active {
+        border-color: #2ecc71;
+        color: #2ecc71;
+        background: rgba(46, 204, 113, 0.05);
+
+        &:hover {
+          background: rgba(46, 204, 113, 0.15);
+        }
+      }
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+// --- Content Area (Form) ---
+.profile-content {
+  @extend %card-style;
+  animation: slideInRight 0.6s cubic-bezier(0.23, 1, 0.32, 1) both; // Professional entrance animation
+  animation-delay: 0.1s; // Slight delay for a staggered effect
+
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    border-bottom: 1px solid $border;
+    padding-bottom: 25px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      border-left: 5px solid $gold;
+      padding-left: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 2px solid $gold;
+      color: $gold;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: $gold;
+        color: #000;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+      }
+
+      i {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .section-subtitle {
+    color: $text;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 40px 0 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $border;
+  }
+
+  // Form Inputs
+  .form-group {
+    margin-bottom: 25px;
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: $text-muted;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      
+      i {
+        margin-right: 8px;
+        font-size: 1.1rem;
+        vertical-align: middle;
+      }
+    }
+    
+    input, textarea {
+      width: 100%;
+      background-color: $input-bg;
+      border: 2px solid transparent; // Transparent border initially
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: $text;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); // Inner shadow for depth
+
+      &:focus {
+        outline: none;
+        border-color: $gold;
+        background-color: lighten($input-bg, 2%);
+        box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15); // Focus ring
+      }
+
+      // Read-only styling
+      &[readonly] {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-color: $border;
+        color: darken($text, 10%);
+        cursor: default;
+        box-shadow: none;
+
+        &:focus {
+          border-color: $border;
+          box-shadow: none;
+        }
+      }
+    }
+
+    textarea {
+      resize: vertical; // Allow vertical resizing only
+      min-height: 120px;
+    }
+
+    .readonly-field {
+      color: $text-muted !important;
+      background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 0; // Gap is handled by form-group margin bottom
+    }
+  }
+
+  // Actions Buttons
+  .form-actions {
+    margin-top: 50px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    border-top: 1px solid $border;
+    padding-top: 30px;
+    animation: fadeIn 0.4s ease-out both; // Animate actions in
+
+    .btn-cancel {
+      background: transparent;
+      border: 2px solid $border;
+      color: $text-muted;
+      padding: 12px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $text;
+        border-color: $text;
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .btn-save {
+      background: $gold;
+      color: #000;
+      border: none;
+      padding: 12px 35px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+
+      &:hover:not(:disabled) {
+        background: lighten($gold, 8%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+// --- Loading & Error States ---
+.loading-state {
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  font-size: 1.2rem;
+
+  .spinner-border {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-width: 0.25em;
+    margin-bottom: 20px;
+  }
+}
+
+.error-container {
+  text-align: center;
+  padding: 40px;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid #dc3545;
+  border-radius: 15px;
+  color: #ff4d4d;
+  max-width: 600px;
+  margin: 0 auto;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+  p {
+    font-size: 1.1rem;
+  }
+}
+
+// --- Professional Animations ---
+// Keyframes for slide-in animations with a subtle bounce
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Simple fade-in
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Utility class to apply a general fade-in to the page
+.page-fade-in {
+  animation: fadeIn 0.8s ease-out;
+}// ... داخل .form-group
+
+textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6; // مسافة بين السطور لقراءة مريحة
+  color: $text;
+  border-radius: 12px; // حواف ناعمة جداً
+  padding: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); // أنيميشن ناعم جداً
+  resize: vertical; // السماح بالتطويل رأسياً فقط
+  min-height: 120px; // ارتفاع مبدئي مناسب بدلاً من rows=1
+
+  // --- Custom Scrollbar (عشان السكرول يكون شيك) ---
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 10px;
+    &:hover { background-color: $gold; } // يلمع ذهبي لما تمسكه
+  }
+
+  // =============================================
+  // 1. EDIT MODE (وضع التعديل)
+  // =============================================
+  &:not([readonly]) {
+    background-color: rgba(0, 0, 0, 0.3); // خلفية أغمق قليلاً من الكارت
+    border: 1px solid $border;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); // ظل داخلي يعطي عمق (Deep look)
+    
+    &:focus {
+      outline: none;
+      border-color: $gold; // حدود ذهبية
+      background-color: rgba(0, 0, 0, 0.5);
+      box-shadow: 
+        inset 0 2px 5px rgba(0,0,0,0.5), // الحفاظ على العمق
+        0 0 10px rgba(255, 215, 0, 0.1); // توهج خارجي خفيف
+    }
+
+    &::placeholder {
+      color: #555;
+      font-style: italic;
+    }
+  }
+
+  // =============================================
+  // 2. READ-ONLY MODE (وضع القراءة)
+  // =============================================
+  &[readonly] {
+    background-color: transparent;
+    border: 1px solid transparent; // حدود شفافة للحفاظ على الحجم
+    box-shadow: none;
+    color: darken($text, 10%); // لون أهدأ قليلاً
+    padding-left: 0; // محاذاة النص مع العنوان
+    cursor: default;
+    resize: none; // منع التغيير في وضع القراءة
+
+    // إخفاء السكرول بار في وضع القراءة لو النص صغير
+    &::-webkit-scrollbar { width: 0; }
+
+    &:focus {
+      outline: none;
+      border-color: transparent;
+    }
+  }
+}// --- Content Header ---
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+  border-bottom: 1px solid $border;
+  padding-bottom: 25px;
+
+  h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border-left: 5px solid $gold;
+    padding-left: 20px;
+    color: #fff;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    
+    button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 2px solid $gold;
+      color: $gold;
+      &:hover { background: $gold; color: #000; }
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #444;
+      color: #ccc;
+      &:hover { border-color: $text; color: $text; }
+    }
+  }
+}
+
+// --- Modal Styles ---
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: #1a1a1a;
+  width: 100%; max-width: 500px;
+  border-radius: 12px;
+  border: 1px solid $border;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  
+  .modal-header {
+    padding: 20px; border-bottom: 1px solid $border;
+    display: flex; justify-content: space-between; align-items: center;
+    h3 { margin: 0; color: $gold; font-size: 1.3rem; }
+    .close-btn { background: none; border: none; color: $text-muted; font-size: 1.2rem; cursor: pointer; &:hover { color: #fff; } }
+  }
+  
+  .modal-body { padding: 25px; }
+  
+  .modal-footer {
+    padding: 15px 25px; border-top: 1px solid $border; background: #111;
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+}

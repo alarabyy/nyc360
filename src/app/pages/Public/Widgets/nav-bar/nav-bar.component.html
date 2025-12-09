@@ -1,0 +1,132 @@
+<nav class="nav-bar-container">
+  
+  <div class="top-header">
+    
+    <button class="mobile-toggle" (click)="toggleMenu()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="logo" routerLink="/">
+      <!-- <span class="logo-text">NYC<span class="highlight">360</span></span> -->
+      <div class="brand-compact   mt-3   ">
+        <img src="image_0_0.jpg" alt="NYC360 Logo" class="footer-logo" width="70">
+      </div>
+    </div>
+
+    <ul class="main-links d-none d-lg-flex">
+      <li><a routerLink="/story" routerLinkActive="active">Our Story</a></li>
+      <li><a routerLink="/partners" routerLinkActive="active">Partners</a></li>
+    </ul>
+
+    <div class="actions">
+      <button class="search-button"><i class="bi bi-search"></i></button>
+      
+      <div class="d-none d-lg-flex align-items-center gap-2">
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/auth/login" class="login-link">Login</a>
+          <a routerLink="/auth/register-selection" class="subscribe-button">Sign Up</a>
+        </ng-container>
+
+        <ng-container *ngIf="isLoggedIn">
+          <a [routerLink]="['/profile', currentUsername]" class="profile-btn">
+            <i class="bi bi-person-circle fs-4"></i>
+          </a>
+          <button (click)="logout()" class="logout-btn"><i class="bi bi-box-arrow-right"></i></button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="desktop-only-bars d-none d-lg-block">
+    <hr class="divider">
+    
+    <div class="sub-links-bar">
+      <ul class="sub-links">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">HOME</a></li>
+        <li *ngIf="canViewDashboard">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="highlight-link">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+        </li>
+        <li><a routerLink="/about" routerLinkActive="active">about</a></li>
+      </ul>
+      <span class="date-display">{{ currentDate | date:'MMMM d, y' }}</span>
+    </div>
+
+    <div class="categories-bar">
+      <ul class="cat-links">
+        <li *ngFor="let cat of categories">
+          <a [routerLink]="cat.link" routerLinkActive="active" [style.--hover-color]="cat.color">
+             {{ cat.name }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</nav>
+
+<div class="sidebar-overlay" [class.show]="isMenuOpen" (click)="toggleMenu()"></div>
+
+<div class="sidebar-menu" [class.open]="isMenuOpen">
+  
+  <div class="sidebar-header">
+    <span class="sidebar-logo">NYC<span>360</span></span>
+    <button class="close-btn" (click)="toggleMenu()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="sidebar-content">
+    
+    <div class="sidebar-section">
+      <p class="section-title">Account</p>
+      
+      <div *ngIf="isLoggedIn" class="user-info">
+        <div class="avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="details">
+          <span class="username">{{ currentUsername }}</span>
+          <a [routerLink]="['/profile', currentUsername]" (click)="toggleMenu()" class="view-profile">View Profile</a>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoggedIn" class="auth-buttons-mobile">
+        <a routerLink="/Login" (click)="toggleMenu()" class="btn-mobile-login">Login</a>
+        <a routerLink="/Signup" (click)="toggleMenu()" class="btn-mobile-signup">Sign Up</a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <p class="section-title">Navigation</p>
+      <ul class="sidebar-links">
+        <li><a routerLink="/" (click)="toggleMenu()"><i class="bi bi-house"></i> Home</a></li>
+        <li *ngIf="canViewDashboard">
+          <a routerLink="/admin/dashboard" (click)="toggleMenu()" class="text-primary">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+        </li>
+        <li><a routerLink="/story" (click)="toggleMenu()"><i class="bi bi-book"></i> Our Story</a></li>
+        <li><a routerLink="/partners" (click)="toggleMenu()"><i class="bi bi-people"></i> Partners</a></li>
+        <li><a routerLink="/contact" (click)="toggleMenu()"><i class="bi bi-envelope"></i> Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <p class="section-title">Explore Topics</p>
+      <div class="category-grid">
+        <a *ngFor="let cat of categories" 
+           [routerLink]="cat.link" 
+           (click)="toggleMenu()"
+           class="mobile-cat-item">
+           <span class="dot" [style.background-color]="cat.color"></span>
+           {{ cat.name }}
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sidebar-footer" *ngIf="isLoggedIn">
+    <button (click)="logout()" class="mobile-logout">
+      <i class="bi bi-box-arrow-left"></i> Logout
+    </button>
+  </div>
+</div>

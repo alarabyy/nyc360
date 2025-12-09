@@ -1,0 +1,277 @@
+@use "sass:color";
+
+// --- Theme Variables (Deep Teal & Copper) ---
+$bg-dark: #081223;       // Deep Navy/Teal
+$bg-white: #ffffff;      // White
+$bg-card: #0F1C30;       // Dark Card BG
+$text-dark: #1a1a1a;
+$text-light: #E8EBF2;
+$accent: #BC5E3D;        // Copper
+$border: #e9ecef;
+
+$font-serif: 'Playfair Display', serif; 
+$font-sans: 'Segoe UI', sans-serif;
+
+.home-container {
+  font-family: $font-sans;
+  background-color: $bg-white;
+}
+
+/* =========================================
+   1. HERO SECTION
+   ========================================= */
+.hero-section {
+  position: relative;
+  height: 85vh; // ارتفاع يغطي معظم الشاشة
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 80px;
+  overflow: hidden;
+  background-color: $bg-dark; // لون احتياطي
+
+  // الصورة الخلفية
+  .hero-bg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    z-index: 1;
+    transition: transform 10s ease; // زوم بطيء جداً
+  }
+
+  // طبقة تعتيم
+  .overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(8, 18, 35, 0.95) 0%, rgba(8, 18, 35, 0.3) 60%, transparent 100%);
+    z-index: 2;
+  }
+
+  &:hover .hero-bg { transform: scale(1.05); }
+
+  .hero-content {
+    position: relative; z-index: 3; color: $text-light;
+
+    .category-badge {
+      display: inline-block;
+      background-color: $accent;
+      color: #fff;
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      padding: 6px 12px; margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: $font-serif;
+      font-size: 3.5rem; 
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 15px;
+      @media (max-width: 768px) { font-size: 2.2rem; }
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem; color: rgba(255, 255, 255, 0.85);
+      max-width: 600px; margin-bottom: 25px; line-height: 1.6;
+    }
+
+    .meta-info {
+      font-size: 0.9rem; font-weight: 600; color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 30px;
+      .divider { margin: 0 10px; color: $accent; }
+    }
+
+    .btn-read-more {
+      color: $text-light; text-decoration: none;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 2px solid $accent; padding-bottom: 5px;
+      transition: all 0.3s;
+      &:hover { color: $accent; padding-bottom: 8px; }
+      i { margin-left: 5px; }
+    }
+  }
+}
+
+/* =========================================
+   2. NEWS TICKER
+   ========================================= */
+.news-ticker {
+  background-color: $bg-dark;
+  color: #fff;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+
+  .ticker-label {
+    background-color: $accent;
+    height: 100%;
+    padding: 0 20px;
+    display: flex; align-items: center;
+    font-weight: 800; text-transform: uppercase; font-size: 0.85rem;
+    z-index: 5;
+  }
+
+  .ticker-content {
+    flex-grow: 1; overflow: hidden; white-space: nowrap;
+    
+    .ticker-track {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+      
+      .ticker-item {
+        margin-right: 50px; font-size: 0.9rem; font-weight: 500;
+        .dot { color: $accent; font-size: 0.5rem; vertical-align: middle; margin-right: 10px; }
+      }
+    }
+  }
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* =========================================
+   3. TRENDING (Bento Grid)
+   ========================================= */
+.trending-section {
+  padding: 80px 0;
+  
+  .section-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 30px;
+    
+    .section-title {
+      font-family: $font-serif; font-size: 2.5rem; font-weight: 700; color: $text-dark; margin: 0;
+    }
+    .view-all {
+      color: $accent; text-decoration: none; font-weight: 700; font-size: 0.9rem;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  // Grid System
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; // العمود الأيسر ضعف الأيمن
+    gap: 20px;
+    height: 500px;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr; // عمود واحد في الموبايل
+      height: auto;
+    }
+  }
+
+  .bento-stack {
+    display: grid;
+    grid-template-rows: 1fr 1fr; // صفين متساويين
+    gap: 20px;
+    @media (max-width: 992px) { height: 500px; }
+  }
+
+  .bento-card {
+    position: relative; display: block;
+    width: 100%; height: 100%;
+    overflow: hidden; border-radius: 8px;
+    text-decoration: none; color: #fff; background-color: #000;
+
+    .card-bg {
+      width: 100%; height: 100%;
+      background-size: cover; background-position: center;
+      transition: transform 0.5s ease;
+      opacity: 0.8;
+    }
+
+    .card-overlay {
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      padding: 30px;
+      transition: padding 0.3s;
+    }
+
+    .card-cat {
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: $accent;
+      margin-bottom: 5px; display: block;
+    }
+
+    .card-title {
+      font-family: $font-serif; font-size: 1.8rem; margin: 0; line-height: 1.2;
+    }
+    
+    .card-desc {
+      font-size: 0.9rem; color: #ccc; margin-top: 5px; display: none; // يظهر عند التحويم للكروت الكبيرة
+    }
+
+    &.large .card-desc { display: block; }
+    &.small .card-title { font-size: 1.4rem; }
+
+    &:hover {
+      .card-bg { transform: scale(1.1); opacity: 0.6; }
+      .card-overlay { padding-bottom: 40px; } 
+    }
+  }
+}
+
+/* =========================================
+   4. CITY PULSE & NEWSLETTER
+   ========================================= */
+.pulse-section {
+  padding: 0 0 80px 0;
+
+  .subsection-title {
+    font-size: 1.5rem; font-weight: 800; text-transform: uppercase;
+    color: $text-dark; border-bottom: 2px solid $text-dark;
+    padding-bottom: 15px; margin-bottom: 30px;
+  }
+
+  .pulse-list {
+    .pulse-item {
+      display: flex; flex-direction: column;
+      padding: 20px 0; border-bottom: 1px solid $border;
+      &:last-child { border-bottom: none; }
+
+      .pulse-meta {
+        font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;
+        .p-cat { color: $accent; margin-right: 10px; text-transform: uppercase; }
+        .p-time { color: #999; }
+      }
+
+      .p-title {
+        font-size: 1.2rem; font-weight: 700; color: $text-dark;
+        text-decoration: none; transition: color 0.2s;
+        font-family: $font-serif;
+        &:hover { color: $accent; }
+      }
+    }
+  }
+
+  // Newsletter
+  .newsletter-card {
+    background-color: $bg-dark;
+    color: $text-light;
+    padding: 40px;
+    border-radius: 12px;
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+
+    .ico { font-size: 3rem; color: $accent; margin-bottom: 20px; display: block; }
+    h4 { font-family: $font-serif; font-size: 2rem; margin-bottom: 15px; }
+    p { color: rgba(255,255,255,0.7); margin-bottom: 0; }
+
+    .input-group {
+      .form-control { border: none; padding: 12px; font-size: 0.9rem; &:focus { box-shadow: none; } }
+      .btn-copper {
+        background-color: $accent; color: #fff;
+        border: none; font-weight: 700; text-transform: uppercase;
+        padding: 0 20px; transition: background 0.2s;
+        &:hover { background-color: color.adjust($accent, $lightness: -5%); }
+      }
+    }
+    .disclaimer { display: block; margin-top: 15px; color: rgba(255,255,255,0.4); font-size: 0.75rem; }
+  }
+}
+
+// Fade In Animation
+.fade-in-up {
+  animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 40px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }

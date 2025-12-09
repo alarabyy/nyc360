@@ -1,0 +1,85 @@
+<div class="page-container">
+  
+  <div class="page-header">
+    <div class="title-section">
+      <h2>RSS Sources</h2>
+      <p>Manage your news feeds and categories.</p>
+    </div>
+    <a routerLink="/admin/rss/create" class="btn-add">
+      <i class="bi bi-plus-lg"></i> Add New Source
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="state-container">
+    <div class="spinner-border text-gold" role="status"></div>
+    <p>Loading Feeds...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="state-container text-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && rssList.length === 0 && !errorMessage" class="state-container">
+    <i class="bi bi-rss"></i>
+    <p>No RSS feeds found.</p>
+  </div>
+
+  <div *ngIf="!isLoading && rssList.length > 0" class="rss-list">
+    
+    <div class="list-header d-none d-md-grid">
+      <span>Source Name</span>
+      <span>Category</span>
+      <span>Status</span>
+      <span>Last Checked</span>
+      <span class="text-end">Actions</span>
+    </div>
+
+    <div class="rss-item" *ngFor="let item of rssList">
+      
+      <div class="rss-info">
+        <div class="rss-img">
+          <ng-container *ngIf="item.imageUrl">
+
+             <img [src]="(environment.apiBaseUrl2 + '/rss-sources/' + item.imageUrl)" 
+                  alt="RSS Source"
+                  (error)="item.imageUrl = null"> </ng-container>
+
+          <div *ngIf="!item.imageUrl" class="img-placeholder">
+            <i class="bi bi-rss-fill"></i>
+          </div>
+        </div>
+        
+        <div class="rss-text">
+          <h3>{{ item.name || 'Unnamed Source' }}</h3>
+          <a [href]="item.rssUrl" target="_blank" class="rss-link">{{ item.rssUrl }}</a>
+        </div>
+      </div>
+
+      <div class="rss-category">
+        <span class="cat-badge">{{ getCategoryName(item.category) }}</span>
+      </div>
+
+      <div class="rss-status">
+        <span class="status-dot" [class.active]="item.isActive"></span>
+        {{ item.isActive ? 'Active' : 'Inactive' }}
+      </div>
+
+      <div class="rss-date">
+        <span *ngIf="item.lastChecked.startsWith('0001')">Never Checked</span>
+        <span *ngIf="!item.lastChecked.startsWith('0001')">{{ item.lastChecked | date:'shortDate' }}</span>
+      </div>
+
+      <div class="rss-actions">
+        <button class="btn-icon edit" (click)="onEdit(item)" title="Edit">
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn-icon delete" (click)="onDelete(item.id)" title="Delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

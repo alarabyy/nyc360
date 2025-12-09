@@ -1,0 +1,167 @@
+<div class="dashboard-container">
+  
+  <div class="page-header mb-4">
+    <div>
+      <h2 class="fw-bold text-dark">System Overview</h2>
+      <p class="text-muted">Real-time user analytics and health check.</p>
+    </div>
+    <div class="date-badge">
+      <i class="bi bi-calendar3"></i> Today
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Analyzing Data...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="fade-in">
+    
+    <div class="row g-4 mb-4">
+      
+      <div class="col-md-3">
+        <div class="stat-card border-primary">
+          <div class="stat-info">
+            <span class="stat-label">Total Users</span>
+            <h3 class="stat-value">{{ stats.totalUsers }}</h3>
+          </div>
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card border-success">
+          <div class="stat-info">
+            <span class="stat-label">Verified</span>
+            <h3 class="stat-value">{{ stats.verifiedAccounts }}</h3>
+          </div>
+          <div class="stat-icon bg-success-subtle text-success">
+            <i class="bi bi-shield-check"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card border-info">
+          <div class="stat-info">
+            <span class="stat-label">Organizations</span>
+            <h3 class="stat-value">{{ stats.totalOrganizations }}</h3>
+          </div>
+          <div class="stat-icon bg-info-subtle text-info">
+            <i class="bi bi-building-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card border-danger">
+          <div class="stat-info">
+            <span class="stat-label">Locked / Banned</span>
+            <h3 class="stat-value">{{ stats.lockedAccounts }}</h3>
+          </div>
+          <div class="stat-icon bg-danger-subtle text-danger">
+            <i class="bi bi-lock-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      
+      <div class="col-lg-4">
+        <div class="content-card h-100">
+          <h5 class="card-title">User Distribution</h5>
+          
+          <div class="analytics-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="small fw-bold">Verification Rate</span>
+              <span class="small text-success">{{ verificationRate | number:'1.0-0' }}%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-success" role="progressbar" [style.width.%]="verificationRate"></div>
+            </div>
+          </div>
+
+          <div class="analytics-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="small fw-bold">Admin Privileges</span>
+              <span class="small text-warning">{{ adminRatio | number:'1.0-0' }}%</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="adminRatio"></div>
+            </div>
+          </div>
+
+          <div class="alert-box mt-4">
+            <div class="alert-icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="alert-text">
+              <h6>{{ stats.pendingAccounts }} Pending Approvals</h6>
+              <p>Users waiting for email verification.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="content-card h-100">
+          <h5 class="card-title">Recently Joined</h5>
+          
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="bg-light">
+                <tr>
+                  <th class="ps-3 text-muted border-0">User</th>
+                  <th class="text-muted border-0">Role</th>
+                  <th class="text-muted border-0">Status</th>
+                  <th class="text-end pe-3 text-muted border-0"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of recentUsers">
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="avatar-sm">
+                        <img *ngIf="user.avatarUrl" [src]="environment.apiBaseUrl2 + '/avatars/' + user.avatarUrl">
+                        <div *ngIf="!user.avatarUrl" class="avatar-placeholder">
+                          {{ getInitials(user.firstName, user.lastName) }}
+                        </div>
+                      </div>
+                      <div>
+                        <div class="fw-bold text-dark">{{ user.firstName }} {{ user.lastName }}</div>
+                        <div class="small text-muted">{{ user.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <span class="badge role-badge" 
+                          [ngClass]="{
+                            'bg-primary-subtle text-primary': user.role === 'SuperAdmin',
+                            'bg-info-subtle text-info': user.role === 'Organization',
+                            'bg-light text-dark border': user.role !== 'SuperAdmin' && user.role !== 'Organization'
+                          }">
+                      {{ user.role }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span *ngIf="user.emailConfirmed" class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                    <span *ngIf="!user.emailConfirmed" class="text-warning small fw-bold"><i class="bi bi-clock-fill"></i> Pending</span>
+                  </td>
+
+                  <td class="text-end pe-3">
+                    <button class="btn btn-sm btn-icon"><i class="bi bi-chevron-right"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

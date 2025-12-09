@@ -1,0 +1,113 @@
+<div class="home-container">
+
+  <section class="hero-section">
+    <div class="overlay"></div>
+    
+    <div class="hero-bg" style="background-image: url('assets/images/hero-bg.jpg');"></div>
+
+    <div class="container hero-content">
+      <div class="row">
+        <div class="col-lg-8 fade-in-up">
+          <span class="category-badge">{{ heroStory.category }}</span>
+          <h1 class="hero-title">{{ heroStory.title }}</h1>
+          <p class="hero-subtitle">{{ heroStory.subtitle }}</p>
+          
+          <div class="meta-info">
+            <span class="author">By {{ heroStory.author }}</span>
+            <span class="divider">|</span>
+            <span class="date">{{ heroStory.date }}</span>
+          </div>
+
+          <a routerLink="/news/1" class="btn-read-more">
+            Read Full Story <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="news-ticker">
+    <div class="ticker-label">BREAKING</div>
+    <div class="ticker-content">
+      <div class="ticker-track">
+        <span *ngFor="let news of breakingNews" class="ticker-item">
+          <i class="bi bi-circle-fill dot"></i> {{ news }}
+        </span>
+        <span *ngFor="let news of breakingNews" class="ticker-item">
+          <i class="bi bi-circle-fill dot"></i> {{ news }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <section class="trending-section">
+    <div class="container">
+      
+      <div class="section-header">
+        <h2 class="section-title">Trending Now</h2>
+        <a routerLink="/news" class="view-all">View All <i class="bi bi-chevron-right"></i></a>
+      </div>
+
+      <div class="bento-grid">
+        
+        <a routerLink="/news/{{trendingStories[0].id}}" class="bento-card large">
+          <div class="card-bg" style="background-image: url('assets/images/business.jpg');"></div> 
+          <div class="card-overlay">
+            <span class="card-cat">{{ trendingStories[0].category }}</span>
+            <h3 class="card-title">{{ trendingStories[0].title }}</h3>
+            <p class="card-desc">{{ trendingStories[0].desc }}</p>
+          </div>
+        </a>
+
+        <div class="bento-stack">
+          <a routerLink="/news/{{story.id}}" class="bento-card small" *ngFor="let story of [trendingStories[1], trendingStories[2]]">
+            <div class="card-bg" style="background-color: #1a2639;"></div> <div class="card-overlay">
+              <span class="card-cat">{{ story.category }}</span>
+              <h3 class="card-title">{{ story.title }}</h3>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="pulse-section">
+    <div class="container">
+      <div class="row gy-5">
+        
+        <div class="col-lg-7">
+          <h3 class="subsection-title">City Pulse</h3>
+          <div class="pulse-list">
+            <div class="pulse-item" *ngFor="let item of cityPulse">
+              <div class="pulse-meta">
+                <span class="p-cat">{{ item.category }}</span>
+                <span class="p-time">{{ item.time }}</span>
+              </div>
+              <a routerLink="/news" class="p-title">{{ item.title }}</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="newsletter-card">
+            <div class="card-body text-center">
+              <i class="bi bi-envelope-paper ico"></i>
+              <h4>The NYC360 Briefing</h4>
+              <p>Get the essential stories that define New York, delivered to your inbox every morning.</p>
+              
+              <div class="input-group mt-4">
+                <input type="email" class="form-control" placeholder="Your email address">
+                <button class="btn-copper">Subscribe</button>
+              </div>
+              
+              <small class="disclaimer">No spam. Unsubscribe anytime.</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
