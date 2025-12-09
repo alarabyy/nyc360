@@ -43,7 +43,7 @@ export class VerifyOtpComponent implements OnInit {
     
     // إعادة التوجيه إذا لم يوجد إيميل
     if (!this.email) {
-      this.router.navigate(['/Login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 

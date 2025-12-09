@@ -1,21 +1,27 @@
 <div class="page-container page-fade-in">
   
   <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner-border text-gold" role="status"></div>
+    <div class="spinner-border text-copper" role="status"></div>
     <p>Loading Profile...</p>
   </div>
 
-  <div *ngIf="!isLoading && profile" class="profile-layout">
+  <div *ngIf="!isLoading && errorMessage" class="error-container">
+    <i class="bi bi-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && userProfile" class="profile-layout">
     
     <div class="profile-sidebar">
       <div class="user-card">
+        
         <div class="avatar-container">
-          <img [src]="imagePreview || (profile.avatarUrl ? environment.apiBaseUrl2 + '/avatars/' + profile.avatarUrl : '')" 
+          <img [src]="imagePreview || (userProfile.imageUrl ? environment.apiBaseUrl + '/avatas/' + userProfile.imageUrl : '')" 
                class="avatar-img" 
-               *ngIf="profile.avatarUrl || imagePreview">
+               *ngIf="userProfile.imageUrl || imagePreview">
           
-          <div *ngIf="!profile.avatarUrl && !imagePreview" class="avatar-placeholder">
-            {{ getInitials(profile.firstName, profile.lastName) }}
+          <div *ngIf="!userProfile.imageUrl && !imagePreview" class="avatar-placeholder">
+            {{ getInitials() }}
           </div>
 
           <label *ngIf="isEditMode" class="edit-avatar-btn">
@@ -24,36 +30,32 @@
           </label>
         </div>
 
-        <h2 class="user-name">{{ profile.firstName }} {{ profile.lastName }}</h2>
-        <p class="user-role">{{ profile.role }}</p>
-        
+        <h2 class="user-name">{{ getDisplayName() }}</h2>
+        <p class="user-role">
+          {{ userProfile.type === UserType.Organization ? 'Organization' : 'Member' }}
+        </p>
+
         <div class="divider"></div>
 
-        <div class="security-section">
-          <div class="sec-info">
-            <span class="label">Two-Factor Auth</span>
-            <span class="status" [class.on]="profile.twoFactorEnabled">
-              {{ profile.twoFactorEnabled ? 'Enabled' : 'Disabled' }}
-            </span>
+        <div class="stats-row" *ngIf="userProfile.type !== UserType.Admin">
+          <div class="stat-item">
+            <span class="value">{{ (userProfile.type === 0 ? regularData.stats.postsCount : orgData.stats.postsCount) || 0 }}</span>
+            <span class="label">Posts</span>
           </div>
-          <button class="btn-toggle-2fa" 
-                  [class.active]="profile.twoFactorEnabled" 
-                  (click)="toggle2FA()">
-            <i class="bi" [class.bi-shield-check]="profile.twoFactorEnabled" [class.bi-shield-x]="!profile.twoFactorEnabled"></i>
-            {{ profile.twoFactorEnabled ? 'Disable' : 'Enable' }}
-          </button>
+          <div class="stat-item">
+            <span class="value">{{ (userProfile.type === 0 ? regularData.stats.followersCount : orgData.stats.followersCount) || 0 }}</span>
+            <span class="label">Followers</span>
+          </div>
         </div>
+
       </div>
     </div>
 
     <div class="profile-content">
+      
       <div class="content-header">
-        <h3>Personal Information</h3>
+        <h3>Profile Details</h3>
         <div class="header-actions">
-          <button class="btn-outline" (click)="openPasswordModal()">
-            <i class="bi bi-key"></i> Change Password
-          </button>
-          
           <button class="btn-edit" (click)="toggleEditMode()" *ngIf="!isEditMode">
             <i class="bi bi-pencil-square"></i> Edit Profile
           </button>
@@ -62,49 +64,42 @@
 
       <form [formGroup]="profileForm" (ngSubmit)="saveChanges()">
         
-        <div class="form-section">
-          <label>Bio</label>
-          <textarea [readonly]="!isEditMode" formControlName="bio" placeholder="Tell us about yourself..." class="bio-input"></textarea>
-        </div>
-
-        <div class="form-row">
+        <div *ngIf="userProfile.type === UserType.Organization">
           <div class="form-group">
-            <label>First Name</label>
-            <input [readonly]="!isEditMode" formControlName="firstName" type="text">
+            <label>Organization Name</label>
+            <input [readonly]="!isEditMode" formControlName="name" type="text">
           </div>
           <div class="form-group">
-            <label>Last Name</label>
-            <input [readonly]="!isEditMode" formControlName="lastName" type="text">
+            <label>Bio / About</label>
+            <textarea [readonly]="!isEditMode" formControlName="bio" placeholder="Describe your organization..."></textarea>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email (Read Only)</label>
-            <input readonly [value]="profile.email" type="email" class="readonly-field">
+        <div *ngIf="userProfile.type !== UserType.Organization">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input [readonly]="!isEditMode" formControlName="firstName" type="text">
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <div class="input-wrapper">
+                <input [readonly]="!isEditMode" formControlName="lastName" type="text">
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input [readonly]="!isEditMode" formControlName="phoneNumber" type="tel">
+          
+          <div class="form-group" *ngIf="userProfile.type === UserType.Regular">
+            <label>Bio</label>
+            <textarea [readonly]="!isEditMode" formControlName="bio" placeholder="Tell us about yourself..."></textarea>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Website</label>
-          <input [readonly]="!isEditMode" formControlName="websiteUrl" type="url">
+          <label>Email Address</label>
+          <input readonly [value]="userProfile.email || 'N/A'" type="email" class="readonly-field">
         </div>
 
-        <h4 class="mt-4 mb-3">Social Media</h4>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="bi bi-facebook text-primary"></i> Facebook</label>
-            <input [readonly]="!isEditMode" formControlName="facebookUrl" type="text">
-          </div>
-          <div class="form-group">
-            <label><i class="bi bi-twitter-x"></i> Twitter / X</label>
-            <input [readonly]="!isEditMode" formControlName="twitterUrl" type="text">
-          </div>
-        </div>
         <div class="form-actions" *ngIf="isEditMode">
           <button type="button" class="btn-cancel" (click)="toggleEditMode()">Cancel</button>
           <button type="submit" class="btn-save" [disabled]="isSaving">
@@ -113,41 +108,8 @@
         </div>
 
       </form>
+
     </div>
 
   </div>
-
-  <div class="modal-backdrop" *ngIf="showPasswordModal">
-    <div class="modal-content fade-in">
-      <div class="modal-header">
-        <h3>Change Password</h3>
-        <button class="close-btn" (click)="closePasswordModal()"><i class="bi bi-x-lg"></i></button>
-      </div>
-      
-      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Current Password</label>
-            <input formControlName="currentPassword" type="password" placeholder="Enter current password">
-          </div>
-          <div class="form-group">
-            <label>New Password</label>
-            <input formControlName="newPassword" type="password" placeholder="Minimum 6 characters">
-          </div>
-          <div class="form-group">
-            <label>Confirm New Password</label>
-            <input formControlName="confirmPassword" type="password" placeholder="Re-enter new password">
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" (click)="closePasswordModal()">Cancel</button>
-          <button type="submit" class="btn-save" [disabled]="isSaving || passwordForm.invalid">
-            {{ isSaving ? 'Updating...' : 'Update Password' }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
 </div>

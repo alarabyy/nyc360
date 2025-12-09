@@ -119,7 +119,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/Authentication/pages/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
       },
       {
-        path: 'auth/confirm-email', 
+        path: 'confirm-email', 
         loadComponent: () => import('./pages/Authentication/pages/confirm-email/confirm-email').then(m => m.ConfirmEmailComponent)
       },
       {

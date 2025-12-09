@@ -1,11 +1,13 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { environment } from '../../../../../environments/environment';
 import { ProfileService } from '../service/profile';
-import { UserProfile } from '../models/profile';
 import { AuthService } from '../../../../Authentication/Service/auth';
+import { 
+  UserProfileDto, UserType, RegularProfileDto, OrganizationProfileDto, AdminProfileDto 
+} from '../models/profile';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +19,8 @@ import { AuthService } from '../../../../Authentication/Service/auth';
 export class ProfileComponent implements OnInit {
   
   protected readonly environment = environment;
-  
+  protected readonly UserType = UserType; // Make Enum available in template
+
   // --- Dependencies ---
   private profileService = inject(ProfileService);
   private authService = inject(AuthService);
@@ -26,204 +29,140 @@ export class ProfileComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   // --- State ---
-  profile: UserProfile | null = null;
+  userProfile: UserProfileDto | null = null;
+  
+  // Helpers for type casting in template
+  get regularData() { return this.userProfile?.data as RegularProfileDto; }
+  get orgData() { return this.userProfile?.data as OrganizationProfileDto; }
+  get adminData() { return this.userProfile?.data as AdminProfileDto; }
+
   isLoading = true;
   isSaving = false;
   isEditMode = false;
   errorMessage = '';
   
-  // Modal State
-  showPasswordModal = false;
-
   // --- Forms ---
-  profileForm: FormGroup;
-  passwordForm: FormGroup; // New Form for Password Change
+  profileForm!: FormGroup;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
-
-  constructor() {
-    // Profile Form
-    this.profileForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      bio: [''],
-      phoneNumber: [''],
-      websiteUrl: [''],
-      facebookUrl: [''],
-      twitterUrl: [''],
-      instagramUrl: [''],
-      linkedInUrl: [''],
-      githubUrl: ['']
-    });
-
-    // Password Form (New)
-    this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    });
-  }
 
   ngOnInit() {
     this.resolveUsernameAndLoad();
   }
 
-  // --- Load Data ---
   resolveUsernameAndLoad() {
-    let identifier = this.route.snapshot.paramMap.get('username');
-    if (!identifier) {
+    let username = this.route.snapshot.paramMap.get('username');
+    if (!username) {
+      // Fallback to current user if no username in URL
       const currentUser = this.authService.currentUser$.value;
-      if (currentUser) {
-        identifier = currentUser.username || currentUser.email || currentUser.unique_name;
-      }
+      username = currentUser?.username || currentUser?.email;
     }
 
-    if (identifier) {
-      this.loadProfileData(identifier);
+    if (username) {
+      this.loadProfile(username);
     } else {
-      this.errorMessage = "Please log in to view your profile.";
+      this.errorMessage = "Please log in to view profile.";
       this.isLoading = false;
-      this.cdr.detectChanges();
     }
   }
 
-  loadProfileData(identifier: string) {
+  loadProfile(username: string) {
     this.isLoading = true;
-    this.profileService.getProfile(identifier).subscribe({
+    this.profileService.getProfile(username).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.isSuccess && res.data) {
-          this.profile = res.data;
-          this.initForm(this.profile);
-          this.cdr.detectChanges();
+          this.userProfile = res.data;
+          this.initForm();
         } else {
-          this.errorMessage = "Profile not found.";
-          this.cdr.detectChanges();
+          this.errorMessage = res.error?.message || "Profile not found.";
         }
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.status === 404 ? "User not found." : "Network error.";
+        this.errorMessage = "User not found or network error.";
         this.cdr.detectChanges();
       }
     });
   }
 
-  initForm(user: UserProfile) {
-    this.profileForm.patchValue({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      bio: user.bio,
-      phoneNumber: user.phoneNumber,
-      websiteUrl: user.websiteUrl,
-      facebookUrl: user.facebookUrl,
-      twitterUrl: user.twitterUrl,
-      instagramUrl: user.instagramUrl,
-      linkedInUrl: user.linkedInUrl,
-      githubUrl: user.githubUrl
-    });
+  // --- Dynamic Form Initialization ---
+  initForm() {
+    if (!this.userProfile) return;
+
+    if (this.userProfile.type === UserType.Organization) {
+      const data = this.orgData;
+      this.profileForm = this.fb.group({
+        name: [data.name, Validators.required],
+        bio: [data.bio || ''],
+        // Add social links form array logic here if needed
+      });
+    } else {
+      // Regular or Admin
+      const data = this.userProfile.type === UserType.Regular ? this.regularData : this.adminData;
+      this.profileForm = this.fb.group({
+        firstName: [data.firstName, Validators.required],
+        lastName: [data.lastName, Validators.required],
+        bio: [(data as any).bio || ''], // Admin might not have bio
+      });
+    }
   }
 
-  // --- Profile Actions ---
+  // --- Actions ---
   toggleEditMode() {
     this.isEditMode = !this.isEditMode;
-    if (!this.isEditMode && this.profile) {
-      this.initForm(this.profile);
+    if (!this.isEditMode) {
+      this.initForm(); // Reset form on cancel
       this.imagePreview = null;
-      this.selectedFile = null;
     }
   }
 
   onFileSelected(event: any) {
     if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      this.selectedFile = file;
+      this.selectedFile = event.target.files[0];
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
         this.cdr.detectChanges();
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.selectedFile!);
     }
   }
 
   saveChanges() {
     if (this.profileForm.invalid) return;
     this.isSaving = true;
+    
     this.profileService.updateMyProfile(this.profileForm.value, this.selectedFile || undefined)
       .subscribe({
         next: (res) => {
           this.isSaving = false;
           if (res.isSuccess) {
-            alert('Profile updated successfully!');
             this.isEditMode = false;
-            this.resolveUsernameAndLoad();
+            // Reload to get fresh data
+            this.resolveUsernameAndLoad(); 
           } else {
             alert(res.error?.message || 'Update failed.');
           }
         },
-        error: () => { this.isSaving = false; alert('Network Error'); }
+        error: () => { this.isSaving = false; alert('Network error.'); }
       });
   }
 
-  // --- 2FA Action ---
-  toggle2FA() {
-    if (!this.profile) return;
-    const action = this.profile.twoFactorEnabled ? 'Disable' : 'Enable';
-    if (!confirm(`Are you sure you want to ${action} Two-Factor Authentication?`)) return;
-
-    this.profileService.toggle2FA(!this.profile.twoFactorEnabled).subscribe({
-      next: (res) => {
-        if (res.isSuccess) {
-          this.profile!.twoFactorEnabled = !this.profile!.twoFactorEnabled;
-          alert(`2FA has been ${action}d.`);
-          this.cdr.detectChanges();
-        } else {
-          alert('Failed to update 2FA settings.');
-        }
-      }
-    });
-  }
-
-  // --- Password Modal Actions ---
-  openPasswordModal() {
-    this.passwordForm.reset();
-    this.showPasswordModal = true;
-  }
-
-  closePasswordModal() {
-    this.showPasswordModal = false;
-  }
-
-  onChangePassword() {
-    if (this.passwordForm.invalid) return;
-
-    const { currentPassword, newPassword, confirmPassword } = this.passwordForm.value;
-
-    if (newPassword !== confirmPassword) {
-      alert('New passwords do not match!');
-      return;
+  // Helper for Initials
+  getInitials(): string {
+    if (this.userProfile?.type === UserType.Organization) {
+      return this.orgData.name.substring(0, 2).toUpperCase();
     }
-
-    this.isSaving = true;
-    this.authService.changePassword({ currentPassword, newPassword }).subscribe({
-      next: (res) => {
-        this.isSaving = false;
-        if (res.isSuccess) {
-          alert('Password changed successfully!');
-          this.closePasswordModal();
-        } else {
-          alert(res.error?.message || 'Failed to change password.');
-        }
-      },
-      error: () => {
-        this.isSaving = false;
-        alert('Network Error.');
-      }
-    });
+    const data = this.userProfile?.type === UserType.Regular ? this.regularData : this.adminData;
+    return ((data?.firstName?.[0] || '') + (data?.lastName?.[0] || '')).toUpperCase();
   }
 
-  getInitials(first: string, last: string): string {
-    return ((first?.[0] || '') + (last?.[0] || '')).toUpperCase();
+  // Helper for Full Name
+  getDisplayName(): string {
+    if (this.userProfile?.type === UserType.Organization) return this.orgData.name;
+    const data = this.userProfile?.type === UserType.Regular ? this.regularData : this.adminData;
+    return `${data?.firstName} ${data?.lastName}`;
   }
 }

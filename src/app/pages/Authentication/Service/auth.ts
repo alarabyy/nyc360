@@ -146,7 +146,7 @@ export class AuthService {
       localStorage.removeItem(this.refreshTokenKey);
     }
     this.currentUser$.next(null);
-    this.router.navigate(['/Login']); 
+    this.router.navigate(['/auth/login']); 
   }
 
   private handleLoginSuccess(res: AuthResponse<LoginResponseData>) {
