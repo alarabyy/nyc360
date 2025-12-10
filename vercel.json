@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.server.html"
+      "destination": "/index.csr.html"
     }
   ],
   "headers": [
