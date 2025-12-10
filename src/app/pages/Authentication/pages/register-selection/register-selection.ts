@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { trigger, style, animate, transition, query, stagger } from '@angular/animations';
 import { AuthService } from '../../Service/auth'; 
 
@@ -47,7 +47,7 @@ export class RegisterSelectionComponent {
   selectedType: string = ''; 
   isOrganization = false;
   
-  form!: FormGroup;
+  form!: FormGroup; // Use definite assignment assertion
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -59,7 +59,6 @@ export class RegisterSelectionComponent {
   ];
 
   // --- 2. Interests Data (Mapped to Backend Enum IDs) ---
-  // Order matters: 0=Art, 1=Community, etc.
   interestsList = [
     { id: 0, name: 'Art', icon: 'bi-palette' },
     { id: 1, name: 'Community', icon: 'bi-people' },
@@ -91,12 +90,18 @@ export class RegisterSelectionComponent {
     this.currentStep = 'selection';
     this.errorMessage = null;
     this.form.reset();
-    this.selectedInterestIds = []; // Reset interests
+    this.selectedInterestIds = []; 
   }
 
   initForm() {
-    // Reset selection
     this.selectedInterestIds = [];
+    
+    // Common validators
+    const passwordValidators = [
+      Validators.required, 
+      Validators.minLength(6),
+      Validators.pattern(/^(?=.*[a-z])(?=.*\d).{6,}$/) // At least 1 lowercase, 1 digit
+    ];
 
     if (this.isOrganization) {
       // --- ORGANIZATION FORM ---
@@ -104,7 +109,7 @@ export class RegisterSelectionComponent {
         Name: ['', [Validators.required, Validators.minLength(2)]],
         username: ['', [Validators.required, Validators.minLength(4)]],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', passwordValidators],
       });
     } else {
       // --- NORMAL USER FORM ---
@@ -113,7 +118,8 @@ export class RegisterSelectionComponent {
         lastName: ['', [Validators.required, Validators.minLength(2)]],
         username: ['', [Validators.required, Validators.minLength(4)]],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', passwordValidators],
+        terms: [false, Validators.requiredTrue]
       });
     }
   }
@@ -122,9 +128,9 @@ export class RegisterSelectionComponent {
   toggleInterest(id: number) {
     const index = this.selectedInterestIds.indexOf(id);
     if (index >= 0) {
-      this.selectedInterestIds.splice(index, 1); // Remove
+      this.selectedInterestIds.splice(index, 1); 
     } else {
-      this.selectedInterestIds.push(id); // Add
+      this.selectedInterestIds.push(id); 
     }
   }
 
@@ -132,10 +138,16 @@ export class RegisterSelectionComponent {
     return this.selectedInterestIds.includes(id);
   }
 
+  // --- Helper for Template Validation ---
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  }
+
   // --- Submission ---
   onSubmit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
+      this.form.markAllAsTouched(); // Trigger validation messages
       return;
     }
 
@@ -147,23 +159,23 @@ export class RegisterSelectionComponent {
     this.isLoading = true;
     this.errorMessage = null;
     
-    // Merge Form Data with Selected Interests
-    const formData = { 
-      ...this.form.value, 
+    const formValue = this.form.value;
+    // Don't send 'terms' to backend usually
+    const { terms, ...submitData } = formValue; 
+
+    const finalData = { 
+      ...submitData, 
       interests: this.selectedInterestIds 
     };
 
     if (this.isOrganization) {
-      // Call Organization Endpoint
-      this.authService.registerOrganization(formData).subscribe({
+      this.authService.registerOrganization(finalData).subscribe({
         next: (res) => this.handleSuccess(res),
         error: (err) => this.handleError(err)
       });
     } else {
-      // Call Normal User Endpoint
-      // Ensure 'userType' is strictly 'Visitor' or 'NewYorker' (PascalCase often preferred by C# APIs)
       const payload = { 
-        ...formData, 
+        ...finalData, 
         userType: this.selectedType === 'new-yorker' ? 'NewYorker' : 'Visitor' 
       };
       
@@ -177,7 +189,7 @@ export class RegisterSelectionComponent {
   private handleSuccess(res: any) {
     this.isLoading = false;
     if (res.isSuccess) {
-      this.router.navigate(['/auth/Login']);
+      this.router.navigate(['/auth/login']); 
     } else {
       this.errorMessage = res.error?.message || 'Registration failed.';
     }
@@ -186,7 +198,7 @@ export class RegisterSelectionComponent {
   private handleError(err: any) {
     this.isLoading = false;
     console.error(err);
-    this.errorMessage = 'Network error occurred.';
+    this.errorMessage = 'Network error occurred. Please try again.';
   }
 
   getFormTitle(): string {
