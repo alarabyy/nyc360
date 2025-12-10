@@ -7,8 +7,7 @@
     </button>
 
     <div class="logo" routerLink="/">
-      <!-- <span class="logo-text">NYC<span class="highlight">360</span></span> -->
-      <div class="brand-compact   mt-3   ">
+      <div class="brand-compact mt-3">
         <img src="image_0_0.jpg" alt="NYC360 Logo" class="footer-logo" width="70">
       </div>
     </div>
@@ -48,6 +47,7 @@
             <i class="bi bi-speedometer2"></i> Dashboard
           </a>
         </li>
+        <li><a routerLink="/posts" routerLinkActive="active">All Posts</a></li>
         <li><a routerLink="/about" routerLinkActive="active">about</a></li>
       </ul>
       <span class="date-display">{{ currentDate | date:'MMMM d, y' }}</span>
@@ -56,7 +56,10 @@
     <div class="categories-bar">
       <ul class="cat-links">
         <li *ngFor="let cat of categories">
-          <a [routerLink]="cat.link" routerLinkActive="active" [style.--hover-color]="cat.color">
+          <a [routerLink]="['/posts']" 
+             [queryParams]="{ category: cat.id }"
+             routerLinkActive="active" 
+             [style.--hover-color]="cat.color">
              {{ cat.name }}
           </a>
         </li>
@@ -89,8 +92,8 @@
       </div>
 
       <div *ngIf="!isLoggedIn" class="auth-buttons-mobile">
-        <a routerLink="/Login" (click)="toggleMenu()" class="btn-mobile-login">Login</a>
-        <a routerLink="/Signup" (click)="toggleMenu()" class="btn-mobile-signup">Sign Up</a>
+        <a routerLink="/auth/login" (click)="toggleMenu()" class="btn-mobile-login">Login</a>
+        <a routerLink="/auth/register-selection" (click)="toggleMenu()" class="btn-mobile-signup">Sign Up</a>
       </div>
     </div>
 
@@ -103,6 +106,7 @@
             <i class="bi bi-speedometer2"></i> Dashboard
           </a>
         </li>
+        <li><a routerLink="/posts" (click)="toggleMenu()"><i class="bi bi-journal-richtext"></i> All Posts</a></li>
         <li><a routerLink="/story" (click)="toggleMenu()"><i class="bi bi-book"></i> Our Story</a></li>
         <li><a routerLink="/partners" (click)="toggleMenu()"><i class="bi bi-people"></i> Partners</a></li>
         <li><a routerLink="/contact" (click)="toggleMenu()"><i class="bi bi-envelope"></i> Contact Us</a></li>
@@ -113,7 +117,8 @@
       <p class="section-title">Explore Topics</p>
       <div class="category-grid">
         <a *ngFor="let cat of categories" 
-           [routerLink]="cat.link" 
+           [routerLink]="['/posts']" 
+           [queryParams]="{ category: cat.id }"
            (click)="toggleMenu()"
            class="mobile-cat-item">
            <span class="dot" [style.background-color]="cat.color"></span>

@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, OnDestroy, PLATFORM_ID } from '@angular/core'; // 1. استيراد PLATFORM_ID
-import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common'; // 2. استيراد isPlatformBrowser
+import { Component, OnInit, inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../Authentication/Service/auth';
+// Import the Category List/Enum from your model to ensure consistency
+// import { PostCategoryList } from '../../../Dashboard/pages/posts/models/post.models'; 
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,7 +17,7 @@ import { AuthService } from '../../../Authentication/Service/auth';
 export class NavBarComponent implements OnInit, OnDestroy {
   
   public authService = inject(AuthService);
-  private platformId = inject(PLATFORM_ID); // 3. حقن معرف المنصة
+  private platformId = inject(PLATFORM_ID);
   
   isMenuOpen = false;
   currentDate = new Date();
@@ -25,19 +27,22 @@ export class NavBarComponent implements OnInit, OnDestroy {
   
   private userSub!: Subscription;
 
+  // 🔥 Dynamic Categories from your Shared Model
+  // We map them to match the structure needed for the navbar
+  // Note: Colors are hardcoded here for visual appeal as they are not in the model
   categories = [
-    { name: 'Art', link: '/art', color: '#FD7E14' },
-    { name: 'Community', link: '/community', color: '#E35D6A' },
-    { name: 'Culture', link: '/culture', color: '#DC3545' },
-    { name: 'Education', link: '/education', color: '#6610f2' },
-    { name: 'Events', link: '/events', color: '#D63384' },
-    { name: 'Lifestyle', link: '/lifestyle', color: '#6F42C1' },
-    { name: 'Media', link: '/media', color: '#20c997' },
-    { name: 'News', link: '/news', color: '#198754' },
-    { name: 'Recruitment', link: '/recruitment', color: '#A5673F' },
-    { name: 'Social', link: '/social', color: '#75B798' },
-    { name: 'Tourism', link: '/Tourism', color: '#FFC107' },
-    { name: 'TV', link: '/tv', color: '#0D6EFD' }
+    { id: 0, name: 'Art', color: '#FD7E14' },
+    { id: 1, name: 'Community', color: '#E35D6A' },
+    { id: 2, name: 'Culture', color: '#DC3545' },
+    { id: 3, name: 'Education', color: '#6610f2' },
+    { id: 4, name: 'Events', color: '#D63384' },
+    { id: 5, name: 'Lifestyle', color: '#6F42C1' },
+    { id: 6, name: 'Media', color: '#20c997' },
+    { id: 7, name: 'News', color: '#198754' },
+    { id: 8, name: 'Recruitment', color: '#A5673F' },
+    { id: 9, name: 'Social', color: '#75B798' },
+    { id: 10, name: 'Tourism', color: '#FFC107' },
+    { id: 11, name: 'TV', color: '#0D6EFD' }
   ];
 
   ngOnInit() {
@@ -59,22 +64,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   toggleMenu() { 
     this.isMenuOpen = !this.isMenuOpen; 
-    
-    // 4. التحقق من أننا في المتصفح قبل استخدام document
     if (isPlatformBrowser(this.platformId)) {
-      if (this.isMenuOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'auto';
-      }
+      document.body.style.overflow = this.isMenuOpen ? 'hidden' : 'auto';
     }
   }
   
   logout() {
     this.authService.logout();
-    this.isMenuOpen = false; // تحديث الحالة فقط
-    
-    // إعادة الـ Scroll في المتصفح فقط
+    this.isMenuOpen = false;
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = 'auto';
     }
@@ -82,8 +79,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.userSub) this.userSub.unsubscribe();
-
-    // 5. التحقق من أننا في المتصفح قبل استخدام document
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = 'auto'; 
     }

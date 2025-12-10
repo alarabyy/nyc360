@@ -34,6 +34,14 @@ export const routes: Routes = [
         path: 'profile', 
         loadComponent: () => import('./pages/Public/pages/profile/profile/profile').then(m => m.ProfileComponent)
       },
+      { 
+        path: 'posts', 
+        loadComponent: () => import('./pages/Dashboard/pages/posts/post-list/post-list').then(m => m.PostListComponent) 
+      },
+      { 
+        path: 'posts/details/:id', 
+        loadComponent: () => import('./pages/Dashboard/pages/posts/post-details/post-details').then(m => m.PostDetailsComponent) 
+      },
     ]
   },
 
@@ -89,7 +97,7 @@ export const routes: Routes = [
       { path: 'posts', loadComponent: () => import('./pages/Dashboard/pages/posts/post-list/post-list').then(m => m.PostListComponent) },
       { path: 'posts/create', loadComponent: () => import('./pages/Dashboard/pages/posts/post-form/post-form').then(m => m.PostFormComponent) },
       { path: 'posts/edit/:id', loadComponent: () => import('./pages/Dashboard/pages/posts/post-form/post-form').then(m => m.PostFormComponent) },
-      { path: 'posts/details/:id', loadComponent: () => import('./pages/Dashboard/pages/posts/post-details/post-details').then(m => m.PostDetailsComponent) },
+      // { path: 'posts/details/:id', loadComponent: () => import('./pages/Dashboard/pages/posts/post-details/post-details').then(m => m.PostDetailsComponent) },
     ]
   },
   {

@@ -1,11 +1,10 @@
-// src/app/pages/Dashboard/pages/posts/post-form/post-form.component.ts
-
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostsService } from '../services/posts';
 import { PostCategoryList } from '../models/posts';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-post-form',
@@ -16,109 +15,108 @@ import { PostCategoryList } from '../models/posts';
 })
 export class PostFormComponent implements OnInit {
   
-  // --- Dependencies ---
   private fb = inject(FormBuilder);
   private postsService = inject(PostsService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private location = inject(Location);
+  private route = inject(ActivatedRoute);
 
-  // --- State ---
+  // 👇 تم تغيير الاسم من postForm إلى form ليتطابق مع الـ HTML
   form: FormGroup;
+  
   isEditMode = false;
   postId: number | null = null;
-  categories = PostCategoryList;
   isLoading = false;
+  isSubmitting = false;
+  categories = PostCategoryList;
   
-  // --- File Handling ---
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  existingImageUrl: string | null = null;
 
   constructor() {
-    // Initialize Form with Validation
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
-      content: ['', [Validators.required, Validators.minLength(20)]],
+      content: ['', [Validators.required, Validators.minLength(10)]],
       category: [null, Validators.required]
     });
   }
 
   ngOnInit() {
-    // Check if Edit Mode
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.isEditMode = true;
-      this.postId = +idParam;
-      this.loadPostData(this.postId);
-    }
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.postId = +params['id'];
+        this.loadPostData(this.postId);
+      }
+    });
   }
 
-  // --- Load Data for Edit ---
   loadPostData(id: number) {
     this.isLoading = true;
     this.postsService.getPostById(id).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
-        if (res.isSuccess && res.data) {
-          // Populate Form
+        if (res.isSuccess) {
+          const post = res.data;
           this.form.patchValue({
-            title: res.data.title,
-            content: res.data.content,
-            category: res.data.category
+            title: post.title,
+            content: post.content,
+            category: post.category
           });
-          // TODO: If you want to show existing image, set imagePreview here using env URL
+          this.existingImageUrl = post.imageUrl;
         }
       },
       error: () => this.isLoading = false
     });
   }
 
-  // --- Handle File Input ---
+  // 👇 تم تغيير الاسم ليتطابق مع الـ HTML (أو العكس، سأجعله onFileSelect)
   onFileSelect(event: any) {
-    if (event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
-      
-      // Generate Preview
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result as string;
       };
-      reader.readAsDataURL(this.selectedFile!);
+      reader.readAsDataURL(file);
     }
   }
 
-  // --- Submit ---
   onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Show errors
-      return;
+    if (this.form.invalid) return;
+
+    this.isSubmitting = true;
+    const formData = this.form.value;
+
+    let request$: Observable<any>;
+
+    if (this.isEditMode && this.postId) {
+      request$ = this.postsService.updatePost(this.postId, formData, this.selectedFile || undefined);
+    } else {
+      request$ = this.postsService.createPost(formData, this.selectedFile || undefined);
     }
 
-    this.isLoading = true;
-
-    const request$ = this.isEditMode && this.postId
-      ? this.postsService.updatePost(this.postId, this.form.value, this.selectedFile || undefined)
-      : this.postsService.createPost(this.form.value, this.selectedFile || undefined);
-
     request$.subscribe({
-      next: (res) => {
-        this.isLoading = false;
+      next: (res: any) => {
+        this.isSubmitting = false;
         if (res.isSuccess) {
-          alert(this.isEditMode ? 'Post Updated Successfully!' : 'Post Created Successfully!');
+          alert(this.isEditMode ? 'Post updated successfully' : 'Post created successfully');
           this.router.navigate(['/admin/posts']);
         } else {
-          alert(res.error?.message || 'Operation failed.');
+          alert(res.error?.message || 'Operation failed');
         }
       },
-      error: (err) => {
-        this.isLoading = false;
+      error: (err: any) => {
+        this.isSubmitting = false;
         console.error(err);
-        alert('Network Error.');
+        alert('Network error occurred');
       }
     });
   }
 
+  // 👇 إضافة دالة goBack المفقودة
   goBack() {
-    this.location.back();
+    this.router.navigate(['/admin/posts']);
   }
 }

@@ -1,28 +1,20 @@
 // src/app/pages/Public/pages/profile/models/profile.models.ts
 
-// The generic wrapper from your API
-export interface StandardResponse<T> {
-  isSuccess: boolean;
-  data: T | null;
-  error: { code: string; message: string } | null;
-}
-
-// Enum for User Types (Match your backend)
 export enum UserType {
-  Regular = 0,
+  Normal = 0,
   Organization = 1,
   Admin = 2
 }
 
-// Social Platform Enum (if used in links)
 export enum SocialPlatform {
   Facebook = 0,
   Twitter = 1,
   Instagram = 2,
   LinkedIn = 3,
-  GitHub = 4,
-  YouTube = 5,
-  Website = 6
+  Github = 4,
+  Youtube = 5,
+  Website = 6,
+  Other = 7
 }
 
 export interface UserSocialLinkDto {
@@ -40,8 +32,7 @@ export interface UserStatsDto {
   isVerified: boolean | null;
 }
 
-// --- Specific Profile Data DTOs ---
-
+// --- Specific DTOs ---
 export interface AdminProfileDto {
   firstName: string;
   lastName: string;
@@ -63,14 +54,21 @@ export interface RegularProfileDto {
   stats: UserStatsDto;
 }
 
-// --- Main Profile DTO (The 'data' field is dynamic) ---
+// --- Main Profile Wrapper ---
 export interface UserProfileDto {
   id: number;
+  userName: string; // Ensure backend returns this to compare!
+  email: string;
   type: UserType;
   imageUrl?: string;
-  data: AdminProfileDto | OrganizationProfileDto | RegularProfileDto; // Dynamic Content
-  email?: string; // Often needed for display, ensure backend sends it or fetch separately
-  twoFactorEnabled?: boolean; // For toggle logic
+  data: AdminProfileDto | OrganizationProfileDto | RegularProfileDto | null;
+  twoFactorEnabled?: boolean;
+}
+
+export interface StandardResponse<T> {
+  isSuccess: boolean;
+  data: T | null;
+  error: { code: string; message: string } | null;
 }
 
 export type ProfileResponse = StandardResponse<UserProfileDto>;

@@ -31,9 +31,11 @@ export class AuthService {
   private refreshTokenKey = 'nyc360_refresh_token'; 
 
   // --- State (Holds User Info + Permissions) ---
+  // This is the source of truth for the current user
   public currentUser$ = new BehaviorSubject<any>(null);
 
   constructor() {
+    // Load user immediately on app start if token exists
     this.loadUserFromToken();
   }
 
@@ -81,7 +83,7 @@ export class AuthService {
   // 2. API CALLS (LOGIN & AUTH)
   // ============================================================
 
-// --- REGISTRATION ENDPOINTS ---
+  // --- REGISTRATION ENDPOINTS ---
 
   // 1. Normal User (Visitor or New Yorker)
   registerNormalUser(data: RegisterNormalUserRequest): Observable<AuthResponse<any>> {
@@ -93,6 +95,12 @@ export class AuthService {
     return this.http.post<AuthResponse<any>>(`${this.apiUrl}/register/organization`, data);
   }
 
+  // 3. Generic Register (if needed)
+  register(data: RegisterRequest): Observable<AuthResponse<any>> {
+    return this.http.post<AuthResponse<any>>(`${this.apiUrl}/register`, data);
+  }
+
+  // --- LOGIN ENDPOINTS ---
 
   login(data: LoginRequest): Observable<AuthResponse<LoginResponseData>> {
     return this.http.post<AuthResponse<LoginResponseData>>(`${this.apiUrl}/login`, data)
@@ -115,10 +123,7 @@ export class AuthService {
       .pipe(tap(res => this.handleLoginSuccess(res)));
   }
 
-  // --- Account Management ---
-  register(data: RegisterRequest): Observable<AuthResponse<any>> {
-    return this.http.post<AuthResponse<any>>(`${this.apiUrl}/register`, data);
-  }
+  // --- ACCOUNT MANAGEMENT ---
 
   confirmEmail(data: ConfirmEmailRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/confirm-email`, data);
@@ -130,6 +135,10 @@ export class AuthService {
 
   resetPassword(data: ResetPasswordRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/password-reset`, data);
+  }
+
+  changePassword(data: ChangePasswordRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/change-password`, data);
   }
 
   getGoogleAuthUrl(): string {
@@ -149,20 +158,6 @@ export class AuthService {
     this.router.navigate(['/auth/login']); 
   }
 
-  private handleLoginSuccess(res: AuthResponse<LoginResponseData>) {
-    if (res.isSuccess && res.data && res.data.accessToken) {
-      this.saveTokens(res.data.accessToken, res.data.refreshToken);
-      this.loadUserFromToken();
-    }
-  }
-
-  private saveTokens(accessToken: string, refreshToken: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.tokenKey, accessToken);
-      if (refreshToken) localStorage.setItem(this.refreshTokenKey, refreshToken);
-    }
-  }
-
   getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) return localStorage.getItem(this.tokenKey);
     return null;
@@ -173,16 +168,28 @@ export class AuthService {
     return null;
   }
 
-  
-changePassword(data: ChangePasswordRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/change-password`, data);
+  // --- Private Helpers ---
+
+  private handleLoginSuccess(res: AuthResponse<LoginResponseData>) {
+    // If login is successful AND we have tokens (not waiting for 2FA), save them
+    if (res.isSuccess && res.data && res.data.accessToken) {
+      if (!res.data.twoFactorRequired) {
+        this.saveTokens(res.data.accessToken, res.data.refreshToken);
+        this.loadUserFromToken(); // Update state immediately
+      }
+    }
   }
+
+  private saveTokens(accessToken: string, refreshToken: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.tokenKey, accessToken);
+      if (refreshToken) localStorage.setItem(this.refreshTokenKey, refreshToken);
+    }
+  }
+
   /**
-   * Decodes the JWT Token and extracts:
-   * - Email
-   * - Username
-   * - Role
-   * - Permissions (Crucial for Dynamic Access)
+   * 🔥 CRITICAL UPDATE: Robust Token Decoding
+   * This maps complex claim names (from ASP.NET Identity) to simple properties.
    */
   private loadUserFromToken() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -193,15 +200,35 @@ changePassword(data: ChangePasswordRequest): Observable<AuthResponse> {
       try {
         const decoded: any = jwtDecode(token);
 
+        // Map claims to a clean User Object
         const user = {
-          email: decoded.email || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
-          role: decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-          username: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || decoded.unique_name || decoded.sub || '',
+          // 1. ID Mapping (Checks all possible locations)
+          id: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] 
+              || decoded['nameid'] 
+              || decoded['sub'] 
+              || decoded['id']
+              || decoded['userId'],
+
+          // 2. Email Mapping
+          email: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] 
+                 || decoded['email'],
+
+          // 3. Role Mapping
+          role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] 
+                || decoded['role'],
+
+          // 4. Username Mapping
+          username: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
+                    || decoded['unique_name'] 
+                    || decoded['sub'] 
+                    || '',
           
-          // Extract Permissions array from Token
-          // Ensure backend sends 'permissions' or 'Permissions' claim
+          // 5. Permissions Mapping
           permissions: decoded.permissions || decoded.Permissions || []
         };
+
+        // Debugging to ensure ID is captured correctly
+        // console.log('AuthService: User Loaded', user); 
 
         this.currentUser$.next(user);
       } catch (e) {

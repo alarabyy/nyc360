@@ -2,17 +2,31 @@
   
   <div class="page-header">
     <div class="title-section">
-      <h2>Posts Management</h2>
-      <p>Manage your news articles and content.</p>
+      <h2>Community Feed</h2>
+      <p>Discover stories from NYC and beyond.</p>
     </div>
     <a routerLink="/admin/posts/create" class="btn-add">
-      <i class="bi bi-plus-lg"></i> Create New Post
+      <i class="bi bi-plus-lg"></i> Write Post
     </a>
+  </div>
+
+  <div class="category-filter-bar">
+    <button class="cat-pill" 
+            [class.active]="selectedCategoryId === null"
+            (click)="filterByCategory(null)">
+      All
+    </button>
+    <button *ngFor="let cat of categories" 
+            class="cat-pill"
+            [class.active]="selectedCategoryId === cat.id"
+            (click)="filterByCategory(cat.id)">
+      {{ cat.name }}
+    </button>
   </div>
 
   <div *ngIf="isLoading" class="state-container">
     <div class="spinner-border text-gold" role="status"></div>
-    <p>Loading Posts...</p>
+    <p>Loading Content...</p>
   </div>
 
   <div *ngIf="errorMessage" class="state-container text-danger">
@@ -21,8 +35,8 @@
   </div>
 
   <div *ngIf="!isLoading && posts.length === 0 && !errorMessage" class="state-container">
-    <i class="bi bi-journal-text"></i>
-    <p>No posts available. Start by creating one.</p>
+    <i class="bi bi-journal-x"></i>
+    <p>No posts available in this category.</p>
   </div>
 
   <div *ngIf="!isLoading && posts.length > 0" class="posts-grid">
@@ -31,13 +45,11 @@
       <div class="card-img-wrapper">
         <img *ngIf="post.imageUrl && post.imageUrl.startsWith('http')" 
              [src]="post.imageUrl" 
-             alt="{{ post.title }}" 
-             loading="lazy">
+             alt="{{ post.title }}" loading="lazy">
         
         <img *ngIf="post.imageUrl && !post.imageUrl.startsWith('http')" 
              [src]="environment.apiBaseUrl2 + '/posts/' + post.imageUrl" 
-             alt="{{ post.title }}" 
-             loading="lazy">
+             alt="{{ post.title }}" loading="lazy">
         
         <div *ngIf="!post.imageUrl" class="img-placeholder">
           <i class="bi bi-image"></i>
@@ -49,6 +61,9 @@
       <div class="card-body">
         <div class="meta-info">
           <span class="date"><i class="bi bi-calendar3"></i> {{ post.createdAt | date:'mediumDate' }}</span>
+          <span class="author" *ngIf="post.author">
+            <i class="bi bi-person"></i> {{ post.author.fullName }}
+          </span>
         </div>
 
         <h3 class="post-title" title="{{ post.title }}">{{ post.title }}</h3>
@@ -59,13 +74,13 @@
       </div>
 
       <div class="card-footer">
-        <a [routerLink]="['/admin/posts/details', post.id]" class="btn-action view" title="View Details">
-          View Post <i class="bi bi-arrow-right"></i>
+        <a [routerLink]="['/posts/details', post.id]" class="btn-action view">
+          Read More <i class="bi bi-arrow-right"></i>
         </a>
         
-        <div class="action-buttons">
+        <div class="action-buttons" *ngIf="canEditPost(post)">
           <a [routerLink]="['/admin/posts/edit', post.id]" class="btn-icon edit" title="Edit">
-            <i class="bi bi-pencil-square"></i>
+            <i class="bi bi-pencil"></i>
           </a>
           <button (click)="onDelete(post.id)" class="btn-icon delete" title="Delete">
             <i class="bi bi-trash"></i>

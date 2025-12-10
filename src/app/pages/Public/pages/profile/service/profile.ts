@@ -14,21 +14,28 @@ export class ProfileService {
   private baseUrl = `${environment.apiBaseUrl}/users`; 
 
   getProfile(username: string): Observable<ProfileResponse> {
-    // API: GET /api/users/profile/{username}
     return this.http.get<ProfileResponse>(`${this.baseUrl}/profile/${encodeURIComponent(username)}`);
   }
 
   updateMyProfile(data: any, file?: File): Observable<StandardResponse<any>> {
     const formData = new FormData();
-    // Append fields dynamically
+    
     Object.keys(data).forEach(key => {
-      if (data[key] !== null && data[key] !== undefined) {
+      if (key === 'socialLinks' && Array.isArray(data[key])) {
+        // Serialization for complex objects in FormData
+        for (let i = 0; i < data[key].length; i++) {
+          formData.append(`socialLinks[${i}].platform`, data[key][i].platform);
+          formData.append(`socialLinks[${i}].url`, data[key][i].url);
+        }
+      } else if (data[key] !== null && data[key] !== undefined) {
         formData.append(key, data[key]);
       }
     });
+
     if (file) {
       formData.append('avatar', file);
     }
+    
     return this.http.put<StandardResponse<any>>(`${this.baseUrl}/me/update-profile`, formData);
   }
 

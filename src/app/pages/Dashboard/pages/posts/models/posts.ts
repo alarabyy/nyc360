@@ -1,48 +1,65 @@
 // src/app/pages/Dashboard/pages/posts/models/post.models.ts
 
-// 1. Category Enum (Matches Backend)
 export enum PostCategory {
-  Art = 0,
-  Community = 1,
-  Culture = 2,
-  Education = 3,
-  Events = 4,
-  Lifestyle = 5,
-  Media = 6,
-  News = 7,
-  Recruitment = 8,
-  Social = 9,
-  Tv = 10
+  Art = 0, Community = 1, Culture = 2, Education = 3, Events = 4,
+  Lifestyle = 5, Media = 6, News = 7, Recruitment = 8, Social = 9, Tourism = 10, Tv = 11
 }
 
-// Helper List for Dropdowns
 export const PostCategoryList = [
-  { id: 0, name: 'Art' },
-  { id: 1, name: 'Community' },
-  { id: 2, name: 'Culture' },
-  { id: 3, name: 'Education' },
-  { id: 4, name: 'Events' },
-  { id: 5, name: 'Lifestyle' },
-  { id: 6, name: 'Media' },
-  { id: 7, name: 'News' },
-  { id: 8, name: 'Recruitment' },
-  { id: 9, name: 'Social' },
-  { id: 10, name: 'TV' }
+  { id: 1, name: 'Art' }, { id: 2, name: 'Community' }, { id: 3, name: 'Culture' },
+  { id: 4, name: 'Education' }, { id: 5, name: 'Events' }, { id: 6, name: 'Lifestyle' },
+  { id: 7, name: 'Media' }, { id: 8, name: 'News' }, { id: 9, name: 'Recruitment' },
+  { id: 10, name: 'Social' }, { id: 11, name: 'Tourism' }, { id: 12, name: 'TV' }
 ];
 
-// 2. Main Entity
+export enum InteractionType {
+  Like = 1,
+  Dislike = 2
+}
+
+export interface PostAuthor {
+  id: number;
+  username: string;
+  fullName: string;
+  imageUrl?: string;
+  type: number;
+}
+
+export interface PostStats {
+  views: number;
+  likes: number;
+  dislikes: number;
+  comments: number;
+  shares: number;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  author: PostAuthor;
+  createdAt: string;
+  replies?: Comment[];
+  isReplying?: boolean;
+}
+
 export interface Post {
   id: number;
   title: string;
   content: string;
-  category: number; // Enum ID
   imageUrl: string | null;
-  createdAt?: string; // Optional date
+  category: number;
+  createdAt: string;
+  
+  author?: PostAuthor; 
+  stats?: PostStats;
+  comments?: Comment[];
+  
+  // حالة التفاعل الحالية للمستخدم
+  userInteraction?: InteractionType | null;
 }
 
-// 3. API Response Wrapper
-export interface PostsResponse {
+export interface ApiResponse<T> {
   isSuccess: boolean;
-  data: Post[] | any; // Can be array or single object
+  data: T;
   error: { code: string; message: string } | null;
 }
