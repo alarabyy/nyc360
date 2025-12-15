@@ -1,0 +1,82 @@
+<div class="timeline-container">
+  
+  <div class="timeline-header">
+    <div class="header-content">
+      <h1>Latest Feed <span class="dot">.</span></h1>
+      <p>Stay updated with the newest stories happening right now.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading && posts.length === 0" class="loading-state">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="feed-wrapper" *ngIf="posts.length > 0">
+    
+    <article class="feed-card fade-up" *ngFor="let post of posts; let i = index" 
+             [style.animation-delay]="i * 0.1 + 's'">
+      
+      <div class="card-meta-header">
+        <div class="author-info">
+          <img [src]="getAuthorImage(post.author?.imageUrl)" 
+               class="avatar" 
+               (error)="$event.target['src'] = 'assets/images/avatar-placeholder.png'">
+          <div class="meta-text">
+            <span class="author-name">{{ getAuthorName(post.author) }}</span>
+            <span class="post-time">{{ post.createdAt | date:'mediumDate' }} • {{ post.createdAt | date:'shortTime' }}</span>
+          </div>
+        </div>
+        
+        <span class="category-badge">{{ getCategoryName(post.category) }}</span>
+      </div>
+
+      <div class="card-content-body" (click)="openDetails(post.id)">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-text">
+          {{ post.content | slice:0:180 }}{{ post.content.length > 180 ? '...' : '' }}
+        </p>
+      </div>
+
+      <div class="card-media" (click)="openDetails(post.id)">
+        <img [src]="getPostImage(post)" 
+             alt="{{ post.title }}" 
+             loading="lazy"
+             (error)="$event.target['src'] = 'assets/images/news-placeholder.jpg'">
+      </div>
+
+      <div class="card-actions">
+        <div class="action-group">
+          <button class="action-btn">
+            <i class="bi bi-heart"></i> <span>{{ post.stats.likes || 0 }}</span>
+          </button>
+          <button class="action-btn">
+            <i class="bi bi-chat"></i> <span>{{ post.stats.comments || 0 }}</span>
+          </button>
+          <button class="action-btn">
+            <i class="bi bi-share"></i> <span>Share</span>
+          </button>
+        </div>
+        
+        <button class="read-more-btn" (click)="openDetails(post.id)">
+          Read Article <i class="bi bi-arrow-right-short"></i>
+        </button>
+      </div>
+
+    </article>
+
+  </div>
+
+  <div class="pagination-wrapper" *ngIf="hasMore && !isLoading && posts.length > 0">
+    <button class="btn-load-more" (click)="loadMore()">Show Older Posts</button>
+  </div>
+
+  <div *ngIf="isLoading && posts.length > 0" class="loading-more">
+    <div class="spinner-sm"></div> <span>Loading...</span>
+  </div>
+
+  <div *ngIf="!isLoading && posts.length === 0" class="no-data">
+    <i class="bi bi-clock-history"></i>
+    <p>No updates in your timeline yet.</p>
+  </div>
+
+</div>

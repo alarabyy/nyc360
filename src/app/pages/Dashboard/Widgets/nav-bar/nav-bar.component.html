@@ -18,6 +18,8 @@
       <li><a routerLink="/admin/User" routerLinkActive="active">users</a></li>
       <li><a routerLink="/admin/Role" routerLinkActive="active">Roles</a></li>
       <li><a routerLink="/admin/rss" routerLinkActive="active">Rss Links</a></li>
+      <li><a routerLink="/admin/posts" routerLinkActive="active">posts</a></li>
+      <li><a routerLink="/admin/trending" routerLinkActive="active">trending</a></li>
     </ul>
 
   </div>
@@ -51,7 +53,9 @@
         <a routerLink="/admin/posts" routerLinkActive="active">posts</a>
       </li>
 
-
+       <li *ngIf="canViewDashboard  && canViewRSS">
+        <a routerLink="/admin/trending" routerLinkActive="active">trending</a>
+      </li>
     </ul>
   </div>
 </nav>

@@ -27,9 +27,9 @@
       <h1 class="post-title">{{ post.title }}</h1>
 
       <div class="author-meta">
-        <img [src]="$any(post.author)?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + $any(post.author).imageUrl : 'assets/images/default-avatar.png'" class="avatar">
+        <img [src]="post.author?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + post.author!.imageUrl : 'assets/images/default-avatar.png'" class="avatar">
         <div class="info">
-          <span class="name">{{ $any(post.author)?.fullName || post.author }}</span>
+          <span class="name">{{ post.author?.fullName }}</span>
           <span class="date">{{ post.createdAt | date:'mediumDate' }}</span>
         </div>
       </div>
@@ -37,9 +37,6 @@
 
     <div class="featured-image-container" *ngIf="post.imageUrl">
       <img [src]="post.imageUrl.startsWith('http') ? post.imageUrl : environment.apiBaseUrl.replace('/api', '') + '/posts/' + post.imageUrl">
-    </div>
-    <div class="featured-image-container" *ngIf="post.attachments && post.attachments.length > 0">
-         <img [src]="environment.apiBaseUrl.replace('/api', '') + '/posts/' + post.attachments[0].url">
     </div>
 
     <div class="post-content" [innerHTML]="post.content"></div>
@@ -52,13 +49,13 @@
       
       <div class="action-buttons">
         <button class="btn-interact" 
-                [class.active]="post.currentUserInteraction === InteractionType.Like"
+                [class.active]="post.userInteraction === InteractionType.Like"
                 (click)="toggleInteraction(InteractionType.Like)">
           <i class="bi bi-hand-thumbs-up"></i> Like
         </button>
         
         <button class="btn-interact" 
-                [class.active]="post.currentUserInteraction === InteractionType.Dislike"
+                [class.active]="post.userInteraction === InteractionType.Dislike"
                 (click)="toggleInteraction(InteractionType.Dislike)">
           <i class="bi bi-hand-thumbs-down"></i> Dislike
         </button>
@@ -81,30 +78,29 @@
 
       <div class="comments-list">
         <div class="comment-item" *ngFor="let comment of post.comments">
-          
-          <img [src]="$any(comment.author)?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + $any(comment.author).imageUrl : 'assets/images/default-avatar.png'" class="comment-avatar">
+          <img [src]="comment.author?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + comment.author.imageUrl : 'assets/images/default-avatar.png'" class="comment-avatar">
           
           <div class="comment-body">
             <div class="bubble">
-              <span class="author-name">{{ $any(comment.author)?.fullName || comment.author }}</span>
+              <span class="author-name">{{ comment.author.fullName }}</span>
               <p class="text">{{ comment.content }}</p>
             </div>
             
             <div class="comment-actions">
-              <button (click)="$any(comment).isReplying = !$any(comment).isReplying">Reply</button>
+              <button (click)="comment.isReplying = !comment.isReplying">Reply</button>
               <span class="time">{{ comment.createdAt | date:'shortTime' }}</span>
             </div>
 
-            <div class="reply-input-box" *ngIf="$any(comment).isReplying">
+            <div class="reply-input-box" *ngIf="comment.isReplying">
               <input #replyInput type="text" placeholder="Write a reply...">
               <button (click)="submitReply(comment, replyInput.value); replyInput.value=''">Reply</button>
             </div>
 
             <div class="replies-list" *ngIf="comment.replies?.length">
               <div class="comment-item reply" *ngFor="let reply of comment.replies">
-                <img [src]="$any(reply.author)?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + $any(reply.author).imageUrl : 'assets/images/default-avatar.png'" class="comment-avatar small">
+                <img [src]="reply.author?.imageUrl ? environment.apiBaseUrl.replace('/api', '') + '/avatars/' + reply.author.imageUrl : 'assets/images/default-avatar.png'" class="comment-avatar small">
                 <div class="bubble">
-                  <span class="author-name">{{ $any(reply.author)?.fullName || reply.author }}</span>
+                  <span class="author-name">{{ reply.author.fullName }}</span>
                   <p class="text">{{ reply.content }}</p>
                 </div>
               </div>

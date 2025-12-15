@@ -1,12 +1,10 @@
-// src/app/pages/Dashboard/pages/posts/post-list/post-list.ts
-
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
-import { Post, PostCategoryList } from '../models/posts';
-import { PostsService } from '../services/posts';
-import { AuthService } from '../../../../Authentication/Service/auth';
+import { Post, PostCategoryList } from '../models/posts'; // Ensure correct path
+import { PostsService } from '../services/posts'; // Ensure correct path
+import { AuthService } from '../../../../Authentication/Service/auth'; // Ensure correct path
 
 @Component({
   selector: 'app-post-list',
@@ -19,6 +17,7 @@ export class PostListComponent implements OnInit {
   
   protected readonly environment = environment;
   
+  // Dependencies
   private postsService = inject(PostsService);
   private authService = inject(AuthService); 
   private cdr = inject(ChangeDetectorRef);
@@ -39,6 +38,7 @@ export class PostListComponent implements OnInit {
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       if (user) {
+        // Adjust property access based on your specific User model structure from AuthService
         this.currentUserId = user.id || user.userId || user.sub; 
         this.isAdmin = user.roles?.includes('Admin') || false;
       }
@@ -53,27 +53,21 @@ export class PostListComponent implements OnInit {
 
   loadPosts() {
     this.isLoading = true;
-    this.errorMessage = '';
     const categoryParam = this.selectedCategoryId !== null ? this.selectedCategoryId : undefined;
 
     this.postsService.getAllPosts(categoryParam).subscribe({
       next: (res) => {
         this.isLoading = false;
-        
-        // التعامل مع هيكلية البيانات كما في JSON المرسل
-        if (res && res.data && Array.isArray(res.data)) {
-           this.posts = res.data;
-        } else if (Array.isArray(res)) {
-           this.posts = res;
+        if (res.isSuccess) {
+          this.posts = Array.isArray(res.data) ? res.data : [];
+          this.cdr.detectChanges();
         } else {
-           this.posts = [];
+          this.errorMessage = res.error?.message || 'Failed to load posts.';
         }
-        
-        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'Network error occurred.';
+        this.errorMessage = 'Network error.';
         console.error(err);
         this.cdr.detectChanges();
       }
@@ -89,59 +83,22 @@ export class PostListComponent implements OnInit {
     });
   }
 
-  getCategoryName(id: number): string {
-    return this.categories.find(c => c.id === id)?.name || 'General';
-  }
-
-
-  getPostImage(post: Post): string | null {
-    // 1. فحص المرفقات الجديدة (Attachments)
-    if (post.attachments && post.attachments.length > 0) {
-      let originalUrl = post.attachments[0].url;
-      
-      if (originalUrl && originalUrl.includes('@local://')) {
-        
-        const filename = originalUrl.replace('@local://', '');
-        
-        // النتيجة: https://your-api.com/api/image.jpg
-        const finalUrl = `${this.environment.apiBaseUrl3}/${filename}`;
-        
-        return finalUrl;
-      }
-      
-      return originalUrl;
-    }
-    
-    // 2. فحص النظام القديم
-    if (post.imageUrl) {
-      if (post.imageUrl.startsWith('http')) return post.imageUrl;
-      return `${this.environment.apiBaseUrl}/${post.imageUrl}`; 
-    }
-
-    return null;
-  }
-
-  canEditOrDelete(post: Post): boolean {
-    if (this.isAdmin) return true;
+  // ✅ التصحيح هنا: استخدام post.author?.id بدلاً من post.userId
+  canEditPost(post: Post): boolean {
     if (!this.currentUserId || !post.author) return false;
     
-    let postAuthorId: string | number;
-    if (typeof post.author === 'object') {
-      postAuthorId = post.author.id;
-    } else {
-      postAuthorId = post.author;
-    }
+    // تحويل الـ IDs إلى String للمقارنة الآمنة
+    return String(post.author.id) === String(this.currentUserId) || this.isAdmin;
+  }
 
-    return String(postAuthorId) === String(this.currentUserId);
+  getCategoryName(id: number): string {
+    return this.categories.find(c => c.id === id)?.name || 'General';
   }
 
   onDelete(id: number) {
     if (confirm('Are you sure you want to delete this post?')) {
       this.postsService.deletePost(id).subscribe({
-        next: () => {
-          this.posts = this.posts.filter(p => p.id !== id);
-          this.cdr.detectChanges();
-        },
+        next: () => this.loadPosts(),
         error: () => alert('Failed to delete post.')
       });
     }

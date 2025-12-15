@@ -1,13 +1,10 @@
-// src/app/pages/Dashboard/pages/posts/post-form/post-form.component.ts
-
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PostsService } from '../services/posts';
 import { PostCategoryList } from '../models/posts';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment'; // تأكد من المسار الصحيح
 
 @Component({
   selector: 'app-post-form',
@@ -18,32 +15,25 @@ import { environment } from '../../../../../environments/environment'; // تأك
 })
 export class PostFormComponent implements OnInit {
   
-  // Expose environment to template if needed, or use via method
-  protected readonly environment = environment;
-
-  // Dependency Injection
   private fb = inject(FormBuilder);
   private postsService = inject(PostsService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  // Form Group
+  // 👇 تم تغيير الاسم من postForm إلى form ليتطابق مع الـ HTML
   form: FormGroup;
   
-  // UI State
   isEditMode = false;
   postId: number | null = null;
   isLoading = false;
   isSubmitting = false;
   categories = PostCategoryList;
   
-  // File Handling (Multiple)
-  selectedFiles: File[] = []; 
-  imagePreviews: string[] = []; // للصور الجديدة (Base64)
-  existingAttachments: any[] = []; // للصور القديمة (من السيرفر)
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
+  existingImageUrl: string | null = null;
 
   constructor() {
-    // Initialize Form
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       content: ['', [Validators.required, Validators.minLength(10)]],
@@ -52,7 +42,6 @@ export class PostFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Check for ID in URL to determine Edit Mode
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
@@ -65,7 +54,7 @@ export class PostFormComponent implements OnInit {
   loadPostData(id: number) {
     this.isLoading = true;
     this.postsService.getPostById(id).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
         if (res.isSuccess) {
           const post = res.data;
@@ -74,59 +63,26 @@ export class PostFormComponent implements OnInit {
             content: post.content,
             category: post.category
           });
-          
-          if (post.attachments && post.attachments.length > 0) {
-            this.existingAttachments = post.attachments;
-          }
+          this.existingImageUrl = post.imageUrl;
         }
       },
       error: () => this.isLoading = false
     });
   }
 
-  /**
-   * دالة معالجة روابط الصور (نفس المنطق في القائمة)
-   */
-  resolveImageUrl(url: string): string {
-    if (!url) return '';
-
-    // معالجة روابط السيرفر الداخلية
-    if (url.includes('@local://')) {
-      const filename = url.replace('@local://', '');
-      return `${this.environment.apiBaseUrl3}/${filename}`;
-    }
-
-    // معالجة الصور القديمة النسبية
-    if (!url.startsWith('http') && !url.startsWith('data:')) {
-       return `${this.environment.apiBaseUrl}/${url}`;
-    }
-
-    return url;
-  }
-
-  /**
-   * Handle Multiple File Selection
-   */
+  // 👇 تم تغيير الاسم ليتطابق مع الـ HTML (أو العكس، سأجعله onFileSelect)
   onFileSelect(event: any) {
-    const files = event.target.files;
-    
-    if (files && files.length > 0) {
-      this.selectedFiles = Array.from(files);
-      this.imagePreviews = []; 
-
-      this.selectedFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.imagePreviews.push(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
     }
   }
 
-  /**
-   * Submit Form
-   */
   onSubmit() {
     if (this.form.invalid) return;
 
@@ -136,22 +92,22 @@ export class PostFormComponent implements OnInit {
     let request$: Observable<any>;
 
     if (this.isEditMode && this.postId) {
-      request$ = this.postsService.updatePost(this.postId, formData, this.selectedFiles.length > 0 ? this.selectedFiles : undefined);
+      request$ = this.postsService.updatePost(this.postId, formData, this.selectedFile || undefined);
     } else {
-      request$ = this.postsService.createPost(formData, this.selectedFiles.length > 0 ? this.selectedFiles : undefined);
+      request$ = this.postsService.createPost(formData, this.selectedFile || undefined);
     }
 
     request$.subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isSubmitting = false;
         if (res.isSuccess) {
           alert(this.isEditMode ? 'Post updated successfully' : 'Post created successfully');
-          this.goBack();
+          this.router.navigate(['/admin/posts']);
         } else {
           alert(res.error?.message || 'Operation failed');
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isSubmitting = false;
         console.error(err);
         alert('Network error occurred');
@@ -159,6 +115,7 @@ export class PostFormComponent implements OnInit {
     });
   }
 
+  // 👇 إضافة دالة goBack المفقودة
   goBack() {
     this.router.navigate(['/admin/posts']);
   }

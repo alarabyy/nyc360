@@ -31,18 +31,18 @@ export class NavBarComponent implements OnInit, OnDestroy {
   // We map them to match the structure needed for the navbar
   // Note: Colors are hardcoded here for visual appeal as they are not in the model
   categories = [
-    { id: 0, name: 'Art', color: '#FD7E14' },
-    { id: 1, name: 'Community', color: '#E35D6A' },
-    { id: 2, name: 'Culture', color: '#DC3545' },
-    { id: 3, name: 'Education', color: '#6610f2' },
-    { id: 4, name: 'Events', color: '#D63384' },
-    { id: 5, name: 'Lifestyle', color: '#6F42C1' },
-    { id: 6, name: 'Media', color: '#20c997' },
-    { id: 7, name: 'News', color: '#198754' },
-    { id: 8, name: 'Recruitment', color: '#A5673F' },
-    { id: 9, name: 'Social', color: '#75B798' },
-    { id: 10, name: 'Tourism', color: '#FFC107' },
-    { id: 11, name: 'TV', color: '#0D6EFD' }
+    { id: 1, name: 'Art', color: '#FD7E14' },
+    { id: 2, name: 'Community', color: '#E35D6A' },
+    { id: 3, name: 'Culture', color: '#DC3545' },
+    { id: 4, name: 'Education', color: '#6610f2' },
+    { id: 5, name: 'Events', color: '#D63384' },
+    { id: 6, name: 'Lifestyle', color: '#6F42C1' },
+    { id: 7, name: 'Media', color: '#20c997' },
+    { id: 8, name: 'News', color: '#198754' },
+    { id: 9, name: 'Recruitment', color: '#A5673F' },
+    { id: 10, name: 'Social', color: '#75B798' },
+    { id: 11, name: 'Tourism', color: '#FFC107' },
+    { id: 12, name: 'TV', color: '#0D6EFD' }
   ];
 
   ngOnInit() {

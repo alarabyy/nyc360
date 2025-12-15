@@ -13,8 +13,8 @@
     </div>
 
     <ul class="main-links d-none d-lg-flex">
-      <li><a routerLink="/story" routerLinkActive="active">Our Story</a></li>
-      <li><a routerLink="/partners" routerLinkActive="active">Partners</a></li>
+      <!-- <li><a routerLink="/story" routerLinkActive="active">Our Story</a></li> -->
+      <!-- <li><a routerLink="/partners" routerLinkActive="active">Partners</a></li> -->
     </ul>
 
     <div class="actions">
@@ -47,7 +47,6 @@
             <i class="bi bi-speedometer2"></i> Dashboard
           </a>
         </li>
-        <li><a routerLink="/posts" routerLinkActive="active">All Posts</a></li>
         <li><a routerLink="/about" routerLinkActive="active">about</a></li>
       </ul>
       <span class="date-display">{{ currentDate | date:'MMMM d, y' }}</span>
@@ -106,10 +105,6 @@
             <i class="bi bi-speedometer2"></i> Dashboard
           </a>
         </li>
-        <li><a routerLink="/posts" (click)="toggleMenu()"><i class="bi bi-journal-richtext"></i> All Posts</a></li>
-        <li><a routerLink="/story" (click)="toggleMenu()"><i class="bi bi-book"></i> Our Story</a></li>
-        <li><a routerLink="/partners" (click)="toggleMenu()"><i class="bi bi-people"></i> Partners</a></li>
-        <li><a routerLink="/contact" (click)="toggleMenu()"><i class="bi bi-envelope"></i> Contact Us</a></li>
       </ul>
     </div>
 
