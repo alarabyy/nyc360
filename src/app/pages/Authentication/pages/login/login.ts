@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           if (response.data.twoFactorRequired) {
             this.router.navigate(['/verify-otp'], { queryParams: { email: this.loginData.email } });
           } else {
-            this.router.navigate(['/']); 
+            this.router.navigate(['/public/home']); 
           }
         } else {
           this.errorMessage = response.error?.message || 'Login failed.';
