@@ -1,45 +1,82 @@
 // src/app/pages/Public/pages/profile/services/profile.service.ts
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { ProfileResponse, StandardResponse } from '../models/profile';
+import {
+  ApiResponse, UserProfileData, UpdateBasicProfileDto,
+  AddEducationDto, UpdateEducationDto, AddPositionDto, UpdatePositionDto,
+  SocialLinkDto, Toggle2FADto
+} from '../models/profile';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiBaseUrl}/users`; 
+  private baseUrl = `${environment.apiBaseUrl}/users`;
 
-  getProfile(username: string): Observable<ProfileResponse> {
-    return this.http.get<ProfileResponse>(`${this.baseUrl}/profile/${encodeURIComponent(username)}`);
+  // 1. GET Full Profile
+  getProfile(username: string): Observable<ApiResponse<UserProfileData>> {
+    return this.http.get<ApiResponse<UserProfileData>>(`${this.baseUrl}/profile/${encodeURIComponent(username)}`);
   }
 
-  updateMyProfile(data: any, file?: File): Observable<StandardResponse<any>> {
+  // 2. Images (Multipart)
+  uploadAvatar(file: File): Observable<ApiResponse<string>> {
     const formData = new FormData();
-    
-    Object.keys(data).forEach(key => {
-      if (key === 'socialLinks' && Array.isArray(data[key])) {
-        // Serialization for complex objects in FormData
-        for (let i = 0; i < data[key].length; i++) {
-          formData.append(`socialLinks[${i}].platform`, data[key][i].platform);
-          formData.append(`socialLinks[${i}].url`, data[key][i].url);
-        }
-      } else if (data[key] !== null && data[key] !== undefined) {
-        formData.append(key, data[key]);
-      }
-    });
-
-    if (file) {
-      formData.append('avatar', file);
-    }
-    
-    return this.http.put<StandardResponse<any>>(`${this.baseUrl}/me/update-profile`, formData);
+    formData.append('Avatar', file);
+    return this.http.post<ApiResponse<string>>(`${this.baseUrl}/profile/avatar`, formData);
   }
 
-  toggle2FA(enable: boolean): Observable<StandardResponse<any>> {
-    return this.http.post<StandardResponse<any>>(`${this.baseUrl}/me/toggle-2fa`, { enable });
+  uploadCover(file: File): Observable<ApiResponse<string>> {
+    const formData = new FormData();
+    formData.append('Cover', file);
+    return this.http.post<ApiResponse<string>>(`${this.baseUrl}/profile/cover`, formData);
+  }
+
+  // 3. Basic Info (PATCH)
+  updateBasicInfo(data: UpdateBasicProfileDto): Observable<ApiResponse<void>> {
+    return this.http.patch<ApiResponse<void>>(`${this.baseUrl}/profile/basic`, data);
+  }
+
+  // 4. Education
+  addEducation(data: AddEducationDto): Observable<ApiResponse<number>> {
+    return this.http.post<ApiResponse<number>>(`${this.baseUrl}/profile/educations`, data);
+  }
+
+  updateEducation(data: UpdateEducationDto): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.baseUrl}/profile/educations`, data);
+  }
+
+  deleteEducation(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/profile/educations/${id}`);
+  }
+
+  // 5. Positions
+  addPosition(data: AddPositionDto): Observable<ApiResponse<number>> {
+    return this.http.post<ApiResponse<number>>(`${this.baseUrl}/profile/positions`, data);
+  }
+
+  updatePosition(data: UpdatePositionDto): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.baseUrl}/profile/positions`, data);
+  }
+
+  deletePosition(id: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/profile/positions/${id}`);
+  }
+
+  // 6. Social Links
+  addSocialLink(data: SocialLinkDto): Observable<ApiResponse<number>> {
+    return this.http.post<ApiResponse<number>>(`${this.baseUrl}/profile/social-links`, data);
+  }
+
+  updateSocialLink(data: SocialLinkDto): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.baseUrl}/profile/social-links`, data);
+  }
+
+  // 7. Security (2FA)
+  toggle2FA(enable: boolean): Observable<ApiResponse<void>> {
+    const body: Toggle2FADto = { Enable: enable };
+    return this.http.post<ApiResponse<void>>(`${this.baseUrl}/me/toggle-2fa`, body);
   }
 }

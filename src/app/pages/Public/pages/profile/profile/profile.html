@@ -1,187 +1,299 @@
-<div class="page-container page-fade-in">
+<div class="profile-page-container">
   
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner-border text-accent" role="status"></div>
-    <p>Loading Profile...</p>
+  <div *ngIf="isLoading" class="loading-center">
+    <div class="spinner"></div>
   </div>
 
-  <div *ngIf="!isLoading && errorMessage" class="error-container">
-    <i class="bi bi-exclamation-octagon"></i>
-    <p>{{ errorMessage }}</p>
-  </div>
-
-  <div *ngIf="!isLoading && userProfile" class="profile-layout">
+  <div *ngIf="!isLoading && user" class="profile-wrapper">
     
-    <div class="profile-sidebar">
-      <div class="sidebar-card">
-        
-        <div class="avatar-wrapper">
-          <img [src]="imagePreview || (userProfile.imageUrl ? environment.apiBaseUrl2 + '/avatars/' + userProfile.imageUrl : '')" 
-               class="avatar-img" 
-               *ngIf="userProfile.imageUrl || imagePreview">
-          
-          <div *ngIf="!userProfile.imageUrl && !imagePreview" class="avatar-placeholder">
-            {{ getInitials() }}
-          </div>
-
-          <label *ngIf="isEditMode && isOwner" class="edit-btn">
-            <i class="bi bi-camera-fill"></i>
-            <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
-          </label>
-
-          <div class="verified-badge" *ngIf="isVerifiedUser">
-            <i class="bi bi-patch-check-fill"></i>
-          </div>
-        </div>
-
-        <div class="user-identity">
-          <h2 class="user-name">
-            {{ getDisplayName() }}
-            <i class="bi bi-patch-check-fill text-accent" *ngIf="isVerifiedUser" title="Verified"></i>
-          </h2>
-          <p class="user-label">{{ getUserLabel() }}</p>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="stats-grid" *ngIf="stats">
-          <div class="stat-box">
-            <span class="val">{{ stats.postsCount || 0 }}</span>
-            <span class="lbl">Posts</span>
-          </div>
-          <div class="stat-box">
-            <span class="val">{{ stats.followersCount || 0 }}</span>
-            <span class="lbl">Followers</span>
-          </div>
-          <div class="stat-box">
-            <span class="val">{{ stats.likesCount || 0 }}</span>
-            <span class="lbl">Likes</span>
-          </div>
-        </div>
-
-        <div class="security-box" *ngIf="isOwner">
-          <div class="sec-row">
-            <span>2FA Security</span>
-            <span class="badge" [class.enabled]="userProfile.twoFactorEnabled">
-              {{ userProfile.twoFactorEnabled ? 'ON' : 'OFF' }}
-            </span>
-          </div>
-          <button class="btn-toggle" (click)="toggle2FA()">
-            {{ userProfile.twoFactorEnabled ? 'Disable' : 'Enable' }}
-          </button>
-        </div>
-
+    <div class="header-card">
+      <div class="cover-area" [style.backgroundImage]="'url(' + resolveCover(user.coverImageUrl) + ')'">
+        <button *ngIf="isOwner" class="btn-edit-cover">
+          <i class="bi bi-camera-fill"></i> Edit Cover
+          <input type="file" (change)="onCoverSelected($event)" accept="image/*">
+        </button>
+        <button class="btn-share-top" (click)="shareProfile()" title="Copy Profile Link">
+          <i class="bi bi-share-fill"></i>
+        </button>
       </div>
-    </div>
 
-    <div class="profile-main">
-      <div class="main-card">
-        
-        <div class="card-header">
-          <h3>Details</h3>
-          <button class="btn-icon-text" (click)="toggleEditMode()" *ngIf="isOwner && !isEditMode">
-            <i class="bi bi-pencil"></i> Edit
-          </button>
+      <div class="user-info-bar">
+        <div class="avatar-holder">
+          <img [src]="resolveImage(user.imageUrl)" alt="User Avatar">
+          <label *ngIf="isOwner" class="upload-overlay">
+            <i class="bi bi-camera"></i>
+            <input type="file" (change)="onAvatarSelected($event)" accept="image/*">
+          </label>
         </div>
 
-        <form [formGroup]="profileForm" (ngSubmit)="saveChanges()">
-          
-          <div *ngIf="isOrg" class="form-grid">
-            <div class="form-group full-width">
-              <label>Organization Name</label>
-              <div class="input-wrap">
-                <i class="bi bi-building"></i>
-                <input [readonly]="!isEditMode || !isOwner" formControlName="name" type="text">
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="isNormal || isAdmin" class="form-grid two-cols">
-            <div class="form-group">
-              <label>First Name</label>
-              <div class="input-wrap">
-                <i class="bi bi-person"></i>
-                <input [readonly]="!isEditMode || !isOwner" formControlName="firstName" type="text">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <div class="input-wrap">
-                <i class="bi bi-person"></i>
-                <input [readonly]="!isEditMode || !isOwner" formControlName="lastName" type="text">
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group full-width" *ngIf="isOrg || isNormal">
-            <label>Bio</label>
-            <div class="input-wrap">
-              <textarea [readonly]="!isEditMode || !isOwner" formControlName="bio" placeholder="No bio available..."></textarea>
-            </div>
-          </div>
-
-          <div class="form-group full-width">
-            <label>Email Address</label>
-            <div class="input-wrap">
-              <i class="bi bi-envelope"></i>
-              <input readonly [value]="userProfile.email" type="text" class="readonly-text">
-            </div>
-          </div>
-
-          <div *ngIf="isOrg || isNormal" class="social-section">
-            <h4>Social Presence</h4>
-            <div class="form-grid two-cols">
-              
-              <div class="form-group">
-                <label>Website</label>
-                <div class="input-wrap"><i class="bi bi-globe"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="websiteUrl" type="url">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Facebook</label>
-                <div class="input-wrap"><i class="bi bi-facebook"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="facebookUrl" type="text">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Twitter / X</label>
-                <div class="input-wrap"><i class="bi bi-twitter-x"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="twitterUrl" type="text">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Instagram</label>
-                <div class="input-wrap"><i class="bi bi-instagram"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="instagramUrl" type="text">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>LinkedIn</label>
-                <div class="input-wrap"><i class="bi bi-linkedin"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="linkedinUrl" type="text">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>GitHub</label>
-                <div class="input-wrap"><i class="bi bi-github"></i>
-                  <input [readonly]="!isEditMode || !isOwner" formControlName="githubUrl" type="text">
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="form-actions" *ngIf="isOwner && isEditMode">
-            <button type="button" class="btn-cancel" (click)="toggleEditMode()">Cancel</button>
-            <button type="submit" class="btn-save" [disabled]="isSaving">
-              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        <div class="info-details">
+          <div class="name-row">
+            <h1>{{ displayName }}</h1>
+            <span class="badge-ny">New Yorker</span>
+            <button *ngIf="isOwner" class="btn-icon-edit" (click)="openBasicModal()">
+              <i class="bi bi-pencil-fill"></i> Edit Info
             </button>
           </div>
+          <p class="headline">{{ user.profile.headline || 'No headline added' }}</p>
+        </div>
+      </div>
 
-        </form>
+      <div class="profile-tabs">
+        <a [class.active]="activeTab === 'posts'" (click)="activeTab = 'posts'">Posts</a>
+        <a [class.active]="activeTab === 'interests'" (click)="activeTab = 'interests'">Interests</a>
+        <a [class.active]="activeTab === 'about'" (click)="activeTab = 'about'">About</a>
+        <a [class.active]="activeTab === 'saved'" (click)="activeTab = 'saved'">Saved</a>
       </div>
     </div>
 
+    <div class="main-content-area" [ngSwitch]="activeTab">
+
+      <div *ngSwitchCase="'posts'" class="tab-posts">
+        <div class="feed-grid">
+           <div class="feed-card create-post" *ngIf="isOwner">
+              <div class="cp-row">
+                <img [src]="resolveImage(user.imageUrl)" class="sm-avatar">
+                <div class="fake-input">What's on your mind?</div>
+              </div>
+           </div>
+           
+           <div class="feed-card post-card" *ngFor="let post of user.profile.recentPosts">
+              <div class="post-img-container" *ngIf="post.attachments && post.attachments.length > 0">
+                 <img [src]="resolveImage(post.attachments![0].url)" class="post-main-img">
+              </div>
+              <div class="post-body">
+                 <h2>{{ post.title }}</h2>
+                 <p>{{ post.content }}</p>
+                 <div class="post-meta">
+                    <small>Posted {{ post.createdAt | date:'shortTime' }}</small>
+                 </div>
+              </div>
+           </div>
+           
+           <div *ngIf="user.profile.recentPosts.length === 0" class="empty-state">
+              <i class="bi bi-postcard"></i>
+              <p>No posts yet.</p>
+           </div>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'about'" class="tab-about">
+        
+        <div class="about-card">
+          <div class="card-head">
+            <h3>Biography</h3>
+            <button *ngIf="isOwner" class="btn-icon" (click)="openBasicModal()"><i class="bi bi-pencil"></i></button>
+          </div>
+          <p class="bio-text">{{ user.profile.bio || 'No biography provided yet.' }}</p>
+        </div>
+
+        <div class="about-card">
+          <div class="card-head">
+            <h3>Experience</h3>
+            <button *ngIf="isOwner" class="btn-icon" (click)="openAddPos()"><i class="bi bi-plus-lg"></i></button>
+          </div>
+          <div class="list-items">
+            <div class="item-row" *ngFor="let pos of user.profile.positions">
+              <div class="icon-box"><i class="bi bi-briefcase"></i></div>
+              <div class="details">
+                <h4>{{ pos.title }}</h4>
+                <span>{{ pos.company }}</span>
+                <small>{{ pos.startDate | date:'MMM yyyy' }} - {{ pos.isCurrent ? 'Present' : (pos.endDate | date:'MMM yyyy') }}</small>
+              </div>
+              <div class="actions" *ngIf="isOwner">
+                <button (click)="openEditPos(pos)"><i class="bi bi-pencil"></i></button>
+                <button class="danger" (click)="deletePos(pos.id)"><i class="bi bi-trash"></i></button>
+              </div>
+            </div>
+            <p *ngIf="user.profile.positions.length === 0" class="empty-txt">No experience added.</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="card-head">
+            <h3>Education</h3>
+            <button *ngIf="isOwner" class="btn-icon" (click)="openAddEdu()"><i class="bi bi-plus-lg"></i></button>
+          </div>
+          <div class="list-items">
+            <div class="item-row" *ngFor="let edu of user.profile.education">
+              <div class="icon-box"><i class="bi bi-mortarboard"></i></div>
+              <div class="details">
+                <h4>{{ edu.school }}</h4>
+                <span>{{ edu.degree }}, {{ edu.fieldOfStudy }}</span>
+                <small>{{ edu.startDate | date:'yyyy' }} - {{ edu.endDate ? (edu.endDate | date:'yyyy') : 'Present' }}</small>
+              </div>
+              <div class="actions" *ngIf="isOwner">
+                <button (click)="openEditEdu(edu)"><i class="bi bi-pencil"></i></button>
+                <button class="danger" (click)="deleteEdu(edu.id)"><i class="bi bi-trash"></i></button>
+              </div>
+            </div>
+            <p *ngIf="user.profile.education.length === 0" class="empty-txt">No education added.</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+           <div class="card-head">
+             <h3>Contact & Social</h3>
+             <button *ngIf="isOwner" class="btn-icon" (click)="openAddSocial()"><i class="bi bi-plus-lg"></i></button>
+           </div>
+           <div class="list-items">
+             <div class="item-row" *ngFor="let link of user.profile.socialLinks">
+               <div class="icon-box"><i class="bi bi-link-45deg"></i></div>
+               <div class="details">
+                 <h4>{{ getPlatformName(link.platform) }}</h4>
+                 <a [href]="link.url" target="_blank">{{ link.url }}</a>
+               </div>
+               <div class="actions" *ngIf="isOwner">
+                 <button (click)="openEditSocial(link)"><i class="bi bi-pencil"></i></button>
+               </div>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'interests'" class="tab-placeholder">
+         <div class="empty-state">
+           <i class="bi bi-stars"></i>
+           <h3>Interests Coming Soon</h3>
+           <p>This section is under development.</p>
+         </div>
+      </div>
+      
+      <div *ngSwitchCase="'saved'" class="tab-placeholder">
+        <div class="empty-state">
+          <i class="bi bi-bookmark"></i>
+          <h3>Saved Items</h3>
+          <p>No saved items yet.</p>
+        </div>
+      </div>
+
+    </div>
   </div>
+
+  <div class="modal-backdrop" *ngIf="modalState.basic">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Edit Intro</h3><button (click)="closeModals()">&times;</button></div>
+      <form [formGroup]="basicForm" (ngSubmit)="saveBasicInfo()">
+        <div class="form-group">
+           <label>First Name</label>
+           <input formControlName="firstName">
+           <div class="error-msg" *ngIf="basicForm.get('firstName')?.touched && basicForm.get('firstName')?.invalid">Name is required (min 2 chars).</div>
+        </div>
+        <div class="form-group">
+           <label>Last Name</label>
+           <input formControlName="lastName">
+        </div>
+        <div class="form-group">
+           <label>Headline</label>
+           <input formControlName="headline">
+           <div class="error-msg" *ngIf="basicForm.get('headline')?.touched && basicForm.get('headline')?.invalid">Headline is required.</div>
+        </div>
+        <div class="form-group">
+           <label>Bio</label>
+           <textarea formControlName="bio" rows="4"></textarea>
+        </div>
+        <input type="hidden" formControlName="locationId">
+        
+        <div class="modal-footer">
+           <button type="button" class="btn-cancel" (click)="closeModals()">Cancel</button>
+           <button type="submit" class="btn-save" [disabled]="isSaving">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalState.education">
+    <div class="modal-content">
+      <div class="modal-header"><h3>{{ isEditMode ? 'Edit' : 'Add' }} Education</h3><button (click)="closeModals()">&times;</button></div>
+      <form [formGroup]="eduForm" (ngSubmit)="saveEdu()">
+         <div class="form-group">
+            <label>School</label>
+            <input formControlName="school">
+            <div class="error-msg" *ngIf="eduForm.get('school')?.touched && eduForm.get('school')?.invalid">Required.</div>
+         </div>
+         <div class="form-group">
+            <label>Degree</label>
+            <input formControlName="degree">
+            <div class="error-msg" *ngIf="eduForm.get('degree')?.touched && eduForm.get('degree')?.invalid">Required.</div>
+         </div>
+         <div class="form-group">
+            <label>Field of Study</label>
+            <input formControlName="fieldOfStudy">
+         </div>
+         <div class="row-inputs">
+            <div class="form-group">
+               <label>Start Date</label>
+               <input type="date" formControlName="startDate">
+            </div>
+            <div class="form-group">
+               <label>End Date</label>
+               <input type="date" formControlName="endDate">
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn-save" [disabled]="isSaving">Save</button>
+         </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalState.position">
+    <div class="modal-content">
+      <div class="modal-header"><h3>{{ isEditMode ? 'Edit' : 'Add' }} Experience</h3><button (click)="closeModals()">&times;</button></div>
+      <form [formGroup]="posForm" (ngSubmit)="savePos()">
+         <div class="form-group">
+            <label>Title</label>
+            <input formControlName="title">
+            <div class="error-msg" *ngIf="posForm.get('title')?.touched && posForm.get('title')?.invalid">Required.</div>
+         </div>
+         <div class="form-group">
+            <label>Company</label>
+            <input formControlName="company">
+            <div class="error-msg" *ngIf="posForm.get('company')?.touched && posForm.get('company')?.invalid">Required.</div>
+         </div>
+         <div class="row-inputs">
+            <div class="form-group">
+               <label>Start Date</label>
+               <input type="date" formControlName="startDate">
+            </div>
+            <div class="form-group">
+               <label>End Date</label>
+               <input type="date" formControlName="endDate">
+            </div>
+         </div>
+         <div class="check-group">
+            <input type="checkbox" formControlName="isCurrent"> <label>I currently work here</label>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn-save" [disabled]="isSaving">Save</button>
+         </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalState.social">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Social Link</h3><button (click)="closeModals()">&times;</button></div>
+      <form [formGroup]="socialForm" (ngSubmit)="saveSocial()">
+         <div class="form-group">
+            <label>Platform</label>
+            <select formControlName="platform">
+               <option *ngFor="let p of socialPlatforms" [value]="p.id">{{ p.name }}</option>
+            </select>
+         </div>
+         <div class="form-group">
+            <label>URL</label>
+            <input formControlName="url" placeholder="https://...">
+            <div class="error-msg" *ngIf="socialForm.get('url')?.touched && socialForm.get('url')?.invalid">Valid URL required.</div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeModals()">Cancel</button>
+            <button type="submit" class="btn-save" [disabled]="isSaving">Save</button>
+         </div>
+      </form>
+    </div>
+  </div>
+
 </div>

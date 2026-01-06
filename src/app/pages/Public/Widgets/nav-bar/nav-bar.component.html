@@ -1,4 +1,3 @@
-
 <nav class="nav-wrapper">
   
   <div class="top-nav">
@@ -28,10 +27,8 @@
           <span *ngIf="hasNotifications" class="notification-dot"></span>
         </button>
 
-        <a [routerLink]="['/profile', currentUsername]" class="user-profile-link">
-          <!-- <img src="image2.png" alt="Profile" class="profile-pic"> -->
-          <i class="fa-solid fa-user profile-icon"></i>
-
+        <a [routerLink]="['/public/profile', currentUsername]" class="user-profile-link" title="Profile">
+          <i class="bi bi-person-circle profile-icon" style="font-size: 1.8rem;"></i>
         </a>
       </ng-container>
       
@@ -46,8 +43,7 @@
   <div class="categories-nav">
     <div class="cat-scroller">
       <a *ngFor="let cat of categories" 
-         [routerLink]="['/posts']" 
-         [queryParams]="{ category: cat.id }"
+         [routerLink]="[cat.route]" 
          routerLinkActive="active-cat-blue"
          class="cat-pill-grey">
          <i [class]="'bi ' + cat.icon"></i>
@@ -73,17 +69,17 @@
       <input type="text" placeholder="Search...">
     </div>
 
-    <div *ngIf="isLoggedIn" class="mobile-user-info">
-      <img src="assets/images/user-avatar.png" alt="Profile" class="mobile-avatar">
+    <div *ngIf="isLoggedIn" class="mobile-user-info" [routerLink]="['/profile', currentUsername]" (click)="toggleMenu()" style="cursor: pointer;">
+      <i class="bi bi-person-circle" style="font-size: 2rem; margin-right: 10px;"></i>
       <span class="username">Hi, {{ currentUsername }}</span>
     </div>
 
     <p class="menu-label">Categories</p>
     <div class="mobile-categories-grid">
       <a *ngFor="let cat of categories" 
-         [routerLink]="['/posts']" 
-         [queryParams]="{ category: cat.id }"
+         [routerLink]="[cat.route]" 
          (click)="toggleMenu()"
+         routerLinkActive="active-mobile-cat"
          class="mobile-cat-item">
         <i [class]="'bi ' + cat.icon"></i> {{ cat.name }}
       </a>
@@ -92,8 +88,8 @@
     <div class="mobile-actions">
       <button *ngIf="isLoggedIn" (click)="logout()" class="btn-logout-mobile">Logout</button>
       <ng-container *ngIf="!isLoggedIn">
-         <a routerLink="/auth/login" (click)="toggleMenu()" class="btn-login-mobile">Login</a>
-         <a routerLink="/auth/register-selection" (click)="toggleMenu()" class="btn-signup-mobile">Sign Up</a>
+          <a routerLink="/auth/login" (click)="toggleMenu()" class="btn-login-mobile">Login</a>
+          <a routerLink="/auth/register-selection" (click)="toggleMenu()" class="btn-signup-mobile">Sign Up</a>
       </ng-container>
     </div>
 

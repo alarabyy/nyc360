@@ -51,10 +51,7 @@ export const routes: Routes = [
         path: 'profile/:username', 
         loadComponent: () => import('./pages/Public/pages/profile/profile/profile').then(m => m.ProfileComponent)
       },
-      {
-        path: 'profile', 
-        loadComponent: () => import('./pages/Public/pages/profile/profile/profile').then(m => m.ProfileComponent)
-      }
+
     ]
   },
 

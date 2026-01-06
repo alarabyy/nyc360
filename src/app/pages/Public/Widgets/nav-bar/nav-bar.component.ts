@@ -19,26 +19,25 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isLoggedIn = false;
   currentUsername: string | null = null;
-  // يمكن إضافة منطق للإشعارات هنا
   hasNotifications = true; 
   
   private userSub!: Subscription;
 
-  // 🔥 New Categories with Icons and Active Color Logic
+  // 🔥 Categories Updated with specific routes
   categories = [
-    { id: 'all', name: 'All', icon: 'bi-grid-fill' },
-    { id: 'community', name: 'Community', icon: 'bi-people-fill' },
-    { id: 'culture', name: 'Culture', icon: 'bi-palette-fill' },
-    { id: 'education', name: 'Education', icon: 'bi-mortarboard-fill' },
-    { id: 'events', name: 'Events', icon: 'bi-calendar-event-fill' },
-    { id: 'health', name: 'Health', icon: 'bi-heart-fill' },
-    { id: 'legal', name: 'Legal', icon: 'bi-hammer' },
-    { id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up' },
-    { id: 'news', name: 'News', icon: 'bi-newspaper' },
-    { id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill' },
-    { id: 'social', name: 'Social', icon: 'bi-globe' },
-    { id: 'tour', name: 'Tour', icon: 'bi-airplane-fill' },
-    { id: 'tv', name: 'TV', icon: 'bi-tv-fill' }
+    { id: 'all', name: 'All', icon: 'bi-grid-fill', route: '/public/home' }, // أو '/' لو عايزها ترجع الرئيسية
+    { id: 'community', name: 'Community', icon: 'bi-people-fill', route: '/community' },
+    { id: 'culture', name: 'Culture', icon: 'bi-palette-fill', route: '/culture' },
+    { id: 'education', name: 'Education', icon: 'bi-mortarboard-fill', route: '/education' },
+    { id: 'events', name: 'Events', icon: 'bi-calendar-event-fill', route: '/events' },
+    { id: 'health', name: 'Health', icon: 'bi-heart-fill', route: '/health' },
+    { id: 'legal', name: 'Legal', icon: 'bi-hammer', route: '/legal' },
+    { id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/lifestyle' },
+    { id: 'news', name: 'News', icon: 'bi-newspaper', route: '/news' },
+    { id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill', route: '/profession' },
+    { id: 'social', name: 'Social', icon: 'bi-globe', route: '/social' },
+    { id: 'tour', name: 'Tour', icon: 'bi-airplane-fill', route: '/tour' },
+    { id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/tv' }
   ];
 
   ngOnInit() {

@@ -1,194 +1,548 @@
-@use "sass:color";
+/* --- VARIABLES --- */
+$primary-color: #003366;      // اللون الأزرق الداكن (New Yorker Badge)
+$primary-hover: #002244;
+$accent-color: #0f172a;       // لون الأزرار الداكنة
+$bg-body: #f3f4f6;            // خلفية الصفحة (رمادي فاتح جداً)
+$bg-white: #ffffff;
+$text-main: #1f2937;          // أسود رمادي للنصوص الرئيسية
+$text-muted: #6b7280;         // رمادي للنصوص الفرعية
+$border-color: #e5e7eb;
+$danger-color: #ef4444;       // لون الحذف/الخطأ
+$success-color: #10b981;
+$radius-card: 16px;           // انحناء الحواف للكروت
+$radius-btn: 8px;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-// --- Theme Variables ---
-$bg-dark: #081223;       // Deep Teal / Navy Background
-$bg-card: #0F1C30;       // Card Background
-$accent: #BC5E3D;        // Copper
-$text: #E8EBF2;          // Main Text
-$text-muted: #6c757d;    // Muted Text
-$border: #2A3B55;        // Borders
-$input-bg: #152033;      // Inputs
-
-// --- Layout ---
-.page-container {
+/* --- GLOBAL STYLES --- */
+.profile-page-container {
+  background-color: $bg-body;
   min-height: 100vh;
-  background-color: $bg-dark;
-  background-image: radial-gradient(circle at 50% 0%, #10223f 0%, $bg-dark 80%);
-  color: $text;
-  padding: 40px 20px;
-  display: flex; justify-content: center;
-  font-family: 'Segoe UI', sans-serif;
+  padding-bottom: 60px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: $text-main;
 }
 
-.profile-layout {
-  display: grid;
-  grid-template-columns: 350px 1fr; // Sidebar | Content
-  gap: 30px;
-  width: 100%; max-width: 1200px;
+.profile-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
 
-  @media (max-width: 992px) {
-    grid-template-columns: 1fr; // Stack on mobile
+/* --- LOADING SPINNER --- */
+.loading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid $border-color;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 }
 
-// --- Sidebar Styles ---
-.profile-sidebar {
-  .sidebar-card {
-    background-color: $bg-card;
-    border: 1px solid $border;
-    border-radius: 16px;
-    padding: 40px 20px;
-    text-align: center;
-    position: sticky; top: 20px; // Sticky Sidebar
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .avatar-wrapper {
+/* --- 1. HEADER CARD --- */
+.header-card {
+  background: $bg-white;
+  border-radius: 0 0 $radius-card $radius-card;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  margin-bottom: 24px;
+  position: relative;
+
+  /* Cover Image */
+  .cover-area {
+    height: 260px;
+    background-size: cover;
+    background-position: center;
     position: relative;
-    width: 140px; height: 140px;
-    margin: 0 auto 20px;
+    background-color: #cbd5e1; // Placeholder color
 
-    .avatar-img, .avatar-placeholder {
-      width: 100%; height: 100%;
+    /* Buttons on Cover */
+    .btn-edit-cover {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: $text-main;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+      &:hover { background: #fff; transform: translateY(-2px); }
+      input { display: none; }
+    }
+
+    .btn-share-top {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid $accent;
-      box-shadow: 0 0 25px rgba($accent, 0.2);
-    }
-
-    .avatar-placeholder {
-      background: #1a2a40; display: flex; align-items: center; justify-content: center;
-      font-size: 3rem; color: $accent; font-weight: 700;
-    }
-
-    .edit-btn {
-      position: absolute; bottom: 5px; right: 5px;
-      width: 35px; height: 35px; background: $text; color: $bg-dark;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.3s;
-      &:hover { transform: scale(1.1); }
-    }
-
-    // 🔥 Verification Badge on Avatar
-    .verified-badge {
-      position: absolute; bottom: 5px; left: 5px;
-      background: $bg-card; border-radius: 50%;
-      color: $accent; font-size: 1.5rem;
-      width: 30px; height: 30px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
       display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      &:hover { background: #fff; color: $primary-color; }
+      i { font-size: 1.2rem; }
     }
   }
 
-  .user-identity {
-    margin-bottom: 25px;
-    .user-name {
-      font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; color: #fff;
-      i { margin-left: 5px; font-size: 1.2rem; vertical-align: middle; }
-    }
-    .user-label {
-      color: $accent; text-transform: uppercase; letter-spacing: 1.5px;
-      font-size: 0.8rem; font-weight: 600;
-    }
-  }
+  /* User Info Bar */
+  .user-info-bar {
+    padding: 0 40px 20px 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    position: relative;
 
-  .divider { height: 1px; background: $border; margin: 20px 0; }
+    .avatar-holder {
+      width: 168px;
+      height: 168px;
+      border-radius: 50%;
+      border: 5px solid $bg-white;
+      margin-top: -84px; /* Overlap Cover */
+      position: relative;
+      background: #e2e8f0;
+      flex-shrink: 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.08);
 
-  .stats-grid {
-    display: flex; justify-content: space-around;
-    .stat-box {
-      display: flex; flex-direction: column;
-      .val { font-size: 1.2rem; font-weight: 700; color: #fff; }
-      .lbl { font-size: 0.8rem; color: $text-muted; }
-    }
-  }
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-  .security-box {
-    background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-top: 25px;
-    .sec-row {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-      font-size: 0.9rem;
-      .badge {
-        padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; background: #333; color: #aaa;
-        &.enabled { background: rgba(25, 135, 84, 0.2); color: #198754; }
+      .upload-overlay {
+        position: absolute;
+        bottom: 5px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        background: $accent-color;
+        color: #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        border: 2px solid $bg-white;
+        transition: transform 0.2s;
+        &:hover { transform: scale(1.1); }
+        input { display: none; }
       }
     }
-    .btn-toggle {
-      width: 100%; background: transparent; border: 1px solid $border; color: $text;
-      padding: 8px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: 0.3s;
-      &:hover { border-color: $accent; color: $accent; }
-    }
-  }
-}
 
-// --- Content Styles ---
-.profile-main {
-  .main-card {
-    background-color: $bg-card;
-    border: 1px solid $border; border-radius: 16px; padding: 40px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  }
+    .info-details {
+      padding-top: 16px;
+      flex: 1;
 
-  .card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid $border; padding-bottom: 20px; margin-bottom: 30px;
-    h3 { margin: 0; font-size: 1.5rem; border-left: 4px solid $accent; padding-left: 15px; color: #fff; }
-    
-    .btn-icon-text {
-      background: transparent; border: 1px solid $accent; color: $accent;
-      padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s;
-      display: flex; align-items: center; gap: 8px; font-weight: 600;
-      &:hover { background: $accent; color: #fff; }
-    }
-  }
+      .name-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 4px;
 
-  // Forms
-  .form-grid {
-    display: grid; gap: 20px;
-    &.two-cols { grid-template-columns: 1fr 1fr; }
-    @media(max-width: 768px) { &.two-cols { grid-template-columns: 1fr; } }
-  }
+        h1 {
+          margin: 0;
+          font-size: 1.75rem;
+          font-weight: 800;
+          color: $text-main;
+          line-height: 1.2;
+        }
 
-  .form-group {
-    margin-bottom: 20px;
-    &.full-width { grid-column: 1 / -1; }
-    
-    label { display: block; color: $text-muted; font-size: 0.9rem; margin-bottom: 8px; }
-    
-    .input-wrap {
-      position: relative;
-      i { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); color: $text-muted; }
-      
-      input, textarea {
-        width: 100%; background: $input-bg; border: 1px solid $border;
-        padding: 12px 15px 12px 40px; // Padding for icon
-        border-radius: 8px; color: $text; font-size: 1rem; transition: 0.3s;
-        
-        &:focus { outline: none; border-color: $accent; box-shadow: 0 0 0 3px rgba($accent, 0.15); }
-        
-        &[readonly] { 
-          border-color: transparent; background: rgba(255,255,255,0.02); cursor: default; 
-          color: darken($text, 15%);
+        .badge-ny {
+          background-color: $primary-color;
+          color: #fff;
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 4px 10px;
+          border-radius: 20px;
+          letter-spacing: 0.5px;
+        }
+
+        .btn-icon-edit {
+          margin-left: auto;
+          background: transparent;
+          border: 1px solid $border-color;
+          padding: 6px 16px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: $text-muted;
+          cursor: pointer;
+          display: flex; align-items: center; gap: 6px;
+          transition: all 0.2s;
+          &:hover { background: $bg-body; color: $text-main; border-color: $text-muted; }
         }
       }
-      textarea { min-height: 120px; padding: 15px; resize: vertical; }
+
+      .headline {
+        margin: 4px 0 0 0;
+        font-size: 1rem;
+        color: $text-muted;
+        line-height: 1.5;
+        max-width: 600px;
+      }
     }
   }
 
-  .social-section {
-    margin-top: 40px; padding-top: 20px; border-top: 1px solid $border;
-    h4 { color: $text; margin-bottom: 20px; font-size: 1.1rem; }
-  }
+  /* Tabs */
+  .profile-tabs {
+    display: flex;
+    padding: 0 40px;
+    border-top: 1px solid $border-color;
+    margin-top: 10px;
+    overflow-x: auto; /* For mobile */
 
-  .form-actions {
-    margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;
-    .btn-cancel { background: transparent; border: 1px solid $border; color: $text-muted; padding: 10px 25px; border-radius: 8px; cursor: pointer; }
-    .btn-save { background: $accent; border: none; color: #fff; padding: 10px 30px; border-radius: 8px; cursor: pointer; font-weight: 700; &:hover { background: lighten($accent, 5%); } }
+    a {
+      padding: 16px 20px;
+      color: $text-muted;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s;
+      white-space: nowrap;
+
+      &:hover {
+        color: $text-main;
+        background: rgba(0,0,0,0.02);
+      }
+
+      &.active {
+        color: $primary-color;
+        border-bottom-color: $primary-color;
+      }
+    }
   }
 }
 
-// --- Utils ---
-.text-accent { color: $accent !important; }
-.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; color: $text-muted; }
-.error-container { text-align: center; color: #dc3545; background: rgba(220,53,69,0.1); padding: 20px; border-radius: 12px; }
-.page-fade-in { animation: fadeIn 0.6s ease-out; }
+/* --- 2. MAIN CONTENT & TABS --- */
+.main-content-area {
+  animation: fadeIn 0.4s ease;
+}
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* POSTS TAB */
+.tab-posts {
+  max-width: 700px; /* Center feed like Facebook/LinkedIn */
+  margin: 0 auto;
+
+  .feed-card {
+    background: $bg-white;
+    border-radius: $radius-card;
+    box-shadow: $shadow-sm;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    /* Create Post Box */
+    &.create-post {
+      padding: 16px;
+      .cp-row {
+        display: flex; align-items: center; gap: 12px;
+        .sm-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .fake-input {
+          flex: 1;
+          background: $bg-body;
+          padding: 12px 20px;
+          border-radius: 24px;
+          color: $text-muted;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: background 0.2s;
+          &:hover { background: #e5e7eb; }
+        }
+      }
+    }
+
+    /* Post Card */
+    &.post-card {
+      .post-img-container {
+        width: 100%;
+        max-height: 400px;
+        overflow: hidden;
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      }
+
+      .post-body {
+        padding: 20px;
+        h2 { margin: 0 0 8px 0; font-size: 1.25rem; color: $text-main; }
+        p { color: $text-muted; line-height: 1.6; margin-bottom: 16px; font-size: 0.95rem; }
+        
+        .post-meta {
+          border-top: 1px solid $border-color;
+          padding-top: 12px;
+          font-size: 0.85rem;
+          color: #9ca3af;
+        }
+      }
+    }
+  }
+}
+
+/* ABOUT TAB */
+.tab-about {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .about-card {
+    background: $bg-white;
+    border-radius: $radius-card;
+    box-shadow: $shadow-sm;
+    padding: 24px;
+
+    .card-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+      h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: $text-main; }
+      
+      .btn-icon {
+        width: 36px; height: 36px;
+        border-radius: 50%; border: none; background: transparent;
+        color: $text-muted; font-size: 1.1rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s;
+        &:hover { background: $bg-body; color: $primary-color; }
+      }
+    }
+
+    .bio-text {
+      color: $text-main;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .list-items {
+      .item-row {
+        display: flex;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid $border-color;
+        &:last-child { border-bottom: none; padding-bottom: 0; }
+        &:first-child { padding-top: 0; }
+
+        .icon-box {
+          width: 48px; height: 48px;
+          background: #eff6ff;
+          color: $primary-color;
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.25rem;
+          flex-shrink: 0;
+        }
+
+        .details {
+          flex: 1;
+          h4 { margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: $text-main; }
+          span { display: block; font-size: 0.9rem; color: $text-main; margin-bottom: 2px; }
+          small { color: $text-muted; font-size: 0.85rem; }
+          a { color: $primary-color; text-decoration: none; &:hover { text-decoration: underline; } }
+        }
+
+        .actions {
+          display: flex; gap: 8px;
+          button {
+            width: 32px; height: 32px;
+            border: 1px solid $border-color; background: #fff;
+            border-radius: 6px; cursor: pointer; color: $text-muted;
+            display: flex; align-items: center; justify-content: center;
+            &:hover { border-color: $text-main; color: $text-main; }
+            &.danger:hover { border-color: $danger-color; color: $danger-color; background: #fef2f2; }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* PLACEHOLDERS & EMPTY STATES */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: $text-muted;
+  background: $bg-white;
+  border-radius: $radius-card;
+  box-shadow: $shadow-sm;
+  
+  i { font-size: 3rem; margin-bottom: 16px; display: block; opacity: 0.5; }
+  h3 { margin: 0 0 8px 0; color: $text-main; }
+  p { margin: 0; }
+  .empty-txt { color: $text-muted; font-style: italic; }
+}
+
+/* --- MODALS (Professional Overlay) --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+
+  .modal-content {
+    background: $bg-white;
+    width: 600px;
+    max-width: 90%;
+    max-height: 90vh;
+    border-radius: $radius-card;
+    box-shadow: $shadow-lg;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid $border-color;
+      display: flex; justify-content: space-between; align-items: center;
+      h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: $text-main; }
+      button {
+        background: none; border: none; font-size: 1.5rem; color: $text-muted; cursor: pointer;
+        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+        &:hover { background: $bg-body; color: $text-main; }
+      }
+    }
+
+    form {
+      display: flex; flex-direction: column; height: 100%;
+      overflow-y: auto; /* Scroll inside modal if long */
+      
+      .form-group {
+        padding: 0 24px;
+        margin-bottom: 20px;
+        &:first-child { margin-top: 24px; }
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: $text-main;
+        }
+
+        input, textarea, select {
+          width: 100%;
+          padding: 10px 12px;
+          border: 1px solid $border-color;
+          border-radius: $radius-btn;
+          font-size: 0.95rem;
+          font-family: inherit;
+          color: $text-main;
+          transition: border-color 0.2s, box-shadow 0.2s;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+          }
+          
+          &.ng-invalid.ng-touched {
+            border-color: $danger-color;
+          }
+        }
+
+        .error-msg {
+          color: $danger-color;
+          font-size: 0.8rem;
+          margin-top: 6px;
+        }
+      }
+
+      .row-inputs {
+        display: flex; gap: 20px; padding: 0 24px;
+        .form-group { padding: 0; flex: 1; margin-bottom: 20px; }
+      }
+
+      .check-group {
+        padding: 0 24px; margin-bottom: 24px;
+        display: flex; align-items: center; gap: 10px;
+        input { width: auto; }
+        label { margin: 0; font-weight: 400; cursor: pointer; }
+      }
+
+      .modal-footer {
+        padding: 20px 24px;
+        border-top: 1px solid $border-color;
+        background: #f9fafb;
+        display: flex; justify-content: flex-end; gap: 12px;
+        margin-top: auto;
+
+        button {
+          padding: 10px 24px;
+          border-radius: 30px;
+          font-weight: 600;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .btn-cancel {
+          background: #fff;
+          border: 1px solid $border-color;
+          color: $text-main;
+          &:hover { background: $bg-body; }
+        }
+
+        .btn-save {
+          background: $accent-color;
+          border: 1px solid $accent-color;
+          color: #fff;
+          &:hover { background: #000; }
+          &:disabled { opacity: 0.7; cursor: not-allowed; }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 768px) {
+  .header-card {
+    .cover-area { height: 200px; }
+    .user-info-bar {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 0;
+
+      .avatar-holder { margin-top: -80px; margin-right: 0; }
+      .info-details {
+        padding-left: 0; width: 100%;
+        .name-row { justify-content: center; .btn-icon-edit { margin: 10px auto 0 auto; width: 100%; justify-content: center; } }
+      }
+    }
+    .profile-tabs { justify-content: space-between; }
+  }
+
+  .modal-backdrop .modal-content {
+    width: 100%; height: 100%; max-height: 100%; border-radius: 0;
+    .row-inputs { flex-direction: column; gap: 0; .form-group { margin-bottom: 20px; } }
+  }
+}
