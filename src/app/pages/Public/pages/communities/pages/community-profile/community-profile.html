@@ -1,0 +1,132 @@
+<div class="fb-wrapper" *ngIf="community">
+  
+  <div class="fb-header">
+    <div class="cover-photo" [style.backgroundImage]="'url(' + resolveCommunityImage(community.coverUrl) + ')'">
+    </div>
+
+    <div class="header-content container">
+      <div class="profile-layout">
+        <div class="profile-pic">
+          <img [src]="resolveCommunityImage(community.imageUrl)" alt="Community Logo">
+        </div>
+        
+        <div class="profile-info">
+          <div class="name-section">
+            <h1>{{ community.name }}</h1>
+            <span class="privacy-badge"><i class="bi bi-globe"></i> Public group · {{ community.memberCount }} members</span>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-primary" (click)="isJoined = !isJoined" [class.joined]="isJoined">
+              <i class="bi" [ngClass]="isJoined ? 'bi-check-lg' : 'bi-plus-lg'"></i> 
+              {{ isJoined ? 'Joined' : 'Join Group' }}
+            </button>
+            <button class="btn-secondary"><i class="bi bi-share-fill"></i> Share</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fb-tabs">
+        <a [class.active]="activeTab === 'discussion'" (click)="activeTab = 'discussion'">Discussion</a>
+        <a [class.active]="activeTab === 'members'" (click)="loadMembers()">Members</a>
+  
+      </div>
+    </div>
+  </div>
+
+  <div class="fb-body container">
+    
+    <aside class="left-rail">
+      <div class="card intro-card">
+        <h3>About</h3>
+        <p>{{ community.description || 'No description provided.' }}</p>
+        <div class="info-row">
+          <i class="bi bi-globe"></i>
+          <div><strong>Public</strong><span>Anyone can see who's in the group.</span></div>
+        </div>
+        <div class="info-row">
+          <i class="bi bi-eye-fill"></i>
+          <div><strong>Visible</strong><span>Anyone can find this group.</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="feed-rail">
+      
+      <ng-container *ngIf="activeTab === 'discussion'">
+        
+    
+
+        <ng-container *ngIf="posts.length > 0; else emptyState">
+          <div class="card post-card" *ngFor="let post of posts">
+            <div class="post-header">
+              <div class="author-img"><i class="bi bi-person-circle"></i></div>
+              <div class="meta">
+                <span class="name">{{ getAuthorName(post.author) }}</span>
+                <span class="time">{{ post.createdAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+            <div class="post-content"><p>{{ post.content }}</p></div>
+            <div class="post-image" *ngIf="post.attachments && post.attachments.length > 0">
+              <img [src]="resolvePostImage(post.attachments[0].url)" alt="Post Media">
+            </div>
+            <div class="post-stats">
+              <div class="likes"><i class="bi bi-hand-thumbs-up-fill icon-blue"></i> {{ post.stats.likes }}</div>
+              <div class="comments-shares"><span>{{ post.stats.comments }} Comments</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="post-actions">
+              <button><i class="bi bi-hand-thumbs-up"></i> Like</button>
+              <button><i class="bi bi-chat-left"></i> Comment</button>
+              <button><i class="bi bi-share"></i> Share</button>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyState>
+          <div class="card empty-card">
+            <div class="empty-icon"><i class="bi bi-postcard-heart"></i></div>
+            <h3>No posts yet</h3>
+            <p>Be the first to start a conversation!</p>
+          </div>
+        </ng-template>
+
+      </ng-container>
+
+      <ng-container *ngIf="activeTab === 'members'">
+        <div class="card members-card">
+          <div class="card-header">
+            <h3>Members · {{ community.memberCount }}</h3>
+            <div class="search-member">
+              <i class="bi bi-search"></i>
+              <input type="text" placeholder="Find a member">
+            </div>
+          </div>
+
+          <div class="members-grid" *ngIf="!isMembersLoading; else membersLoader">
+            <div class="member-item" *ngFor="let member of members">
+              <div class="mem-avatar">
+                <img [src]="resolveUserAvatar(member.avatarUrl)" alt="User">
+              </div>
+              <div class="mem-info">
+                <h4>{{ member.name || 'Unknown User' }}</h4>
+                <div class="badges">
+                  <span class="role-badge" *ngIf="member.role !== 'Member'">{{ member.role }}</span>
+                  <span class="join-date">Joined {{ member.joinedAt | date:'MMM y' }}</span>
+                </div>
+              </div>
+              </div>
+            
+            <div *ngIf="members.length === 0" class="no-members">No members found.</div>
+          </div>
+
+          <ng-template #membersLoader>
+            <div class="loader-padding"><div class="spinner-sm"></div></div>
+          </ng-template>
+        </div>
+      </ng-container>
+
+    </main>
+
+  </div>
+</div>

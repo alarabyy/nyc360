@@ -25,8 +25,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   // 🔥 Categories Updated with specific routes
   categories = [
-    { id: 'all', name: 'All', icon: 'bi-grid-fill', route: '/public/home' }, // أو '/' لو عايزها ترجع الرئيسية
-    { id: 'community', name: 'Community', icon: 'bi-people-fill', route: '/community' },
+    { id: 'all', name: 'All', icon: 'bi-grid-fill', route: '/public/home' }, 
+    { id: 'community', name: 'Community', icon: 'bi-people-fill', route: '/public/community' },
     { id: 'culture', name: 'Culture', icon: 'bi-palette-fill', route: '/culture' },
     { id: 'education', name: 'Education', icon: 'bi-mortarboard-fill', route: '/education' },
     { id: 'events', name: 'Events', icon: 'bi-calendar-event-fill', route: '/events' },

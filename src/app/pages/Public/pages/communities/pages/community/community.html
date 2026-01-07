@@ -1,0 +1,142 @@
+<div class="community-page">
+  
+  <header class="page-header">
+    <small>Welcome at NYC360</small>
+    <h1>Community</h1>
+    <p>Where New Yorkers can share ideas, discussions, and local conversations</p>
+  </header>
+
+  <div class="content-wrapper" *ngIf="!isLoading">
+
+    <section class="featured-section" *ngIf="featuredPost">
+      <div class="featured-card">
+        <div class="feat-img">
+          <img [src]="featuredPost.attachments.length ? resolvePostImage(featuredPost.attachments[0].url) : 'assets/images/nyc-city.jpg'" alt="Featured">
+        </div>
+        <div class="feat-content">
+          <div class="tags-row">
+            <span class="badge-orange">COMMUNITY HIGHLIGHT</span>
+            <span class="read-time">4 min read</span>
+          </div>
+          <h2>{{ featuredPost.title }}</h2>
+          <p>{{ featuredPost.content | slice:0:150 }}...</p>
+          <button class="btn-read-full">Read Full Article</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="discover-banner">
+      <div class="banner-head">
+        <h2>Discover Communities</h2>
+        <p>Connect with your neighbors and New Yorkers who match your interests</p>
+      </div>
+      
+      <div class="cards-scroller">
+        
+        <div class="comm-card" *ngFor="let comm of suggestions">
+          <div class="card-top">
+            
+            <img 
+              [src]="resolveCommunityAvatar(comm.avatarUrl)" 
+              class="comm-avatar" 
+              alt="Avatar"
+              [routerLink]="['/public/community', comm.slug]" 
+              style="cursor: pointer;">
+            
+            <div class="comm-info">
+              <h4 
+                [routerLink]="['/public/community', comm.slug]" 
+                style="cursor: pointer;">
+                {{ comm.name }}
+              </h4>
+              <span>{{ comm.memberCount }} Members</span>
+            </div>
+          </div>
+          
+          <button 
+            class="btn-join" 
+            [class.joined]="comm.isJoined"
+            (click)="joinCommunity(comm)"
+            [disabled]="comm.isLoadingJoin || comm.isJoined">
+            
+            <ng-container *ngIf="!comm.isJoined && !comm.isLoadingJoin">
+              Join Community
+            </ng-container>
+            
+            <ng-container *ngIf="comm.isLoadingJoin">
+              Joining...
+            </ng-container>
+            
+            <ng-container *ngIf="comm.isJoined">
+              <i class="bi bi-check-lg"></i> Joined
+            </ng-container>
+          </button>
+        </div>
+
+        <div class="empty-msg" *ngIf="suggestions.length === 0">
+          No suggested communities at the moment.
+        </div>
+
+      </div>
+    </section>
+
+    <section class="discussions-section">
+      <div class="sec-title">
+        <span class="dot"></span> <h3>Active Discussions</h3>
+      </div>
+
+      <div class="discussion-list">
+        <div class="discuss-item" *ngFor="let post of posts">
+          <h4>{{ post.title }}</h4>
+          <p>{{ post.content | slice:0:120 }}...</p>
+          <div class="meta-row">
+            <span class="cat-tag">Discussion</span>
+            <span class="replies">{{ post.stats.comments }} replies</span>
+          </div>
+        </div>
+        
+        <div *ngIf="posts.length === 0" class="text-muted">No active discussions found.</div>
+      </div>
+    </section>
+
+    <section class="grid-extras">
+      <div class="extra-card">
+        <div class="icon-circle pink"><i class="bi bi-question-lg"></i></div>
+        <h3>QUESTION</h3>
+        <div class="card-inner">
+          <h4>Impact of the new metro line on local business</h4>
+          <p>Grab a bite, explore local vendors...</p>
+          <div class="card-footer">
+            <span>Posted by <strong>Mark.D</strong></span>
+            <span>8 answers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="extra-card">
+        <div class="icon-circle orange"><i class="bi bi-star-fill"></i></div>
+        <h3>Help</h3>
+        <div class="card-inner">
+          <h4>Volunteers for River Cleanup</h4>
+          <p>Saturday 9:00 Am Riverfront Park</p>
+          <div class="card-footer">
+            <span>Posted by <strong>Sarah.J</strong></span>
+            <span>12 answers</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="create-cta">
+      <h2>Don’t find a community for your needs?</h2>
+      <p>Take the lead in your neighborhood. Start a new discussion group focused on the topics that matter most to you</p>
+      
+      <button class="btn-create" routerLink="/public/create-community">Create a Community</button>
+    </section>
+
+  </div>
+
+  <div *ngIf="isLoading" class="loading-center">
+    <div class="spinner"></div>
+  </div>
+</div>

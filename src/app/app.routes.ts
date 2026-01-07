@@ -33,6 +33,7 @@ export const routes: Routes = [
     component: PublicLayoutComponent,
     canActivate: [authGuard], // <--- ضيف السطر ده هنا
     children: [
+
       // Feed & Home
       {
         path: 'home',
@@ -41,6 +42,25 @@ export const routes: Routes = [
       { 
         path: 'posts/details/:id', 
         loadComponent: () => import('../app/pages/Public/pages/posts/post-details/post-details').then(m => m.PostDetailsComponent) 
+      },      
+      { 
+        path: 'posts/tags/:tag', 
+        loadComponent: () => import('../app/pages/Public/pages/posts/tag-posts/tag-posts').then(m => m.TagPostsComponent) 
+      },
+
+
+      // Community Page
+      { 
+        path: 'community', 
+        loadComponent: () => import('../app/pages/Public/pages/communities/pages/community/community').then(m => m.CommunityComponent) 
+      },      
+      { 
+        path: 'create-community', 
+        loadComponent: () => import('../app/pages/Public/pages/communities/pages/create-community/create-community').then(m => m.CreateCommunityComponent) 
+      },
+      { 
+        path: 'community/:slug', 
+        loadComponent: () => import('../app/pages/Public/pages/communities/pages/community-profile/community-profile').then(m => m.CommunityProfileComponent) 
       },
 
 

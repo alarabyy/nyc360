@@ -87,13 +87,16 @@
 
       <div class="widget">
         <h3>Trending Now</h3>
+        
         <div class="tags-container">
-          <span class="tag green">Fashion Sales</span>
-          <span class="tag blue">NYC Scholarship</span>
-          <span class="tag pink">New Year Event</span>
-          <span class="tag purple">Subwaycreation</span>
-          <span class="tag cyan">Sharktank show</span>
-          <span class="tag indigo">basketball champion</span>
+          <a *ngFor="let tag of trendingTags; let i = index" 
+             [routerLink]="['/public/posts/tags', tag]" 
+             class="tag"
+             [ngClass]="['green', 'blue', 'pink', 'purple', 'cyan', 'indigo'][i % 6]">
+             {{ tag }}
+          </a>
+          
+          <p *ngIf="trendingTags.length === 0" style="font-size: 12px; color: #999;">No trending topics yet.</p>
         </div>
       </div>
 

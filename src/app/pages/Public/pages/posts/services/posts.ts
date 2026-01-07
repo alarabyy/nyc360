@@ -2,25 +2,37 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-// تأكد من إضافة FeedData هنا في الاستيراد
-import { ApiResponse, Post, InteractionType, PostComment, FeedData } from '../models/posts';
+import { 
+  ApiResponse, Post, FeedData, InteractionType, PostComment, TagPostsResponse 
+} from '../models/posts';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class PostsService {
   private http = inject(HttpClient);
   
   // الروابط الأساسية
   private baseUrl = `${environment.apiBaseUrl}/posts`;
-  private feedUrl = `${environment.apiBaseUrl}/feeds/all/home`; // الرابط الجديد
+  private feedUrl = `${environment.apiBaseUrl}/feeds/all/home`;
 
   // =================================================================
-  // 1. NEW METHOD: For Home Page (News Feed Layout)
+  // 1. NEW METHODS: For Home Page & Tags (Public View)
   // =================================================================
+  
+  // Home News Feed
   getPostsFeed(): Observable<ApiResponse<FeedData>> {
     return this.http.get<ApiResponse<FeedData>>(this.feedUrl);
+  }
+
+  // Tag Posts Page
+  getPostsByTag(tag: string, page: number = 1, pageSize: number = 20): Observable<ApiResponse<Post[]>> {
+    let params = new HttpParams()
+      .set('Page', page)
+      .set('PageSize', pageSize);
+      
+    // Encode tag to handle spaces and special characters safely
+    return this.http.get<ApiResponse<Post[]>>(`${this.baseUrl}/tags/${encodeURIComponent(tag)}`, { params });
   }
 
   // =================================================================

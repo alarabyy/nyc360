@@ -88,9 +88,19 @@ export interface FeedData {
   trendingTags: string[];
 }
 
-// --- Generic API Response ---
+// --- Tag Page Response Alias ---
+// في صفحة التاج، البيانات العائدة هي مصفوفة بوستات
+export type TagPostsResponse = Post[];
+
+// --- Generic API Response (Updated for Root Pagination) ---
 export interface ApiResponse<T> {
   isSuccess: boolean;
   data: T;
   error: { code: string; message: string } | null;
+
+  // ✅ Pagination Fields (Added optional fields to handle List/Tags endpoints)
+  page?: number;
+  pageSize?: number;
+  totalCount?: number;
+  totalPages?: number;
 }
