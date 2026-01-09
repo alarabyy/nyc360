@@ -26,17 +26,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
   // Categories with exact Bootstrap Icons matching your image
   categories = [
     { id: 'community', name: 'Community', icon: 'bi-people-fill', route: '/public/community' }, // Orange
-    { id: 'culture', name: 'Culture', icon: 'bi-mask', route: '/culture' }, // Red
-    { id: 'education', name: 'Education', icon: 'bi-journal-bookmark-fill', route: '/education' }, // Blue
-    { id: 'events', name: 'Events', icon: 'bi-calendar-event-fill', route: '/events' }, // Purple
-    { id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/health' }, // Light Blue
-    { id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/lifestyle' }, // Green
-    { id: 'legal', name: 'Legal', icon: 'bi-bank2', route: '/legal' }, // Dark Navy
-    { id: 'news', name: 'News', icon: 'bi-newspaper', route: '/news' }, // Grey
-    { id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill', route: '/profession' }, // Dk Green
-    { id: 'social', name: 'Social', icon: 'bi-globe', route: '/social' }, // Teal
-    { id: 'tour', name: 'Tour', icon: 'bi-map-fill', route: '/tour' }, // Yellow
-    { id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/tv' } // Dark Blue
+    { id: 'culture', name: 'Culture', icon: 'bi-mask', route: '/public/coming-soon' }, // Red
+    { id: 'education', name: 'Education', icon: 'bi-journal-bookmark-fill', route: '/public/coming-soon' }, // Blue
+    { id: 'events', name: 'Events', icon: 'bi-calendar-event-fill', route: '/public/coming-soon' }, // Purple
+    { id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/public/coming-soon' }, // Light Blue
+    { id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/public/coming-soon' }, // Green
+    { id: 'legal', name: 'Legal', icon: 'bi-bank2', route: '/public/coming-soon' }, // Dark Navy
+    { id: 'news', name: 'News', icon: 'bi-newspaper', route: '/public/coming-soon' }, // Grey
+    { id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill', route: '/public/coming-soon' }, // Dk Green
+    { id: 'social', name: 'Social', icon: 'bi-globe', route: '/public/coming-soon' }, // Teal
+    { id: 'tour', name: 'Tour', icon: 'bi-map-fill', route: '/public/coming-soon' }, // Yellow
+    { id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/public/coming-soon' } // Dark Blue
   ];
 
   ngOnInit() {

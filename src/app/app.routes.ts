@@ -69,6 +69,12 @@ export const routes: Routes = [
 
 
 
+      // Coming Soon Page
+      { 
+        path: 'coming-soon', 
+        loadComponent: () => import('../app/pages/Public/Widgets/coming-soon/coming-soon').then(m => m.ComingSoonComponent) 
+      },
+
 
       // Profile Pages
       {
