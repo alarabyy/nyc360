@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { CreateCommunityService } from '../../services/createcommunty';
 import { COMMUNITY_TYPES_LIST, LocationSearchResult } from '../../models/createcommunty';
 
@@ -43,7 +42,8 @@ export class CreateCommunityComponent implements OnInit {
     slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+$')]],
     description: ['', [Validators.required, Validators.maxLength(500)]],
     type: [1, Validators.required],
-    locationId: [null, Validators.required] // Stores the ID
+    locationId: [null, Validators.required], // Stores the ID
+    isPrivate: [false] // ✅ New Field: Default is Public (false)
   });
 
   ngOnInit() {
@@ -129,7 +129,6 @@ export class CreateCommunityComponent implements OnInit {
 
     this.isSubmitting = true;
     
-    // The form already contains the correct structure including locationId
     const formData = this.form.value;
 
     this.communityService.createCommunity(formData, this.avatarFile || undefined, this.coverFile || undefined)

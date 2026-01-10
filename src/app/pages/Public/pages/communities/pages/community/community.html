@@ -11,16 +11,21 @@
     <section class="featured-section" *ngIf="featuredPost">
       <div class="featured-card">
         <div class="feat-img">
-          <img [src]="featuredPost.attachments.length ? resolvePostImage(featuredPost.attachments[0].url) : 'assets/images/nyc-city.jpg'" alt="Featured">
+          <img [src]="featuredPost.attachments.length ? resolvePostImage(featuredPost.attachments[0].url) : 'assets/images/nyc-city.jpg'" 
+               alt="Featured"
+               [routerLink]="['/public/post', featuredPost.id]" 
+               style="cursor: pointer;">
         </div>
         <div class="feat-content">
           <div class="tags-row">
             <span class="badge-orange">COMMUNITY HIGHLIGHT</span>
             <span class="read-time">4 min read</span>
           </div>
-          <h2>{{ featuredPost.title }}</h2>
+          <h2 [routerLink]="['/public/post', featuredPost.id]" style="cursor: pointer;">
+            {{ featuredPost.title }}
+          </h2>
           <p>{{ featuredPost.content | slice:0:150 }}...</p>
-          <button class="btn-read-full">Read Full Article</button>
+          <button class="btn-read-full" [routerLink]="['/public/post', featuredPost.id]">Read Full Article</button>
         </div>
       </div>
     </section>
@@ -69,7 +74,9 @@
       </div>
       <div class="discussion-list">
         <div class="discuss-item" *ngFor="let post of posts">
-          <h4>{{ post.title }}</h4>
+          <h4 [routerLink]="['/public/post', post.id]" style="cursor: pointer;">
+            {{ post.title }}
+          </h4>
           <p>{{ post.content | slice:0:120 }}...</p>
           <div class="meta-row">
             <span class="cat-tag">Discussion</span>
@@ -88,4 +95,4 @@
 
   </div>
 
-  </div>
+</div>

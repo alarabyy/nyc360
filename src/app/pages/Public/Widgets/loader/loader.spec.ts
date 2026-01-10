@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommunityProfileComponent } from './community-profile';
+import { Loader } from './loader';
 
-describe('CommunityProfile', () => {
-  let component: CommunityProfileComponent;
-  let fixture: ComponentFixture<CommunityProfileComponent>;
+describe('Loader', () => {
+  let component: Loader;
+  let fixture: ComponentFixture<Loader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommunityProfileComponent]
+      imports: [Loader]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CommunityProfileComponent);
+    fixture = TestBed.createComponent(Loader);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

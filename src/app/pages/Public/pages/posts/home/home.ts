@@ -23,26 +23,24 @@ export class Home implements OnInit {
   
   protected readonly environment = environment;
   private postsService = inject(PostsService);
-  private weatherService = inject(WeatherService); // ✅ Inject
+  private weatherService = inject(WeatherService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
   // Data
-  featuredPosts: Post[] = [];      
-  heroBanner: Post | null = null;   
+  featuredPosts: Post[] = [];      // Top 3 cards
+  heroBanner: Post | null = null;   // The big card below them
   interestGroups: InterestGroup[] = []; 
   trendingTags: string[] = [];
   suggestedCommunities: CommunitySuggestion[] = [];
   highlightedPosts: Post[] = [];
 
-  // ✅ Real Weather Data
+  // Weather Data
   weatherData: any = null;
   currentDate: Date = new Date();
   
-  // ✅ Alerts Data (Dynamic)
-  // تقدر تجيب الداتا دي من الـ API برضه لو عندك Endpoint، حالياً هي Array
-  // لو الـ Array فاضية، القسم ده هيختفي تماماً
+  // Alerts Data
   alerts: Alert[] = [
     { type: 'yellow', title: 'Gridlock Alert', desc: 'Midtown traffic moving slow due to UN General Assembly', icon: 'bi-exclamation-triangle-fill' },
     { type: 'blue', title: 'Rain Expected', desc: 'Light showers starting around 4 PM', icon: 'bi-cloud-rain-fill' }
@@ -62,7 +60,6 @@ export class Home implements OnInit {
       this.loadFeed();
     });
 
-    // ✅ Get Real Weather
     this.getRealWeather();
   }
 
@@ -70,8 +67,8 @@ export class Home implements OnInit {
     this.weatherService.getWeather().subscribe(data => {
       if (data) {
         this.weatherData = {
-          temp: Math.round(data.main.temp), // Round to whole number
-          desc: data.weather[0].description, // e.g., 'scattered clouds'
+          temp: Math.round(data.main.temp),
+          desc: data.weather[0].description,
           icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
           humidity: data.main.humidity
         };
@@ -98,55 +95,47 @@ export class Home implements OnInit {
     });
   }
 
-  // ✅ Strict Image Filter Helper
   private hasValidImage(post: Post): boolean {
-    // 1. Check if imageUrl exists and is not empty
     if (post.imageUrl && post.imageUrl.trim() !== '') return true;
-    
-    // 2. Check attachments if imageUrl is missing
     if (post.attachments && post.attachments.length > 0) {
         const url = post.attachments[0].url;
         if (url && url.trim() !== '') return true;
     }
-
-    return false; // No image? Reject it.
+    return false;
   }
 
   processData(data: FeedData) {
-    // ✅ 1. Filter ALL posts first (Global Filter)
-    // أي بوست جاي من السيرفر ملوش صورة هيتشال من الحسبه قبل ما نوزعه
     const rawFeatured = data.featuredPosts || [];
     const validFeatured = rawFeatured.filter(p => this.hasValidImage(this.normalizePost(p)));
     
+    // 1. Top 3 Small Cards (Featured)
     this.featuredPosts = validFeatured.slice(0, 3);
 
-    // Hero Banner Logic (Must have image)
+    // 2. Hero Banner (The Big Card Below)
+    // First try discoveryPosts, if empty try the 4th featured post
     const rawDiscovery = data.discoveryPosts || [];
     const validDiscovery = rawDiscovery.filter(p => this.hasValidImage(this.normalizePost(p)));
 
     if (validDiscovery.length > 0) {
       this.heroBanner = validDiscovery[0];
     } else if (validFeatured.length > 3) {
-      this.heroBanner = validFeatured[3];
+      this.heroBanner = validFeatured[3]; // Fallback to 4th featured post if available
     } else {
-        this.heroBanner = null; // Hide hero if no valid image post found
+        this.heroBanner = null; // Hide if no data
     }
 
-    // Interest Groups Logic
+    // 3. Interest Groups
     this.interestGroups = (data.interestGroups || []).map(group => {
-      // Filter posts inside each group
       const validGroupPosts = group.posts
         .map(p => this.normalizePost(p))
-        .filter(p => this.hasValidImage(p)); // ⛔ Strict Filter
-        
+        .filter(p => this.hasValidImage(p));
       return { ...group, posts: validGroupPosts };
-    }).filter(g => g.posts.length > 0); // Remove empty groups
+    }).filter(g => g.posts.length > 0);
 
-    // Highlights Logic
+    // 4. Highlighted Posts (Horizontal)
     this.highlightedPosts = [];
     this.interestGroups.forEach(group => {
       if (group.posts.length > 0) {
-        // We already filtered images above, so this is safe
         this.highlightedPosts.push(group.posts[0]);
       }
     });
@@ -155,7 +144,6 @@ export class Home implements OnInit {
     this.suggestedCommunities = data.suggestedCommunities || [];
   }
 
-  // ... (onSavePost, onJoinCommunity, showToast, removeToast ... same as before)
   onSavePost(post: Post, event: Event) {
     event.stopPropagation();
     event.preventDefault();
@@ -206,7 +194,6 @@ export class Home implements OnInit {
   }
   removeToast(id: number) { this.toasts = this.toasts.filter(t => t.id !== id); this.cdr.detectChanges(); }
 
-  // Helpers
   private normalizePost(post: any): Post {
     if (!post.stats) post.stats = { views: 0, likes: 0, dislikes: 0, comments: 0, shares: 0 };
     if (post.isSaved === undefined) post.isSaved = (post.isSavedByUser === true);
@@ -235,8 +222,6 @@ export class Home implements OnInit {
   resolvePostImage(post: Post): string {
     const attachment = post.attachments?.[0];
     const url = attachment?.url || post.imageUrl;
-    // Note: The filter `hasValidImage` ensures we never reach here with an empty URL
-    // But for safety, we keep logic
     if (url && url.includes('@local://')) return `${this.environment.apiBaseUrl3}/${url.replace('@local://', '')}`;
     return url && url.startsWith('http') ? url : `${this.environment.apiBaseUrl3}/${url}`;
   }

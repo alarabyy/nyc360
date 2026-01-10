@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CommunityRequests } from './community-requests';
+import { CommunityRequestsService } from './community-requests';
 
 describe('CommunityRequests', () => {
-  let service: CommunityRequests;
+  let service: CommunityRequestsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CommunityRequests);
+    service = TestBed.inject(CommunityRequestsService);
   });
 
   it('should be created', () => {

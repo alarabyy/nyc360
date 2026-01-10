@@ -1,5 +1,4 @@
-// src/app/pages/Public/pages/profile/models/profile.ts
-import { Post } from "../../posts/models/posts"; // Ensure this path is correct based on your project structure
+import { Post } from "../../posts/models/posts"; 
 
 export enum UserType {
   Normal = 0, Organization = 1, Admin = 2
@@ -9,7 +8,18 @@ export enum SocialPlatform {
   Facebook = 0, Twitter = 1, Instagram = 2, LinkedIn = 3, Github = 4, Youtube = 5, Website = 6, Other = 7
 }
 
-// --- Display Models ---
+// --- UI Helper Models ---
+export interface DashboardCard {
+  type: string;
+  status: string;
+  title: string;
+  sub: string;
+  detail: string;
+  action: string;
+  isEvent?: boolean;
+}
+
+// --- Domain Models based on your JSON ---
 export interface UserSocialLink {
   id?: number; 
   linkId?: number; 
@@ -38,8 +48,43 @@ export interface Education {
 export interface CommunitySummary {
   id: number;
   name: string;
-  membersCount: number;
-  imageUrl?: string;
+  slug?: string;
+  // MembersCount removed because it's not in your JSON, we will handle it in UI
+}
+
+export interface UserStats {
+  postsCount: number;
+  followersCount: number;
+  followingCount: number;
+  likesCount: number;
+  commentsCount: number;
+  sharesCount: number;
+  isVerified: boolean | null;
+}
+
+// Updated Post interface to match the nesting in your JSON
+export interface ProfilePost {
+    id: number;
+    title: string | null;
+    content: string | null;
+    sourceType: number;
+    postType: number;
+    category: number;
+    createdAt: string;
+    attachments: any[];
+    parentPost?: ProfilePost | null; // For shared posts
+    author?: {
+        id: number;
+        username: string;
+        fullName: string;
+        imageUrl: string;
+    };
+    stats?: {
+        views: number;
+        likes: number;
+        comments: number;
+        shares: number;
+    };
 }
 
 export interface ProfileDetails {
@@ -54,8 +99,9 @@ export interface ProfileDetails {
   positions: Position[];
   education: Education[];
   topCommunities: CommunitySummary[];
-  recentPosts: Post[];
+  recentPosts: ProfilePost[]; // Use the updated interface
   socialLinks: UserSocialLink[];
+  stats?: UserStats; 
 }
 
 export interface UserProfileData {

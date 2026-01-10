@@ -64,7 +64,8 @@
             <div 
               class="result-item" 
               *ngFor="let loc of locationResults" 
-              (mousedown)="onLocationSelect(loc)"> <div class="loc-icon"><i class="bi bi-geo-alt"></i></div>
+              (mousedown)="onLocationSelect(loc)"> 
+              <div class="loc-icon"><i class="bi bi-geo-alt"></i></div>
               <div class="loc-info">
                 <strong>{{ loc.neighborhood }}</strong>
                 <span>{{ loc.borough }}, {{ loc.zipCode }}</span>
@@ -79,6 +80,22 @@
 
         <div class="error" *ngIf="form.get('locationId')?.touched && form.get('locationId')?.invalid">
           Location is required. Please select from the list.
+        </div>
+      </div>
+
+      <div class="form-card privacy-card">
+        <h3><i class="bi bi-shield-lock-fill"></i> Privacy</h3>
+        <p class="hint">Control who can see and join your community.</p>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <strong>Private Community</strong>
+            <span>Only members can see posts. New members must be approved.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" formControlName="isPrivate">
+            <span class="slider round"></span>
+          </label>
         </div>
       </div>
 

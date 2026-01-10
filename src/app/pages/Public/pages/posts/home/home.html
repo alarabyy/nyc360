@@ -4,22 +4,20 @@
     
     <main class="main-content">
       
-      <section class="top-section">
-        <h1 class="page-title">NYC360 Featured Posts</h1>
-        
-        <div class="featured-row">
-          <div class="feat-card" *ngFor="let post of featuredPosts" [routerLink]="['/public/posts/details', post.id]">
-            <img [src]="resolvePostImage(post)" alt="Post Image">
-            
-            <button class="save-btn" [class.saved]="post.isSaved" (click)="onSavePost(post, $event)">
-              <i class="bi" [ngClass]="post.isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'"></i>
-            </button>
+      <h1 class="page-title">NYC360 Featured Posts</h1>
+      
+      <section class="featured-row" *ngIf="featuredPosts.length > 0">
+        <div class="feat-card" *ngFor="let post of featuredPosts" [routerLink]="['/public/posts/details', post.id]">
+          <img [src]="resolvePostImage(post)" alt="Post Image">
+          
+          <button class="save-btn" [class.saved]="post.isSaved" (click)="onSavePost(post, $event)">
+            <i class="bi" [ngClass]="post.isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'"></i>
+          </button>
 
-            <div class="overlay">
-              <span class="badge-pill" [ngClass]="'cat-'+post.category">{{ getCategoryName(post.category) }}</span>
-              <h3>{{ post.title | slice:0:50 }}...</h3>
-              <p>{{ getAuthorName(post.author) }}</p>
-            </div>
+          <div class="overlay">
+            <span class="badge-pill" [ngClass]="'cat-'+post.category">{{ getCategoryName(post.category) }}</span>
+            <h3>{{ post.title | slice:0:50 }}...</h3>
+            <p>{{ getAuthorName(post.author) }}</p>
           </div>
         </div>
       </section>

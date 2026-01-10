@@ -54,7 +54,7 @@ export class CommunityComponent implements OnInit {
     });
   }
 
-  // دالة الانضمام (تم التأكد من إرسال ID)
+  // دالة الانضمام
   joinCommunity(comm: CommunitySuggestion) {
     if (comm.isJoined) return; // منع التكرار
 
@@ -70,7 +70,6 @@ export class CommunityComponent implements OnInit {
           
           alert('You have joined the community successfully!');
         } else {
-          // في حال وجود خطأ من الباك اند (مثل "أنت منضم بالفعل")
           console.error('Join Error:', res.error);
         }
         this.cdr.detectChanges();
@@ -92,8 +91,13 @@ export class CommunityComponent implements OnInit {
   }
 
   resolvePostImage(url?: string): string {
+    // لو مفيش رابط، اعرض الصورة الافتراضية
     if (!url) return 'assets/images/nyc-city.jpg';
+    
+    // لو الرابط كامل (خارجي)، رجعه زي ما هو
     if (url.includes('http')) return url;
-    return `${environment.apiBaseUrl2}/${url}`; 
+    
+    // التعديل هنا: إضافة /communities/ للمسار
+    return `${environment.apiBaseUrl2}/posts/${url}`; 
   }
 }

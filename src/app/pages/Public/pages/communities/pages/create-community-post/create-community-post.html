@@ -1,0 +1,89 @@
+<div class="create-page-container">
+  <div class="editor-card">
+    
+    <div class="card-header">
+      <h2>Create Post</h2>
+      <button class="close-btn" (click)="cancel()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="card-body">
+      <div class="user-row">
+        <div class="avatar-placeholder"><i class="bi bi-person-fill"></i></div>
+        <div class="info">
+          <strong>New Post</strong>
+          <span class="badge-public">Public Community Post</span>
+        </div>
+      </div>
+
+      <input 
+        type="text" 
+        class="title-input" 
+        placeholder="Post Title (Optional)" 
+        [(ngModel)]="title">
+
+      <textarea 
+        class="main-input" 
+        rows="5" 
+        placeholder="What's happening in your community?"
+        [(ngModel)]="content">
+      </textarea>
+
+      <div class="previews-grid" *ngIf="imagesPreview.length > 0">
+        <div class="preview-item" *ngFor="let img of imagesPreview; let i = index">
+          <img [src]="img">
+          <button class="remove-btn" (click)="removeImage(i)"><i class="bi bi-x"></i></button>
+        </div>
+      </div>
+
+      <div class="tags-container" *ngIf="tags.length > 0">
+        <span class="tag-chip" *ngFor="let tag of tags; let i = index">
+          <i class="bi bi-geo-alt-fill"></i> {{ tag }}
+          <button (click)="removeTag(i)">&times;</button>
+        </span>
+      </div>
+
+      <div class="toolbar">
+        <div class="tools-left">
+          
+          <label class="tool-item" title="Add Photo">
+            <i class="bi bi-image text-success"></i>
+            <input type="file" multiple hidden accept="image/*" (change)="onImageSelected($event)">
+          </label>
+
+          <div class="location-search-wrapper">
+             <div class="search-input-box">
+                <i class="bi bi-geo-alt text-danger"></i>
+                <input 
+                  type="text" 
+                  placeholder="Tag a location..." 
+                  [value]="locationQuery"
+                  (input)="onSearchInput($event)">
+             </div>
+
+             <div class="search-dropdown" *ngIf="showLocationDropdown && locationResults.length > 0">
+                <div 
+                  class="dropdown-item" 
+                  *ngFor="let loc of locationResults" 
+                  (click)="selectLocation(loc)">
+                   <div class="icon"><i class="bi bi-geo-alt"></i></div>
+                   <div class="text">
+                      <span class="main-text">{{ loc.neighborhood }}</span>
+                      <span class="sub-text">{{ loc.borough }} - {{ loc.zipCode }}</span>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-footer">
+      <button class="btn-post" (click)="submitPost()" [disabled]="isPosting || (!content && !title && images.length === 0)">
+        <span *ngIf="isPosting" class="spinner-border spinner-border-sm"></span> Post
+      </button>
+    </div>
+
+  </div>
+</div>

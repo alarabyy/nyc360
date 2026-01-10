@@ -1,548 +1,201 @@
 /* --- VARIABLES --- */
-$primary-color: #003366;      // اللون الأزرق الداكن (New Yorker Badge)
+$primary-color: #003366;      
 $primary-hover: #002244;
-$accent-color: #0f172a;       // لون الأزرار الداكنة
-$bg-body: #f3f4f6;            // خلفية الصفحة (رمادي فاتح جداً)
+$accent-color: #0f172a;
+$bg-body: #f3f4f6;
 $bg-white: #ffffff;
-$text-main: #1f2937;          // أسود رمادي للنصوص الرئيسية
-$text-muted: #6b7280;         // رمادي للنصوص الفرعية
+$text-main: #1f2937;
+$text-muted: #6b7280;
 $border-color: #e5e7eb;
-$danger-color: #ef4444;       // لون الحذف/الخطأ
+$danger-color: #ef4444;
 $success-color: #10b981;
-$radius-card: 16px;           // انحناء الحواف للكروت
+$radius-card: 16px;
 $radius-btn: 8px;
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
-/* --- GLOBAL STYLES --- */
+/* --- GLOBAL LAYOUT --- */
 .profile-page-container {
   background-color: $bg-body;
   min-height: 100vh;
   padding-bottom: 60px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', sans-serif;
   color: $text-main;
 }
 
 .profile-wrapper {
-  max-width: 1100px;
+  max-width: 1200px; /* Wider to fit sidebar */
   margin: 0 auto;
   padding: 0 15px;
 }
 
 /* --- LOADING SPINNER --- */
 .loading-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-
+  display: flex; justify-content: center; align-items: center; height: 80vh;
   .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid $border-color;
-    border-top-color: $primary-color;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    width: 50px; height: 50px; border: 5px solid $border-color;
+    border-top-color: $primary-color; border-radius: 50%; animation: spin 1s linear infinite;
   }
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* --- 1. HEADER CARD --- */
 .header-card {
-  background: $bg-white;
-  border-radius: 0 0 $radius-card $radius-card;
-  box-shadow: $shadow-sm;
-  overflow: hidden;
-  margin-bottom: 24px;
-  position: relative;
+  background: $bg-white; border-radius: 0 0 $radius-card $radius-card;
+  box-shadow: $shadow-sm; overflow: visible; margin-bottom: 24px; position: relative;
 
-  /* Cover Image */
   .cover-area {
-    height: 260px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    background-color: #cbd5e1; // Placeholder color
-
-    /* Buttons on Cover */
+    height: 280px; background-size: cover; background-position: center; position: relative;
+    background-color: #cbd5e1;
     .btn-edit-cover {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      color: $text-main;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      transition: all 0.2s;
-      &:hover { background: #fff; transform: translateY(-2px); }
-      input { display: none; }
+      position: absolute; bottom: 20px; right: 20px; background: rgba(255,255,255,0.9);
+      padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; border: none;
+      display: flex; align-items: center; gap: 8px; input { display: none; }
+      &:hover { transform: translateY(-2px); }
     }
-
     .btn-share-top {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.4);
-      color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
+      position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.3); backdrop-filter: blur(5px); border: none; color: #fff;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; i { font-size: 1.2rem; }
       &:hover { background: #fff; color: $primary-color; }
-      i { font-size: 1.2rem; }
     }
   }
 
-  /* User Info Bar */
   .user-info-bar {
-    padding: 0 40px 20px 40px;
-    display: flex;
-    align-items: flex-start;
-    gap: 24px;
-    position: relative;
-
+    padding: 0 40px 20px 40px; display: flex; align-items: flex-end; gap: 24px; position: relative; margin-top: -60px;
     .avatar-holder {
-      width: 168px;
-      height: 168px;
-      border-radius: 50%;
-      border: 5px solid $bg-white;
-      margin-top: -84px; /* Overlap Cover */
-      position: relative;
-      background: #e2e8f0;
-      flex-shrink: 0;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
+      width: 160px; height: 160px; border-radius: 50%; border: 5px solid $bg-white;
+      background: #e2e8f0; flex-shrink: 0; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
       .upload-overlay {
-        position: absolute;
-        bottom: 5px;
-        right: 10px;
-        width: 36px;
-        height: 36px;
-        background: $accent-color;
-        color: #fff;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        border: 2px solid $bg-white;
-        transition: transform 0.2s;
-        &:hover { transform: scale(1.1); }
-        input { display: none; }
+        position: absolute; bottom: 5px; right: 10px; width: 36px; height: 36px;
+        background: $accent-color; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; border: 2px solid $bg-white; input { display: none; }
       }
     }
 
     .info-details {
-      padding-top: 16px;
-      flex: 1;
-
+      flex: 1; padding-bottom: 10px;
       .name-row {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 4px;
-
-        h1 {
-          margin: 0;
-          font-size: 1.75rem;
-          font-weight: 800;
-          color: $text-main;
-          line-height: 1.2;
-        }
-
-        .badge-ny {
-          background-color: $primary-color;
-          color: #fff;
-          font-size: 0.75rem;
-          font-weight: 700;
-          padding: 4px 10px;
-          border-radius: 20px;
-          letter-spacing: 0.5px;
-        }
-
-        .btn-icon-edit {
-          margin-left: auto;
-          background: transparent;
-          border: 1px solid $border-color;
-          padding: 6px 16px;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: $text-muted;
-          cursor: pointer;
-          display: flex; align-items: center; gap: 6px;
-          transition: all 0.2s;
-          &:hover { background: $bg-body; color: $text-main; border-color: $text-muted; }
-        }
+        display: flex; align-items: center; gap: 12px; margin-bottom: 4px;
+        h1 { margin: 0; font-size: 1.8rem; font-weight: 800; color: #000; }
+        .badge-ny { background: $primary-color; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .btn-icon-edit { margin-left: auto; background: $bg-body; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
       }
-
-      .headline {
-        margin: 4px 0 0 0;
-        font-size: 1rem;
-        color: $text-muted;
-        line-height: 1.5;
-        max-width: 600px;
-      }
-    }
-  }
-
-  /* Tabs */
-  .profile-tabs {
-    display: flex;
-    padding: 0 40px;
-    border-top: 1px solid $border-color;
-    margin-top: 10px;
-    overflow-x: auto; /* For mobile */
-
-    a {
-      padding: 16px 20px;
-      color: $text-muted;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: color 0.2s;
-      white-space: nowrap;
-
-      &:hover {
-        color: $text-main;
-        background: rgba(0,0,0,0.02);
-      }
-
-      &.active {
-        color: $primary-color;
-        border-bottom-color: $primary-color;
-      }
+      .headline { margin: 0; font-size: 1rem; color: $text-main; max-width: 600px; }
+      .location { font-size: 0.9rem; color: $text-muted; margin-top: 4px; i { margin-right: 5px; } }
     }
   }
 }
 
-/* --- 2. MAIN CONTENT & TABS --- */
-.main-content-area {
-  animation: fadeIn 0.4s ease;
-}
+/* --- 2. DASHBOARD CARDS (Horizontal Scroll) --- */
+.dashboard-section {
+  margin-bottom: 24px;
+  .h-scroll-cards {
+    display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px;
+    &::-webkit-scrollbar { height: 6px; }
+    &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .status-card {
+      min-width: 260px; background: $bg-white; border-radius: $radius-card; padding: 16px;
+      box-shadow: $shadow-sm; border: 1px solid $border-color; border-left: 4px solid $success-color;
+      display: flex; flex-direction: column; justify-content: space-between;
+      &.event-card { border-left-color: #d946ef; } // Purple for events
 
-/* POSTS TAB */
-.tab-posts {
-  max-width: 700px; /* Center feed like Facebook/LinkedIn */
-  margin: 0 auto;
-
-  .feed-card {
-    background: $bg-white;
-    border-radius: $radius-card;
-    box-shadow: $shadow-sm;
-    margin-bottom: 20px;
-    overflow: hidden;
-
-    /* Create Post Box */
-    &.create-post {
-      padding: 16px;
-      .cp-row {
-        display: flex; align-items: center; gap: 12px;
-        .sm-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .fake-input {
-          flex: 1;
-          background: $bg-body;
-          padding: 12px 20px;
-          border-radius: 24px;
-          color: $text-muted;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: background 0.2s;
-          &:hover { background: #e5e7eb; }
-        }
+      .card-top {
+        display: flex; justify-content: space-between; margin-bottom: 12px;
+        .badge-status { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; border: 1px solid $success-color; color: $success-color; }
+        .time-badge { background: $bg-body; padding: 4px 8px; border-radius: 6px; text-align: center; font-size: 0.7rem; font-weight: 700; }
       }
-    }
-
-    /* Post Card */
-    &.post-card {
-      .post-img-container {
-        width: 100%;
-        max-height: 400px;
-        overflow: hidden;
-        img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      }
-
-      .post-body {
-        padding: 20px;
-        h2 { margin: 0 0 8px 0; font-size: 1.25rem; color: $text-main; }
-        p { color: $text-muted; line-height: 1.6; margin-bottom: 16px; font-size: 0.95rem; }
-        
-        .post-meta {
-          border-top: 1px solid $border-color;
-          padding-top: 12px;
-          font-size: 0.85rem;
-          color: #9ca3af;
-        }
-      }
+      h3 { font-size: 1rem; font-weight: 700; margin: 0 0 8px 0; }
+      .card-meta { font-size: 0.85rem; color: $text-muted; p { margin: 2px 0; i { margin-right: 6px; } } }
+      .card-footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; .btn-check { background: $bg-body; border: 1px solid $border-color; padding: 4px 10px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; } }
     }
   }
 }
 
-/* ABOUT TAB */
-.tab-about {
-  max-width: 800px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-
-  .about-card {
-    background: $bg-white;
-    border-radius: $radius-card;
-    box-shadow: $shadow-sm;
-    padding: 24px;
-
-    .card-head {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px;
-      h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: $text-main; }
-      
-      .btn-icon {
-        width: 36px; height: 36px;
-        border-radius: 50%; border: none; background: transparent;
-        color: $text-muted; font-size: 1.1rem; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        transition: background 0.2s;
-        &:hover { background: $bg-body; color: $primary-color; }
-      }
-    }
-
-    .bio-text {
-      color: $text-main;
-      line-height: 1.7;
-      white-space: pre-wrap;
-    }
-
-    .list-items {
-      .item-row {
-        display: flex;
-        gap: 16px;
-        padding: 16px 0;
-        border-bottom: 1px solid $border-color;
-        &:last-child { border-bottom: none; padding-bottom: 0; }
-        &:first-child { padding-top: 0; }
-
-        .icon-box {
-          width: 48px; height: 48px;
-          background: #eff6ff;
-          color: $primary-color;
-          border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 1.25rem;
-          flex-shrink: 0;
-        }
-
-        .details {
-          flex: 1;
-          h4 { margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: $text-main; }
-          span { display: block; font-size: 0.9rem; color: $text-main; margin-bottom: 2px; }
-          small { color: $text-muted; font-size: 0.85rem; }
-          a { color: $primary-color; text-decoration: none; &:hover { text-decoration: underline; } }
-        }
-
-        .actions {
-          display: flex; gap: 8px;
-          button {
-            width: 32px; height: 32px;
-            border: 1px solid $border-color; background: #fff;
-            border-radius: 6px; cursor: pointer; color: $text-muted;
-            display: flex; align-items: center; justify-content: center;
-            &:hover { border-color: $text-main; color: $text-main; }
-            &.danger:hover { border-color: $danger-color; color: $danger-color; background: #fef2f2; }
-          }
-        }
-      }
-    }
+/* --- 3. TABS --- */
+.nav-tabs-custom {
+  display: flex; gap: 30px; border-bottom: 1px solid $border-color; margin-bottom: 24px; padding: 0 10px;
+  a {
+    padding: 12px 0; font-weight: 600; color: $text-muted; cursor: pointer; border-bottom: 3px solid transparent;
+    &.active { color: $primary-color; border-bottom-color: $primary-color; }
+    &:hover { color: $primary-color; }
   }
 }
 
-/* PLACEHOLDERS & EMPTY STATES */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: $text-muted;
-  background: $bg-white;
-  border-radius: $radius-card;
-  box-shadow: $shadow-sm;
+/* --- 4. GRID LAYOUT (Sidebar + Main) --- */
+.content-grid {
+  display: grid; grid-template-columns: 320px 1fr; gap: 24px;
+  @media (max-width: 900px) { grid-template-columns: 1fr; } /* Responsive Stack */
+}
+
+/* --- SIDEBAR WIDGETS --- */
+.sidebar-widget {
+  background: $bg-white; border-radius: $radius-card; padding: 20px; margin-bottom: 20px;
+  box-shadow: $shadow-sm; border: 1px solid $border-color;
+  h4 { margin: 0 0 16px 0; font-size: 1rem; font-weight: 700; color: $text-main; }
   
-  i { font-size: 3rem; margin-bottom: 16px; display: block; opacity: 0.5; }
-  h3 { margin: 0 0 8px 0; color: $text-main; }
-  p { margin: 0; }
-  .empty-txt { color: $text-muted; font-style: italic; }
+  .info-item {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.9rem; color: $text-main;
+    i { color: $text-muted; font-size: 1.1rem; }
+    a { color: $primary-color; text-decoration: none; &:hover { text-decoration: underline; } }
+  }
+
+  /* Community Item Style */
+  .comm-item {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    .comm-icon { width: 40px; height: 40px; background: #fff7ed; color: #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .comm-info { 
+      h5 { margin: 0; font-size: 0.95rem; font-weight: 600; }
+      small { color: $text-muted; font-size: 0.8rem; }
+    }
+  }
+  .btn-see-all { width: 100%; border: 1px solid $border-color; background: transparent; padding: 8px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: $text-muted; &:hover { background: $bg-body; color: $text-main; } }
 }
 
-/* --- MODALS (Professional Overlay) --- */
+/* --- FEED & POSTS --- */
+.create-post {
+  background: $bg-white; border-radius: $radius-card; padding: 16px; margin-bottom: 20px; box-shadow: $shadow-sm;
+  .cp-row {
+    display: flex; align-items: center; gap: 12px;
+    img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .fake-input { flex: 1; background: $bg-body; padding: 12px 20px; border-radius: 24px; color: $text-muted; cursor: pointer; &:hover { background: #e5e7eb; } }
+  }
+}
+
+.post-card {
+  background: $bg-white; border-radius: $radius-card; margin-bottom: 20px; box-shadow: $shadow-sm; overflow: hidden;
+  .post-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    h4 { margin: 0; font-size: 0.95rem; font-weight: 700; }
+    small { color: $text-muted; font-size: 0.8rem; }
+  }
+  .post-img-container { width: 100%; max-height: 500px; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } }
+  .post-body { padding: 16px; h2 { font-size: 1.1rem; margin: 0 0 8px 0; } p { color: $text-main; line-height: 1.5; font-size: 0.95rem; } }
+}
+
+/* --- ABOUT SECTION (Simplified for Right Column) --- */
+.about-box {
+  background: $bg-white; border-radius: $radius-card; padding: 20px; margin-bottom: 20px; box-shadow: $shadow-sm;
+  .box-header { display: flex; justify-content: space-between; margin-bottom: 15px; h3 { margin: 0; font-size: 1.1rem; } button { background: none; border: none; cursor: pointer; color: $primary-color; } }
+  .list-item {
+    display: flex; gap: 12px; margin-bottom: 15px; border-bottom: 1px solid $bg-body; padding-bottom: 10px;
+    &:last-child { border: none; margin: 0; padding: 0; }
+    .icon { width: 36px; height: 36px; background: #eff6ff; color: $primary-color; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .text { h4 { margin: 0 0 2px 0; font-size: 0.95rem; } span { font-size: 0.85rem; color: $text-main; } small { display: block; color: $text-muted; font-size: 0.8rem; } }
+  }
+}
+
+/* --- MODALS (Keep existing Overlay styles) --- */
 .modal-backdrop {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.2s ease-out;
-
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 1000; display: flex; align-items: center; justify-content: center;
   .modal-content {
-    background: $bg-white;
-    width: 600px;
-    max-width: 90%;
-    max-height: 90vh;
-    border-radius: $radius-card;
-    box-shadow: $shadow-lg;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: slideUp 0.3s ease-out;
-
-    .modal-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid $border-color;
-      display: flex; justify-content: space-between; align-items: center;
-      h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: $text-main; }
-      button {
-        background: none; border: none; font-size: 1.5rem; color: $text-muted; cursor: pointer;
-        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
-        &:hover { background: $bg-body; color: $text-main; }
-      }
-    }
-
-    form {
-      display: flex; flex-direction: column; height: 100%;
-      overflow-y: auto; /* Scroll inside modal if long */
-      
-      .form-group {
-        padding: 0 24px;
-        margin-bottom: 20px;
-        &:first-child { margin-top: 24px; }
-
-        label {
-          display: block;
-          margin-bottom: 8px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: $text-main;
-        }
-
-        input, textarea, select {
-          width: 100%;
-          padding: 10px 12px;
-          border: 1px solid $border-color;
-          border-radius: $radius-btn;
-          font-size: 0.95rem;
-          font-family: inherit;
-          color: $text-main;
-          transition: border-color 0.2s, box-shadow 0.2s;
-
-          &:focus {
-            outline: none;
-            border-color: $primary-color;
-            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
-          }
-          
-          &.ng-invalid.ng-touched {
-            border-color: $danger-color;
-          }
-        }
-
-        .error-msg {
-          color: $danger-color;
-          font-size: 0.8rem;
-          margin-top: 6px;
-        }
-      }
-
-      .row-inputs {
-        display: flex; gap: 20px; padding: 0 24px;
-        .form-group { padding: 0; flex: 1; margin-bottom: 20px; }
-      }
-
-      .check-group {
-        padding: 0 24px; margin-bottom: 24px;
-        display: flex; align-items: center; gap: 10px;
-        input { width: auto; }
-        label { margin: 0; font-weight: 400; cursor: pointer; }
-      }
-
-      .modal-footer {
-        padding: 20px 24px;
-        border-top: 1px solid $border-color;
-        background: #f9fafb;
-        display: flex; justify-content: flex-end; gap: 12px;
-        margin-top: auto;
-
-        button {
-          padding: 10px 24px;
-          border-radius: 30px;
-          font-weight: 600;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .btn-cancel {
-          background: #fff;
-          border: 1px solid $border-color;
-          color: $text-main;
-          &:hover { background: $bg-body; }
-        }
-
-        .btn-save {
-          background: $accent-color;
-          border: 1px solid $accent-color;
-          color: #fff;
-          &:hover { background: #000; }
-          &:disabled { opacity: 0.7; cursor: not-allowed; }
-        }
-      }
-    }
-  }
-}
-
-@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-/* --- RESPONSIVE DESIGN --- */
-@media (max-width: 768px) {
-  .header-card {
-    .cover-area { height: 200px; }
-    .user-info-bar {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding-top: 0;
-
-      .avatar-holder { margin-top: -80px; margin-right: 0; }
-      .info-details {
-        padding-left: 0; width: 100%;
-        .name-row { justify-content: center; .btn-icon-edit { margin: 10px auto 0 auto; width: 100%; justify-content: center; } }
-      }
-    }
-    .profile-tabs { justify-content: space-between; }
-  }
-
-  .modal-backdrop .modal-content {
-    width: 100%; height: 100%; max-height: 100%; border-radius: 0;
-    .row-inputs { flex-direction: column; gap: 0; .form-group { margin-bottom: 20px; } }
+    background: #fff; width: 550px; max-width: 90%; max-height: 90vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
+    .modal-header { padding: 15px 20px; border-bottom: 1px solid $border-color; display: flex; justify-content: space-between; h3 { margin: 0; } button { background: none; border: none; font-size: 1.5rem; cursor: pointer; } }
+    form { padding: 20px; overflow-y: auto; }
+    .form-group { margin-bottom: 15px; label { display: block; font-weight: 600; margin-bottom: 5px; } input, textarea, select { width: 100%; padding: 10px; border: 1px solid $border-color; border-radius: 8px; } }
+    .modal-footer { padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px; .btn-save { background: $accent-color; color: #fff; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; } .btn-cancel { background: #fff; border: 1px solid $border-color; padding: 8px 20px; border-radius: 20px; cursor: pointer; } }
   }
 }

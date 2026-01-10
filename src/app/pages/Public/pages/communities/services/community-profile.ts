@@ -1,36 +1,43 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse, CommunityMember, CommunityProfileData } from '../models/community-profile';
+import { ApiResponse, CommunityProfileData, CommunityMember } from '../models/community-profile';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommunityProfileService {
+  
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiBaseUrl}/communities`;
+  // تأكد إن المسار الأساسي مظبوط على /api/communities
+  private apiUrl = `${environment.apiBaseUrl}/communities`; 
 
-  // Get Profile & Posts
-  getCommunityBySlug(slug: string, page: number = 1, pageSize: number = 20): Observable<ApiResponse<CommunityProfileData>> {
-    const params = new HttpParams()
-      .set('Page', page)
-      .set('PageSize', pageSize);
-
-    return this.http.get<ApiResponse<CommunityProfileData>>(`${this.baseUrl}/${slug}`, { params });
+  // 1. Get Community Profile by Slug
+  getCommunityBySlug(slug: string): Observable<ApiResponse<CommunityProfileData>> {
+    return this.http.get<ApiResponse<CommunityProfileData>>(`${this.apiUrl}/${slug}`);
   }
 
-  // Get Members
-  getCommunityMembers(communityId: number, page: number = 1, pageSize: number = 20): Observable<ApiResponse<CommunityMember[]>> {
-    const params = new HttpParams()
-      .set('Page', page)
-      .set('PageSize', pageSize);
-
-    return this.http.get<ApiResponse<CommunityMember[]>>(`${this.baseUrl}/${communityId}/members`, { params });
+  // 2. Get Members
+  getCommunityMembers(communityId: number): Observable<ApiResponse<CommunityMember[]>> {
+    return this.http.get<ApiResponse<CommunityMember[]>>(`${this.apiUrl}/${communityId}/members`);
   }
 
-  // ✅ New: Remove Member
-  removeMember(communityId: number, targetUserId: number): Observable<ApiResponse<any>> {
-    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/${communityId}/members/${targetUserId}`);
+  // 3. Join Community (✅ دي الدالة اللي كانت ناقصة)
+  joinCommunity(communityId: number): Observable<ApiResponse<any>> {
+    const body = { CommunityId: communityId };
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/join`, body);
+  }
+
+  // 4. Leave Community (✅ دي الدالة اللي كانت ناقصة)
+  leaveCommunity(communityId: number): Observable<ApiResponse<any>> {
+    const body = { CommunityId: communityId };
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/leave`, body);
+  }
+
+  // 5. Remove Member
+  removeMember(communityId: number, memberId: number): Observable<ApiResponse<any>> {
+    const body = { CommunityId: communityId, MemberId: memberId };
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/remove-member`, body);
   }
 }

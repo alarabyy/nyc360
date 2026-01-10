@@ -2,7 +2,7 @@
 $bg-color: #F5F7FA;
 $card-bg: #FFFFFF;
 $text-dark: #1A1A1A;
-$primary-orange: #FF7F50; // اللون بتاعك
+$primary-orange: #FF7F50; 
 $radius: 16px;
 $font-family: 'Inter', sans-serif;
 
@@ -25,7 +25,7 @@ $font-family: 'Inter', sans-serif;
   gap: 30px;
   max-width: 1400px;
   margin: 0 auto;
-  align-items: start; // يخلي ال sidebar ميتمددش مع المحتوى
+  align-items: start; 
 }
 
 // --- Main Content Styles ---
@@ -68,12 +68,12 @@ $font-family: 'Inter', sans-serif;
   &.saved {
     background: #fff;
     i {
-      color: $primary-orange; // Orange when saved
+      color: $primary-orange; 
     }
   }
 }
 
-// 1. Featured Section
+// 1. Featured Section (Small Cards Row)
 .featured-row {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;
   .feat-card {
@@ -90,7 +90,7 @@ $font-family: 'Inter', sans-serif;
   }
 }
 
-// 2. Hero Section
+// 2. Hero Section (Big Banner)
 .hero-section {
   margin-bottom: 40px;
   .hero-card {
@@ -171,9 +171,7 @@ $font-family: 'Inter', sans-serif;
   }
 }
 
-// =======================
 // Sidebar Styles
-// =======================
 .sidebar {
   display: flex; flex-direction: column; gap: 25px;
   .widget { background: $card-bg; border-radius: $radius; padding: 20px; @include card-shadow; h3 { font-size: 15px; font-weight: 800; margin: 0 0 15px 0; color: $text-dark; } }
@@ -212,9 +210,7 @@ $font-family: 'Inter', sans-serif;
   } 
 }
 
-// =======================
-// Professional Toast System
-// =======================
+// Toast System
 .toast-container {
   position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;
 }
@@ -244,23 +240,20 @@ $font-family: 'Inter', sans-serif;
 }
 
 // =======================
-// ✅ Responsive Breakpoints (Updated)
+// Responsive Breakpoints
 // =======================
 
-// Large Desktops (No changes mostly)
 @media (max-width: 1200px) {
     .category-block .posts-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-// Tablets & Smaller Laptops
 @media (max-width: 992px) {
   .layout-grid { 
-    grid-template-columns: 1fr; // Make layout single column
+    grid-template-columns: 1fr; // Single column
   }
   
-  // Don't hide sidebar, move it down but keep it visible
   .sidebar {
-    display: flex; // Show it
+    display: flex; 
     margin-top: 30px;
   }
   
@@ -268,13 +261,12 @@ $font-family: 'Inter', sans-serif;
   .category-block .posts-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-// Mobile Phones
 @media (max-width: 768px) {
   .home-container { padding: 15px; } 
   
   .featured-row { 
     grid-template-columns: 1fr; 
-    .feat-card { height: 240px; } // Taller for better touch target
+    .feat-card { height: 240px; } 
   }
 
   .hero-section .hero-card { 
@@ -290,7 +282,6 @@ $font-family: 'Inter', sans-serif;
      }
   }
 
-  // Fix Horizontal cards on mobile to stack
   .highlights-section {
     .horizontal-cards-list .horizontal-card { 
         flex-direction: column; height: auto; 
@@ -303,7 +294,6 @@ $font-family: 'Inter', sans-serif;
     }
   }
 
-  // Toast center on mobile
   .toast-container {
       top: 10px; left: 50%; right: auto; transform: translateX(-50%); width: 90%;
       align-items: center;
