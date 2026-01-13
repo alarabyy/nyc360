@@ -58,12 +58,18 @@
               <span class="stat-num">{{ offer.applicationCount }}</span>
               <span class="stat-label">Applicants</span>
             </div>
+            
             <div class="actions">
               <button class="btn-icon" title="View Details" [routerLink]="['/public/job-profile', offer.id]">
                 <i class="bi bi-eye"></i>
               </button>
-              <button class="btn-icon" title="Edit">
+              
+              <button class="btn-icon" title="Edit" [routerLink]="['/public/edit-offer', offer.id]">
                 <i class="bi bi-pencil"></i>
+              </button>
+
+              <button class="btn-icon delete-btn" title="Delete" (click)="deleteOffer(offer.id)">
+                <i class="bi bi-trash"></i>
               </button>
             </div>
           </div>

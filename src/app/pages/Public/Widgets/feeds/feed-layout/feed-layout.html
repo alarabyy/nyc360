@@ -1,0 +1,101 @@
+<div class="feed-container">
+  
+  <h1 class="page-title">{{ pageTitle }} Feed</h1>
+
+  <div class="search-wrapper">
+    <div class="input-group">
+      <i class="bi bi-search"></i>
+      <input type="text" 
+             placeholder="Search topics, places, or keywords..." 
+             [ngModel]="searchQuery" 
+             (input)="onSearchInput($event)">
+    </div>
+    
+    <div class="input-group" style="position: relative;">
+      <i class="bi bi-geo-alt"></i>
+      <input type="text" placeholder="Filter by Location..." (input)="onLocationType($any($event.target).value)">
+      
+      <div *ngIf="locations.length > 0" class="dropdown-list">
+        <div *ngFor="let loc of locations" class="item" (click)="selectLocation(loc.id)">
+           {{ loc.neighborhood }}
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-search" (click)="loadPosts()">
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+
+  <div class="posts-grid" *ngIf="loading">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+       <div class="sk-head"><div class="av"></div><div class="ln"></div></div>
+       <div class="sk-box"></div><div class="sk-txt"></div>
+    </div>
+  </div>
+
+  <div class="posts-grid" *ngIf="!loading">
+    
+    <div *ngIf="posts.length === 0" style="grid-column: 1/-1; text-align: center; padding: 60px; color: #999;">
+       <i class="bi bi-grid" style="font-size: 50px; display: block; margin-bottom: 10px;"></i>
+       <p>No content available.</p>
+    </div>
+
+    <div *ngFor="let post of posts" 
+         class="card" 
+         [class.has-image]="post.ui.displayImage"
+         [class.text-only]="!post.ui.displayImage">
+      
+      <div class="card-header">
+        <!-- <img [src]="post.ui.authorImg" class="avatar" alt="User"> -->
+        
+        <div class="meta">
+          <span class="name">{{ post.ui.authorName }}</span>
+          <span class="date">{{ post.createdAt | date:'MMM d, y' }}</span>
+        </div>
+        
+        <div class="badges-container">
+           <span class="badge-pill" 
+                 [style.background-color]="post.ui.categoryColor"
+                 style="color: white;">
+             {{ post.ui.categoryName }}
+           </span>
+
+           <span class="badge-pill badge-type">
+             {{ post.ui.postTypeName }}
+           </span>
+
+           <span class="badge-text" *ngIf="post.ui.locationName">
+             <i class="bi bi-geo-alt-fill"></i> {{ post.ui.locationName }}
+           </span>
+        </div>
+      </div>
+
+      <div class="card-img-wrapper" *ngIf="post.ui.displayImage">
+        <img [src]="post.ui.displayImage" alt="Post">
+        <span *ngIf="post.ui.isShared" class="shared-label">Shared</span>
+      </div>
+
+      <div class="card-body">
+        <h3 class="title">{{ post.ui.title }}</h3>
+        
+        <div class="text-content" *ngIf="post.ui.content || post.ui.sharedContent">
+           <p>{{ (post.ui.content || post.ui.sharedContent) | slice:0:150 }}...</p>
+        </div>
+
+        <div *ngIf="post.ui.isShared && !post.ui.displayImage" style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+           <small style="color:var(--primary-color); font-weight:bold;">SHARED POST:</small>
+           <h4 style="font-size: 0.9rem; margin: 5px 0;">{{ post.ui.sharedTitle }}</h4>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1 && !loading">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"><i class="bi bi-chevron-left"></i></button>
+    <button *ngFor="let p of pagesArray" [class.active]="p === currentPage" (click)="changePage(p)">{{ p }}</button>
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"><i class="bi bi-chevron-right"></i></button>
+  </div>
+
+</div>

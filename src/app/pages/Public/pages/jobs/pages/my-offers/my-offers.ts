@@ -16,6 +16,7 @@ export class MyOffersComponent implements OnInit {
 
   offers: MyOffer[] = [];
   isLoading = true;
+  isDeleting = false; // عشان نمنع التكرار وقت الحذف
   
   // Filters & Pagination
   currentFilter: 'all' | 'active' | 'closed' = 'all';
@@ -28,7 +29,6 @@ export class MyOffersComponent implements OnInit {
   loadOffers() {
     this.isLoading = true;
     
-    // تحويل الفلتر الحالي لقيمة boolean أو undefined للسيرفس
     let isActiveParam: boolean | undefined = undefined;
     if (this.currentFilter === 'active') isActiveParam = true;
     if (this.currentFilter === 'closed') isActiveParam = false;
@@ -46,9 +46,31 @@ export class MyOffersComponent implements OnInit {
     });
   }
 
+  deleteOffer(offerId: number) {
+    if (confirm('Are you sure you want to delete this job offer?')) {
+      this.isDeleting = true;
+      this.offersService.deleteOffer(offerId).subscribe({
+        next: (res) => {
+          if (res.isSuccess) {
+            // حذف العنصر من القائمة محلياً لتحديث الواجهة فوراً
+            this.offers = this.offers.filter(o => o.id !== offerId);
+            this.pagination.totalCount--;
+          } else {
+            alert('Error deleting offer');
+          }
+          this.isDeleting = false;
+        },
+        error: () => {
+          this.isDeleting = false;
+          alert('Something went wrong');
+        }
+      });
+    }
+  }
+
   setFilter(filter: 'all' | 'active' | 'closed') {
     this.currentFilter = filter;
-    this.pagination.page = 1; // الرجوع للصفحة الأولى عند تغيير الفلتر
+    this.pagination.page = 1; 
     this.loadOffers();
   }
 

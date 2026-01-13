@@ -1,0 +1,12 @@
+<div class="grid-card shadow-sm">
+  <div class="card-img">
+    <img [src]="image" alt="Article Image">
+  </div>
+  <div class="card-body">
+    <h4 class="merriweather-font">{{ title }}</h4>
+    <p>{{ description }}</p>
+    <a [routerLink]="link" class="read-more" [style.color]="customColor">
+      Read More <i class="bi bi-arrow-right-short"></i>
+    </a>
+  </div>
+</div>

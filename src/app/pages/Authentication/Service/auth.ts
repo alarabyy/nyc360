@@ -35,7 +35,36 @@ export class AuthService {
   }
 
   // ============================================================
-  // 1. PERMISSION & ROLE CHECKS
+  // 1. HELPER METHODS (GETTERS) ✅ (New & Critical)
+  // ============================================================
+
+  /**
+   * ✅ دالة جاهزة لجلب الـ ID الخاص بالمستخدم الحالي كرقم
+   * استخدمها في أي Component عشان تعرف مين اللي فاتح
+   */
+  getUserId(): number | null {
+    const user = this.currentUser$.value;
+    if (user && user.id) {
+      return Number(user.id);
+    }
+    return null;
+  }
+
+  getUserName(): string {
+    return this.currentUser$.value?.username || 'Guest';
+  }
+
+  getAvatar(): string | null {
+    return this.currentUser$.value?.imageUrl || null;
+  }
+
+  isLoggedIn(): boolean {
+    // التحقق من وجود قيمة في الـ BehaviorSubject
+    return !!this.currentUser$.value;
+  }
+
+  // ============================================================
+  // 2. PERMISSION & ROLE CHECKS
   // ============================================================
 
   hasPermission(permission: string): boolean {
@@ -54,13 +83,8 @@ export class AuthService {
     return userRoles.includes(targetRole);
   }
 
-  isLoggedIn(): boolean {
-    // التحقق من وجود قيمة في الـ BehaviorSubject
-    return !!this.currentUser$.value;
-  }
-
   // ============================================================
-  // 2. API CALLS (ACCOUNT MANAGEMENT Only)
+  // 3. API CALLS (ACCOUNT MANAGEMENT Only)
   // ============================================================
 
   refreshToken(data: RefreshTokenRequest): Observable<AuthResponse<LoginResponseData>> {
@@ -84,7 +108,7 @@ export class AuthService {
   }
 
   // ============================================================
-  // 3. STATE MANAGEMENT & HELPERS
+  // 4. STATE MANAGEMENT & HELPERS
   // ============================================================
 
   logout() {
@@ -110,12 +134,15 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, accessToken);
       if (refreshToken) localStorage.setItem(this.refreshTokenKey, refreshToken);
+      
+      // تحديث حالة المستخدم فوراً بعد الحفظ
+      this.loadUserFromToken();
     }
   }
 
   /**
    * 🔥 Load User + Check Expiration
-   * هذه الدالة هي المسؤولة عن إبقائك في الصفحة عند الريفريش أو طردك لو انتهت الصلاحية
+   * تقوم بفك التوكن واستخراج البيانات وتخزينها في currentUser$
    */
   public loadUserFromToken() {
     // 1. لو مش براوزر، اخرج (SSR Safety)
@@ -128,24 +155,41 @@ export class AuthService {
         const decoded: any = jwtDecode(token);
 
         // 2. فحص صلاحية التوكن (Expiration Check)
-        // exp بيكون بالثواني (Unix Timestamp)، لازم نضربه في 1000 عشان يبقى Milliseconds
         if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
           console.warn('⚠️ Token expired. Logging out.');
-          this.logout(); // التوكن منتهي -> طرد
+          this.logout(); 
           return;
         }
 
-        // 3. لو التوكن سليم، استخرج البيانات
+        // 3. استخراج البيانات (Mapping Claims)
+        // بنحاول نجيب الـ ID من كل الأسماء المحتملة في .NET Identity
         const user = {
-          id: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || decoded['nameid'] || decoded['sub'] || decoded['id'] || decoded['userId'],
-          email: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || decoded['email'],
-          role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded['role'],
-          username: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || decoded['unique_name'] || decoded['sub'] || '',
+          id: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] 
+              || decoded['nameid'] 
+              || decoded['sub'] 
+              || decoded['id'] 
+              || decoded['userId'],
+          
+          email: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] 
+                 || decoded['email'],
+          
+          role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] 
+                || decoded['role'],
+          
+          username: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] 
+                    || decoded['unique_name'] 
+                    || decoded['sub'] 
+                    || '',
+          
+          // لو الصورة بتيجي في التوكن
+          imageUrl: decoded['ImageUrl'] || decoded['image'] || null, 
+
           permissions: decoded.permissions || decoded.Permissions || []
         };
         
         // تحديث الحالة فوراً
         this.currentUser$.next(user);
+        // console.log('User Loaded from Token:', user); // (اختياري للتبع)
 
       } catch (e) {
         console.error('Invalid Token:', e);

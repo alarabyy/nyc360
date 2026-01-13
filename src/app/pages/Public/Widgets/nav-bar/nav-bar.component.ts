@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd, Event } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 import { AuthService } from '../../../Authentication/Service/auth';
+import { CATEGORY_THEMES } from '../feeds/models/categories';
 
 @Component({
   selector: 'app-nav-bar',
@@ -27,7 +28,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   private userSub!: Subscription;
   private routerSub!: Subscription;
-
+navLinks = Object.values(CATEGORY_THEMES);
   // Categories definition
   categories = [
     { 
@@ -41,25 +42,25 @@ export class NavBarComponent implements OnInit, OnDestroy {
     { 
       id: 'culture', name: 'Culture', icon: 'bi-mask', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/culture/feed' },
+        { label: 'Feed', route: '/public/feed/culture' },
         { label: 'Exhibitions', route: '/public/culture/exhibitions' },
-        { label: 'Artists', route: '/public/culture/artists' }
+        { label: 'initiatives', route: '/public/initiatives/culture' }
       ]
     }, 
     { 
       id: 'education', name: 'Education', icon: 'bi-journal-bookmark-fill', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/education/feed' },
+        { label: 'Feed', route: '/public/feed/education' },
         { label: 'Courses', route: '/public/education/courses' },
-        { label: 'Schools', route: '/public/education/schools' }
+        { label: 'initiatives', route: '/public/initiatives/schools' }
       ]
     }, 
     { 
-      id: 'events', name: 'Events', icon: 'bi-calendar-event-fill', route: '/public/coming-soon',
+      id: 'Housing', name: 'Housing', icon: 'bi-house-door-fill', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/events/feed' },
-        { label: 'Calendar', route: '/public/events/calendar' },
-        { label: 'My Tickets', route: '/public/events/tickets' }
+        { label: 'Feed', route: '/public/feed/housing' },
+        { label: 'Properties', route: '/public/housing/properties' },
+        { label: 'Agents', route: '/public/housing/agents' }
       ]
     }, 
     { 
@@ -89,17 +90,18 @@ export class NavBarComponent implements OnInit, OnDestroy {
     { 
       id: 'news', name: 'News', icon: 'bi-newspaper', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/news/feed' },
+        { label: 'Feed', route: '/public/feed/news' },
         { label: 'Latest', route: '/public/news/latest' },
-        { label: 'Saved', route: '/public/news/saved' }
+        { label: 'initiatives', route: '/public/Transportation/news' }
       ]
     }, 
     { 
-      id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill', route: '/public/coming-soon',
+      id: 'profession', name: 'Profession', icon: 'bi-briefcase-fill', route: '/public/profession/feed',
       topLinks: [
         { label: 'Feed', route: '/public/profession/feed' },
         { label: 'Jobs', route: '/public/profession/jobs' },
-        { label: 'My Application', route: '/public/profession/my-application' }
+        { label: 'My Application', route: '/public/profession/my-applications' },
+        { label: 'My Offers', route: '/public/profession/my-offers' }
       ]
     }, 
     { 
@@ -107,15 +109,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
       topLinks: [
         { label: 'Feed', route: '/public/social/feed' },
         { label: 'Campaigns', route: '/public/social/campaigns' },
-        { label: 'Volunteer', route: '/public/social/volunteer' }
+        { label: 'initiatives', route: '/public/social/volunteer' }
       ]
     }, 
     { 
-      id: 'tour', name: 'Tour', icon: 'bi-map-fill', route: '/public/coming-soon',
+      id: 'Transportation', name: 'Tour', icon: 'bi-map-fill', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/tour/feed' },
+        { label: 'Feed', route: '/public/feed/Transportation' },
         { label: 'Map', route: '/public/tour/map' },
-        { label: 'Guides', route: '/public/tour/guides' }
+        { label: 'initiatives', route: '/public/initiatives/Transportation' }
       ]
     }, 
     { 

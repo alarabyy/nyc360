@@ -184,9 +184,9 @@ $cat-colors: (
   .cat-scroller {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
     overflow-x: auto;
-    padding: 0 20px;
+    padding: 0 2px;
     scrollbar-width: none; 
     &::-webkit-scrollbar { display: none; }
     @media(min-width: 1200px) { justify-content: center; }

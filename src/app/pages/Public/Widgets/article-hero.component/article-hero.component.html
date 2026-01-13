@@ -1,0 +1,11 @@
+<div class="hero-container" [style.border-left-color]="customColor">
+  <div class="hero-img">
+    <img [src]="image" alt="Hero"  >
+  </div>
+  <div class="hero-content">
+    <span class="meta">{{ metaText }}</span>
+    <h2 class="merriweather-font">{{ title }}</h2>
+    <p>{{ description }}</p>
+    <button [routerLink]="link" [style.background-color]="customColor">Read Full Article</button>
+  </div>
+</div>

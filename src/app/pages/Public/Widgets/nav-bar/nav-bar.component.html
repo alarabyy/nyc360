@@ -12,6 +12,15 @@
       <a routerLink="/" class="logo-area">
         <img src="image_0_0.jpg" alt="NYC360" class="logo-img"> 
       </a>
+
+<div class="categories-nav">
+      <a  routerLink="/public/home" routerLinkActive="active-cat" class="cat-pill all">
+        <i class="cat-scroller bi bi-grid-fill"></i> All
+      </a>
+</div>
+
+
+
     </div>
 
     <div class="nav-center d-none d-lg-block">
@@ -56,9 +65,7 @@
 
   <div class="categories-nav d-none d-lg-block">
     <div class="cat-scroller">
-      <a routerLink="/public/home" routerLinkActive="active-cat" class="cat-pill all">
-        <i class="bi bi-grid-fill"></i> All
-      </a>
+
 
       <a *ngFor="let cat of categories" 
          [routerLink]="[cat.route]" 

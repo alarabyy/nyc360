@@ -25,6 +25,30 @@ export const PUBLIC_ROUTES: Routes = [
       { path: 'post/:id', loadComponent: () => import('../pages/Public/pages/communities/pages/post-details/post-details').then(m => m.PostDetailsComponent) },
 
 
+
+      // jobs
+      { path: 'create-offer', loadComponent: () => import('../pages/Public/pages/jobs/pages/create-offer/create-offer').then(m => m.CreateOfferComponent) },
+      { path: 'job-profile/:id', loadComponent: () => import('../pages/Public/pages/jobs/pages/job-profile/job-profile').then(m => m.JobProfileComponent) },
+      { path: 'profession/feed', loadComponent: () => import('../pages/Public/pages/jobs/pages/profession-feed/profession-feed').then(m => m.ProfessionFeedComponent) },
+      { path: 'profession/my-applications', loadComponent: () => import('../pages/Public/pages/jobs/pages/my-applications.component/my-applications.component').then(m => m.MyApplicationsComponent) },
+      { path: 'profession/jobs', loadComponent: () => import('../pages/Public/pages/jobs/pages/job-search/job-search').then(m => m.JobSearchComponent) },
+      { path: 'profession/my-offers', loadComponent: () => import('../pages/Public/pages/jobs/pages/my-offers/my-offers').then(m => m.MyOffersComponent) },
+      { path: 'edit-offer/:id', loadComponent: () => import('../pages/Public/pages/jobs/pages/edit-offer/edit-offer').then(m => m.EditOfferComponent) },
+
+
+     //feed layout route
+      { 
+        path: 'feed', 
+        loadChildren: () => import('../Routes/feed.routes').then(m => m.PostsRoutingModule) 
+      },
+
+
+      // initiatives layout route
+      {
+        path: 'initiatives',
+        loadChildren: () => import('../pages/Public/Widgets/initiatives/initiatives-routing.module').then(m => m.InitiativesRoutingModule)
+      }
+,
       // Profile & Misc
       { path: 'coming-soon', loadComponent: () => import('../pages/Public/Widgets/coming-soon/coming-soon').then(m => m.ComingSoonComponent) },
       { path: 'profile/:username', loadComponent: () => import('../pages/Public/pages/profile/profile/profile').then(m => m.ProfileComponent) }

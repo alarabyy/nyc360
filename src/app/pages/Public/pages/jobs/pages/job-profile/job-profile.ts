@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { JobProfileService } from '../../service/job-profile';
 
 // Models & Env
-import { JobProfile, RelatedJob, Applicant } from '../../models/job-profile';
+import { JobProfile, RelatedJob, Applicant, ApplicationStatus } from '../../models/job-profile';
 import { environment } from '../../../../../../environments/environment';
 import { AuthService } from '../../../../../Authentication/Service/auth';
 
@@ -21,7 +21,7 @@ import { AuthService } from '../../../../../Authentication/Service/auth';
 export class JobProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private jobService = inject(JobProfileService);
-  private authService = inject(AuthService); // ✅ حقن خدمة المصادقة
+  private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   
   // Data
@@ -44,11 +44,22 @@ export class JobProfileComponent implements OnInit {
   coverLetterText: string = '';
   isSubmittingApply: boolean = false;
 
-  ngOnInit(): void {
-    // 1. جلب الـ ID من السرفيس الموحد بدلاً من فك التشفير يدوياً
-    this.currentUserId = this.authService.getUserId();
-    console.log('Current User ID:', this.currentUserId);
+  // ✅ Share Modal State
+  showShareModal: boolean = false;
+  isSharing: boolean = false;
+  shareLink: string = '';
 
+  // ✅ Status Options for Dropdown
+  statusOptions = [
+    { value: ApplicationStatus.Pending, label: 'Pending' },
+    { value: ApplicationStatus.Reviewed, label: 'Reviewed' },
+    { value: ApplicationStatus.Interviewing, label: 'Interviewing' },
+    { value: ApplicationStatus.Rejected, label: 'Rejected' },
+    { value: ApplicationStatus.Accepted, label: 'Accepted' }
+  ];
+
+  ngOnInit(): void {
+    this.currentUserId = this.authService.getUserId();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) { this.loadJobData(id); }
@@ -63,10 +74,8 @@ export class JobProfileComponent implements OnInit {
           this.job = res.data.offer;
           this.relatedJobs = res.data.relatedJobs || [];
           
-          // ✅ المقارنة الصحيحة باستخدام المتغيرات الموجودة
           if (this.currentUserId && this.job.author.id === this.currentUserId) {
             this.isAuthor = true;
-            console.log('User IS the author. Enabling owner features.');
           } else {
             this.isAuthor = false;
           }
@@ -83,7 +92,6 @@ export class JobProfileComponent implements OnInit {
 
   onTabChange(tab: string): void {
     this.activeTab = tab;
-    // لو صاحب الوظيفة داس على تاب المتقدمين، حمل البيانات
     if (tab === 'applicants' && this.isAuthor && this.job) {
       this.loadApplicants();
     }
@@ -105,6 +113,56 @@ export class JobProfileComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // ✅ Update Application Status Logic
+  onStatusChange(applicant: Applicant, newStatus: any): void {
+    // newStatus يأتي من الـ select كـ string أحياناً لذا نحوله لـ number
+    const statusValue = Number(newStatus);
+    
+    this.jobService.updateApplicationStatus(applicant.applicationId, statusValue).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          applicant.status = statusValue; // Update UI locally
+          alert('Status updated successfully');
+        } else {
+          alert('Failed to update status');
+        }
+      },
+      error: () => alert('Error updating status')
+    });
+  }
+
+  // ✅ Share Logic
+  openShareModal(): void {
+    this.shareLink = window.location.href; // Generate current link
+    this.showShareModal = true;
+  }
+
+  confirmShare(): void {
+    if (!this.job) return;
+    this.isSharing = true;
+    
+    this.jobService.shareOffer(this.job.id).subscribe({
+      next: (res) => {
+        this.isSharing = false;
+        if (res.isSuccess) {
+          this.showShareModal = false;
+          alert('Job shared successfully!');
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isSharing = false;
+        this.showShareModal = false; // Close anyway on mock error or specific logic
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  copyLink(): void {
+    navigator.clipboard.writeText(this.shareLink);
+    alert('Link copied to clipboard!');
   }
 
   getAvatarUrl(imageName: string | undefined): string {
@@ -134,13 +192,13 @@ export class JobProfileComponent implements OnInit {
     });
   }
 
-  // Translators
+  // Helpers
   getArrangement(v: number) { return ['On-Site', 'Remote', 'Hybrid'][v] || 'On-Site'; }
   getType(v: number) { return ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'][v] || 'Full-time'; }
   getLevel(v: number) { return ['Entry', 'Junior', 'Mid-Level', 'Senior-Mid', 'Senior'][v] || 'N/A'; }
   
-  getApplicantStatus(s: number) {
-    const statuses = ['Pending', 'Reviewed', 'Shortlisted', 'Rejected', 'Hired', 'New'];
-    return statuses[s] || 'Pending';
+  // Helper for UI Badge (للواجهة فقط إذا لم نستخدم الـ Dropdown)
+  getApplicantStatusLabel(s: number) {
+    return this.statusOptions.find(opt => opt.value === s)?.label || 'Pending';
   }
 }
