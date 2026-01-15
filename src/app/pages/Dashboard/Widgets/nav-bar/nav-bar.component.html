@@ -22,6 +22,7 @@
       <li><a routerLink="/admin/posts" routerLinkActive="active">posts</a></li>
       <li><a routerLink="/admin/trending" routerLinkActive="active">trending</a></li>
       <li><a routerLink="/admin/flags" routerLinkActive="active">flags</a></li>
+      <li><a routerLink="/admin/tags" routerLinkActive="active">tags</a></li>
     </ul>
 
   </div>
@@ -62,6 +63,12 @@
       <li *ngIf="canViewDashboard  && canViewRSS">
         <a routerLink="/admin/flags" routerLinkActive="active">flags</a>
       </li>
+
+      <li *ngIf="canViewDashboard  && canViewRSS">
+        <a routerLink="/admin/tags" routerLinkActive="active">tags</a>
+      </li>
+
+
     </ul>
   </div>
 </nav>

@@ -1,0 +1,92 @@
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { CATEGORY_LIST } from '../../../../../models/category-list';
+import { TagRequest, TagModel } from '../../models/tags.model';
+import { TagsService } from '../../service/tags-dashboard.service';
+
+@Component({
+  selector: 'app-tag-create',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './tag-create.html',
+  styleUrls: ['./tag-create.scss']
+})
+export class TagCreateComponent implements OnInit {
+  private tagsService = inject(TagsService);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+
+  tagName: string = '';
+  selectedDivision: number | null = null;
+  selectedType: number = 3; 
+  parentTagId: number = 0; 
+
+  parentSearchTerm$ = new Subject<string>();
+  parentSearchResults: TagModel[] = [];
+  selectedParentName: string = 'NONE (TOP LEVEL)';
+  
+  categories = CATEGORY_LIST;
+  isSubmitting = false;
+  formSubmitted = false;
+
+  ngOnInit() {
+    this.parentSearchTerm$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(term => term.length > 0 ? this.tagsService.searchTags(term) : [])
+    ).subscribe({
+      next: (res: any) => {
+        this.parentSearchResults = res.data || [];
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  onSearchParent(event: any) {
+    this.parentSearchTerm$.next(event.target.value);
+  }
+
+  selectParent(tag: any) {
+    if (tag === 0) {
+      this.parentTagId = 0;
+      this.selectedParentName = 'NONE (TOP LEVEL)';
+    } else {
+      this.parentTagId = tag.id;
+      this.selectedParentName = tag.name.toUpperCase();
+    }
+    this.parentSearchResults = [];
+  }
+
+  onSubmit(event: Event) {
+    event.preventDefault(); // ✅ منع ريلود الصفحة
+    this.formSubmitted = true;
+
+    if (!this.tagName.trim() || this.selectedDivision === null) return;
+
+    this.isSubmitting = true;
+    const payload: TagRequest = {
+      Name: this.tagName.trim(),
+      Type: Number(this.selectedType),
+      Division: Number(this.selectedDivision),
+      ParentTagId: Number(this.parentTagId)
+    };
+
+    this.tagsService.createTag(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) this.router.navigate(['/admin/tags']);
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => { 
+        this.isSubmitting = false;
+        alert(`Error 400: ${err.error?.Message || 'Check your payload'}`);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  onCancel() { this.router.navigate(['/admin/tags']); }
+}

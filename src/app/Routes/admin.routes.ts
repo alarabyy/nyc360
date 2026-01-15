@@ -35,6 +35,15 @@ export const ADMIN_ROUTES: Routes = [
       // Trending & Flags
       { path: 'trending', loadComponent: () => import('../pages/Dashboard/pages/posts/trending/trending').then(m => m.TrendingComponent) },
       { path: 'flags', loadComponent: () => import('../pages/Dashboard/pages/posts/flags-list/flags-list').then(m => m.FlagsListComponent) }
+  
+  
+       //tags 
+     , 
+     { path: 'tags', loadComponent: () => import('../pages/Dashboard/pages/tags/pages/tags-list/tags-list').then(m => m.TagsListComponent) },
+     { path: 'tags/create', loadComponent: () => import('../pages/Dashboard/pages/tags/pages/tag-create/tag-create').then(m => m.TagCreateComponent) },
+     { path: 'tags/update/:id', loadComponent: () => import('../pages/Dashboard/pages/tags/pages/tag-update/tag-update').then(m => m.TagUpdateComponent) },
+
+  
     ]
   }
 ];

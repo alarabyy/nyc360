@@ -1,0 +1,92 @@
+<div class="luxury-dashboard animate__animated animate__fadeIn">
+  <div class="container-fluid py-4 px-md-5">
+    
+    <div class="header-section d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+      <div class="title-area">
+        <h1 class="gold-title merriweather-font mb-0">TAGS MANAGEMENT</h1>
+        <p class="text-muted small mb-0">Manage NYC360 system classifications and hierarchy</p>
+      </div>
+      <button class="btn-luxury-gold shadow-sm" routerLink="create">
+        <i class="bi bi-plus-circle-fill me-2"></i> CREATE NEW TAG
+      </button>
+    </div>
+
+    <div class="filter-panel shadow-sm mb-4">
+      <div class="row g-3">
+        <div class="col-12 col-lg-4">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" [(ngModel)]="searchTerm" (input)="onFilterChange()" placeholder="Search by tag name...">
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <select class="luxury-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+            <option [value]="-1">ALL TYPES</option>
+            <option [value]="1">Identity</option>
+            <option [value]="2">Professional</option>
+            <option [value]="3">Interest</option>
+            <option [value]="4">Location</option>
+          </select>
+        </div>
+        <div class="col-6 col-lg-3">
+          <select class="luxury-select" [(ngModel)]="selectedDiv" (change)="onFilterChange()">
+            <option [value]="-1">ALL DIVISIONS</option>
+            <option *ngFor="let c of categories" [value]="c.id">{{c.name | uppercase}}</option>
+          </select>
+        </div>
+        <div class="col-12 col-lg-2 d-flex align-items-center justify-content-center" *ngIf="isLoading">
+          <div class="spinner-border text-gold spinner-border-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card shadow-lg animate__animated animate__fadeInUp">
+      <div class="table-responsive">
+        <table class="luxury-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>TYPE</th>
+              <th>DIVISION</th>
+              <th class="text-center">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of tags; let i = index" [style.animation-delay]="i * 0.03 + 's'" class="animate__animated animate__fadeIn">
+              <td class="id-cell">#{{t.id}}</td>
+              <td class="name-cell"><strong>{{t.name}}</strong></td>
+              <td><span class="type-badge">{{getTypeName(t.type)}}</span></td>
+              <td><span class="div-badge">{{getCatName(t.division)}}</span></td>
+              <td class="text-center">
+                <div class="action-btns">
+                  <button [routerLink]="['update', t.id]" class="btn-action edit"><i class="bi bi-pencil-fill"></i></button>
+                  <button (click)="onDelete(t.id)" class="btn-action delete"><i class="bi bi-trash3-fill"></i></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-footer d-flex justify-content-between align-items-center p-4 border-top flex-wrap gap-3">
+        <div class="info text-muted small">
+          Showing <b>{{tags.length}}</b> of <b>{{totalCount}}</b> total results
+        </div>
+        
+        <div class="pagination-controls d-flex gap-2">
+          <button class="btn-page" [disabled]="currentPage === 1" (click)="loadData(currentPage - 1)">
+            <i class="bi bi-chevron-left"></i> Prev
+          </button>
+          
+          <span class="page-indicator">Page <b>{{currentPage}}</b> of <b>{{totalPages}}</b></span>
+          
+          <button class="btn-page" [disabled]="currentPage === totalPages" (click)="loadData(currentPage + 1)">
+            Next <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

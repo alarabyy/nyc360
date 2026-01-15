@@ -1,0 +1,47 @@
+$gold: #D4AF37;
+$black: #111111;
+$white: #FFFFFF;
+$radius: 12px;
+
+.luxury-dashboard { background: #fcfcfc; min-height: 100vh; font-family: 'Inter', sans-serif; }
+
+.gold-title {
+  color: $black; font-weight: 900; border-left: 6px solid $gold; padding-left: 15px; letter-spacing: 1px;
+}
+
+.btn-luxury-gold {
+  background: $black; color: $gold; border: 1px solid $gold; padding: 12px 30px; border-radius: 50px;
+  font-weight: 800; transition: 0.3s;
+  &:hover { background: $gold; color: $black; box-shadow: 0 10px 25px rgba($gold, 0.3); }
+}
+
+.filter-panel {
+  background: $white; padding: 25px; border-radius: $radius; border: 1px solid #eee;
+  .search-box {
+    position: relative;
+    i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: $gold; }
+    input {
+      width: 100%; padding: 12px 15px 12px 45px; border-radius: 10px; border: 1px solid #ddd;
+      &:focus { border-color: $gold; outline: none; box-shadow: 0 0 0 4px rgba($gold, 0.1); }
+    }
+  }
+}
+
+.luxury-table {
+  width: 100%; border-collapse: collapse;
+  thead th { background: $black; color: $gold; padding: 20px; text-align: left; font-size: 0.75rem; font-weight: 800; }
+  tbody td { padding: 18px 20px; border-bottom: 1px solid #f8f9fa; color: #333; }
+  .type-badge { background: #fdfaf0; color: #b8860b; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.7rem; }
+  .div-badge { background: #f3f4f6; color: $black; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.7rem; }
+}
+
+.btn-page {
+  background: $white; border: 1px solid #ddd; padding: 8px 20px; border-radius: 8px; font-weight: 600;
+  &:hover:not(:disabled) { border-color: $gold; color: $gold; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+@media (max-width: 768px) {
+  .luxury-dashboard { padding: 15px; }
+  .pagination-footer { justify-content: center !important; flex-direction: column; }
+}

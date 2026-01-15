@@ -1,0 +1,48 @@
+$gold: #D4AF37;
+$black: #1A1A1A;
+$white: #FFFFFF;
+
+.tag-update-luxury {
+  display: flex; justify-content: center; padding: 50px 20px; background: #fafafa; min-height: 100vh;
+  .luxury-card {
+    width: 100%; max-width: 650px; background: $white; border-radius: 16px; border: 1px solid rgba($gold, 0.2); overflow: hidden;
+    .card-header-luxury { background: $black; padding: 30px; text-align: center; }
+    .gold-text { color: $gold; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
+  }
+}
+
+.input-field {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;
+  label { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: $black; }
+  input, select {
+    padding: 14px 18px; border-radius: 10px; border: 1px solid #E5E7EB; background: #FDFDFD; font-size: 0.95rem;
+    &:focus { outline: none; border-color: $gold; box-shadow: 0 0 0 4px rgba($gold, 0.1); }
+  }
+}
+
+.results-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; background: $white; border: 1px solid $gold;
+  z-index: 100; border-radius: 12px; list-style: none; padding: 0; margin: 5px 0 0; max-height: 200px; overflow-y: auto;
+  li { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; &:hover { background: #fdfaf0; color: $gold; } }
+}
+
+.btn-save-gold {
+  background: $black; color: $gold; border: 1px solid $gold; padding: 14px 45px; border-radius: 50px;
+  font-weight: 800; text-transform: uppercase; transition: 0.3s;
+  &:hover:not(:disabled) { background: $gold; color: $black; box-shadow: 0 10px 20px rgba($gold, 0.2); transform: translateY(-1px); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-cancel-luxury {
+  background: transparent; color: #888; border: 1px solid #eee; padding: 14px 35px; border-radius: 50px;
+  font-weight: 600; &:hover { background: #f9f9f9; }
+}
+
+.text-gold { color: $gold !important; }
+.invalid-border { border-color: #dc3545 !important; }
+.error-msg { color: #dc3545; font-size: 0.7rem; font-weight: 700; }
+
+@media (max-width: 600px) {
+  .form-grid { display: flex; flex-direction: column; }
+  .actions { flex-direction: column-reverse; button { width: 100%; } }
+}
