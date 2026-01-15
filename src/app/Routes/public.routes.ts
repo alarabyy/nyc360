@@ -35,6 +35,12 @@ export const PUBLIC_ROUTES: Routes = [
       { path: 'profession/my-offers', loadComponent: () => import('../pages/Public/pages/jobs/pages/my-offers/my-offers').then(m => m.MyOffersComponent) },
       { path: 'edit-offer/:id', loadComponent: () => import('../pages/Public/pages/jobs/pages/edit-offer/edit-offer').then(m => m.EditOfferComponent) },
 
+       // category home
+        { 
+          path: 'category/:categoryPath', 
+          loadComponent: () => import('../pages/Public/Widgets/category-home/category-home.component/category-home.component').then(m => m.CategoryHomeComponent) 
+        },
+
 
      //feed layout route
       { 
@@ -53,5 +59,6 @@ export const PUBLIC_ROUTES: Routes = [
       { path: 'coming-soon', loadComponent: () => import('../pages/Public/Widgets/coming-soon/coming-soon').then(m => m.ComingSoonComponent) },
       { path: 'profile/:username', loadComponent: () => import('../pages/Public/pages/profile/profile/profile').then(m => m.ProfileComponent) }
     ]
+
   }
 ];

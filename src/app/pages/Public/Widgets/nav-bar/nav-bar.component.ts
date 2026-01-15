@@ -40,7 +40,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'culture', name: 'Culture', icon: 'bi-mask', route: '/public/coming-soon',
+      id: 'culture', name: 'Culture', icon: 'bi-mask', route: '/public/category/culture',
       topLinks: [
         { label: 'Feed', route: '/public/feed/culture' },
         { label: 'Exhibitions', route: '/public/culture/exhibitions' },
@@ -48,7 +48,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'education', name: 'Education', icon: 'bi-journal-bookmark-fill', route: '/public/coming-soon',
+      id: 'education', name: 'Education', icon: 'bi-journal-bookmark-fill', route: '/public/category/education',
       topLinks: [
         { label: 'Feed', route: '/public/feed/education' },
         { label: 'Courses', route: '/public/education/courses' },
@@ -56,7 +56,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'Housing', name: 'Housing', icon: 'bi-house-door-fill', route: '/public/coming-soon',
+      id: 'Housing', name: 'Housing', icon: 'bi-house-door-fill', route: '/public/category/housing',
       topLinks: [
         { label: 'Feed', route: '/public/feed/housing' },
         { label: 'Properties', route: '/public/housing/properties' },
@@ -72,7 +72,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/public/coming-soon',
+      id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/public/category/lifestyle',
       topLinks: [
         { label: 'Feed', route: '/public/lifestyle/feed' },
         { label: 'Trends', route: '/public/lifestyle/trends' },
@@ -80,7 +80,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'legal', name: 'Legal', icon: 'bi-bank2', route: '/public/coming-soon',
+      id: 'legal', name: 'Legal', icon: 'bi-bank2', route: '/public/category/legal',
       topLinks: [
         { label: 'Feed', route: '/public/legal/feed' },
         { label: 'Consult', route: '/public/legal/consult' },
@@ -88,7 +88,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'news', name: 'News', icon: 'bi-newspaper', route: '/public/coming-soon',
+      id: 'news', name: 'News', icon: 'bi-newspaper', route: '/public/category/news',
       topLinks: [
         { label: 'Feed', route: '/public/feed/news' },
         { label: 'Latest', route: '/public/news/latest' },
@@ -105,7 +105,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'social', name: 'Social', icon: 'bi-globe', route: '/public/coming-soon',
+      id: 'social', name: 'Social', icon: 'bi-globe', route: '/public/category/social',
       topLinks: [
         { label: 'Feed', route: '/public/social/feed' },
         { label: 'Campaigns', route: '/public/social/campaigns' },
@@ -113,7 +113,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'Transportation', name: 'Tour', icon: 'bi-map-fill', route: '/public/coming-soon',
+      id: 'Transportation', name: 'Tourism', icon: 'bi-map-fill', route: '/public/category/transportation',
       topLinks: [
         { label: 'Feed', route: '/public/feed/Transportation' },
         { label: 'Map', route: '/public/tour/map' },
@@ -121,7 +121,7 @@ navLinks = Object.values(CATEGORY_THEMES);
       ]
     }, 
     { 
-      id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/public/coming-soon',
+      id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/public/category/tv',
       topLinks: [
         { label: 'Feed', route: '/public/tv/feed' },
         { label: 'Live', route: '/public/tv/live' },
