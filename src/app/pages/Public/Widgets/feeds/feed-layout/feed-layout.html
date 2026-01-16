@@ -79,7 +79,7 @@
             <img [src]="post.ui.authorImg" alt="User">
             <span>{{ post.ui.authorName }}</span>
           </div>
-          <a class="read-more" [routerLink]="['/post', post.id]">
+          <a class="read-more" [routerLink]="['/public/posts/details', post.id]">
             <i class="bi bi-arrow-right"></i>
           </a>
         </div>

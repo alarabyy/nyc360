@@ -14,9 +14,9 @@
     
     <section class="top-section mb-5">
       <div class="row g-4">
-        <div class="col-lg-8" *ngIf="heroPost">
+        <div class="col-lg-8" *ngIf="heroPost"  >
           <div class="hero-card">
-            <img [src]="getImg(heroPost)" alt="Hero">
+            <img [src]="getImg(heroPost)" alt="Hero"  [routerLink]="['/public/posts/details', heroPost.id]">
             <div class="hero-overlay">
               <span class="hero-cat-label">{{ activeTheme?.label }}</span>
               <h2>{{ heroPost.title }}</h2>
@@ -80,7 +80,7 @@
             <div class="card-content">
               <h4>{{ post.title | slice:0:60 }}...</h4>
               <p class="desc">{{ post.content | slice:0:100 }}...</p>
-              <a routerLink="." class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/public/posts/details', post.id]" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
