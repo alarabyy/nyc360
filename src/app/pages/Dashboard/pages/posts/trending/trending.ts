@@ -7,6 +7,7 @@ import { CategoryMap, PostAuthor, TrendingPost, PostStats } from '../models/tren
 import { PostsService } from '../services/posts';
 import { InteractionType } from '../../posts/models/posts';
 import { AuthService } from '../../../../Authentication/Service/auth';
+import { ToastService } from '../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-trending',
@@ -22,6 +23,7 @@ export class TrendingComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   protected readonly environment = environment;
   protected readonly InteractionType = InteractionType;
@@ -78,6 +80,7 @@ export class TrendingComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading trending:', err);
+        this.toastService.error('Failed to load trending posts.');
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -128,12 +131,12 @@ export class TrendingComponent implements OnInit {
     this.posts = this.posts.filter(p => p.id !== id);
     this.calculateDashboardStats();
     // In real app, call API: this.trendingService.removeFromTrending(id)...
-    alert('Post removed from trending (Simulation).');
+    this.toastService.success('Post removed from trending (Simulation).');
   }
 
   boostPost(id: number) {
     // Simulation of "Boosting" a post to stay trending longer
-    alert(`Post #${id} boosted for 24 hours! 🚀`);
+    this.toastService.success(`Post #${id} boosted for 24 hours! 🚀`);
   }
 
   goToDetails(id: number, fragment?: string) {

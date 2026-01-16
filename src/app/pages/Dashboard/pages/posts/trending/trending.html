@@ -113,7 +113,7 @@
               <!-- Author -->
               <td>
                 <div class="d-flex align-items-center gap-2">
-                  <img [src]="getAuthorImage(post.author?.imageUrl)" class="author-avatar">
+                  <img [src]="getAuthorImage(post.author ? post.author.imageUrl : null)" class="author-avatar">
                   <span class="fw-bold text-dark small">{{ getAuthorName(post.author) }}</span>
                 </div>
               </td>

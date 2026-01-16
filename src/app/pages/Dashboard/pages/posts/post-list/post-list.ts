@@ -7,6 +7,7 @@ import { Post, InteractionType, Comment, FlagReasonType } from '../models/posts'
 import { PostsService } from '../services/posts';
 import { AuthService } from '../../../../Authentication/Service/auth';
 import { CATEGORY_THEMES, CategoryEnum } from '../../../../Public/Widgets/feeds/models/categories';
+import { ToastService } from '../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-post-list',
@@ -25,6 +26,7 @@ export class PostListComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   // --- Data ---
   allPosts: Post[] = []; // Store all fetched posts
@@ -120,6 +122,7 @@ export class PostListComponent implements OnInit {
       error: () => {
         this.isLoading = false;
         this.errorMessage = 'Could not load feed.';
+        this.toastService.error('Failed to load posts data.');
         this.cdr.detectChanges();
       }
     });
@@ -204,20 +207,31 @@ export class PostListComponent implements OnInit {
     this.postsService.reportPost(this.reportPostId, this.reportReason, this.reportDetails).subscribe({
       next: (res) => {
         this.isReporting = false;
-        if (res.isSuccess) { alert('Report submitted successfully.'); this.closeReportModal(); }
-        else { alert(res.error?.message || 'Failed to submit.'); }
+        if (res.isSuccess) {
+          this.toastService.success('Report submitted successfully.');
+          this.closeReportModal();
+        } else {
+          this.toastService.error(res.error?.message || 'Failed to submit.');
+        }
       },
-      error: () => { this.isReporting = false; alert('Network error.'); }
+      error: () => {
+        this.isReporting = false;
+        this.toastService.error('Network error during report submission.');
+      }
     });
   }
 
   onDelete(id: number) {
     if (confirm('Are you sure you want to permanently delete this post? This action cannot be undone.')) {
       this.postsService.deletePost(id).subscribe({
-        next: () => {
+        next: (res) => { // Assuming response might have success flag
+          this.toastService.success('Post deleted successfully');
           this.allPosts = this.allPosts.filter(p => p.id !== id);
           this.applyFilters();
           this.calculateStats();
+        },
+        error: () => {
+          this.toastService.error('Failed to delete post');
         }
       });
     }

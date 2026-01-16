@@ -1,12 +1,16 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ProfileService } from '../profile/service/profile';
 import { AuthService } from '../../../Authentication/Service/auth';
+import { VerificationService } from './services/verification.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 import {
     UserProfileData, UpdateBasicProfileDto, AddEducationDto, UpdateEducationDto,
     AddPositionDto, UpdatePositionDto, Education, Position, SocialPlatform, SocialLinkDto
 } from '../profile/models/profile';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 
 @Component({
     selector: 'app-settings',
@@ -20,12 +24,14 @@ export class SettingsComponent implements OnInit {
 
     private profileService = inject(ProfileService);
     private authService = inject(AuthService);
+    private verificationService = inject(VerificationService);
+    private toastService = inject(ToastService);
     private fb = inject(FormBuilder);
     private cdr = inject(ChangeDetectorRef);
     private datePipe = inject(DatePipe);
 
     // Layout State
-    activeTab: 'profile' | 'security' | 'tags' = 'profile';
+    activeTab: 'profile' | 'security' | 'tags' | 'verification' = 'profile';
 
     // Data State
     user: UserProfileData | null = null;
@@ -38,13 +44,21 @@ export class SettingsComponent implements OnInit {
     posForm!: FormGroup;
     socialForm!: FormGroup;
     passwordForm!: FormGroup;
+    verificationForm!: FormGroup;
+
+    // Tag Search
+    tagSearchControl = new FormControl('');
+    tagSearchResults: any[] = [];
+    showTagDropdown = false;
+    selectedTag: any = null;
+    private tagSearch$ = new Subject<string>();
 
     // Edit State
     isEditMode = false;
     selectedItemId: number | null = null;
+    selectedVerificationFile: File | null = null;
 
     modalState = { education: false, position: false, social: false, password: false };
-
 
     socialPlatforms = [
         { id: SocialPlatform.Facebook, name: 'Facebook', icon: 'bi-facebook' },
@@ -55,12 +69,30 @@ export class SettingsComponent implements OnInit {
         { id: SocialPlatform.Other, name: 'Other', icon: 'bi-link-45deg' }
     ];
 
+    documentTypes = [
+        { id: 1, name: 'Government ID' },
+        { id: 2, name: 'Utility Bill' },
+        { id: 3, name: 'Organization Charter' },
+        { id: 4, name: 'Business License' },
+        { id: 5, name: 'Professional License' },
+        { id: 6, name: 'Employee ID Card' },
+        { id: 7, name: 'Academic Degree' },
+        { id: 8, name: 'Certification' },
+        { id: 9, name: 'Portfolio Link (PDF/Image)' },
+        { id: 10, name: 'Press Credential' },
+        { id: 11, name: 'Contract Agreement' },
+        { id: 12, name: 'Letter of Recommendation' },
+        { id: 99, name: 'Other' }
+    ];
+
     ngOnInit() {
         this.initForms();
         this.loadCurrentUser();
+        this.setupTagSearch();
     }
 
     initForms() {
+        // ... (existing form inits)
         this.basicForm = this.fb.group({
             firstName: ['', [Validators.required, Validators.minLength(2)]],
             lastName: ['', [Validators.required, Validators.minLength(2)]],
@@ -95,18 +127,47 @@ export class SettingsComponent implements OnInit {
             newPassword: ['', [Validators.required, Validators.minLength(6)]],
             confirmPassword: ['', Validators.required]
         });
+
+        this.verificationForm = this.fb.group({
+            tagId: [0, Validators.required], // Hidden or managed by UI
+            reason: ['', [Validators.required, Validators.minLength(10)]],
+            documentType: [1, Validators.required],
+            file: [null, Validators.required]
+        });
     }
 
-    // ... (existing loadCurrentUser)
+    setupTagSearch() {
+        this.tagSearchControl.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            switchMap(term => {
+                if (!term || term.length < 2) return of([]);
+                return this.verificationService.searchTags(term).pipe(
+                    catchError(() => of([]))
+                );
+            })
+        ).subscribe((res: any) => {
+            this.tagSearchResults = res.data || [];
+            this.showTagDropdown = this.tagSearchResults.length > 0;
+            this.cdr.detectChanges();
+        });
+    }
 
-    // ... (existing saveBasicInfo)
+    selectTag(tag: any) {
+        this.selectedTag = tag;
+        this.verificationForm.patchValue({ tagId: tag.id });
+        this.tagSearchControl.setValue(tag.name, { emitEvent: false }); // Show name in input
+        this.showTagDropdown = false;
+    }
 
-    // ... (existing Education methods)
+    clearTagSelection() {
+        this.selectedTag = null;
+        this.verificationForm.patchValue({ tagId: 0 });
+        this.tagSearchControl.setValue('');
+    }
 
-    // ... (existing Position methods)
-
-    // ... (existing Social methods)
-
+    // ... (existing methods loadCurrentUser, saveBasicInfo, etc.)
+    // ... (Education, Position, Social methods)
 
     // --- Security ---
     openChangePassword() {
@@ -122,7 +183,7 @@ export class SettingsComponent implements OnInit {
 
         const val = this.passwordForm.value;
         if (val.newPassword !== val.confirmPassword) {
-            alert('New passwords do not match!');
+            this.toastService.error('New passwords do not match!');
             return;
         }
 
@@ -131,7 +192,7 @@ export class SettingsComponent implements OnInit {
         setTimeout(() => {
             this.isSaving = false;
             this.modalState.password = false;
-            alert('Password changed successfully!');
+            this.toastService.success('Password changed successfully!');
         }, 1000);
     }
 
@@ -141,6 +202,9 @@ export class SettingsComponent implements OnInit {
         if (res.isSuccess) {
             this.modalState[modalKey] = false;
             this.loadCurrentUser();
+            this.toastService.success('Updated successfully');
+        } else {
+            this.toastService.error(res.error?.message || 'Update failed');
         }
     }
 
@@ -195,8 +259,10 @@ export class SettingsComponent implements OnInit {
             next: (res) => {
                 this.isSaving = false;
                 if (res.isSuccess) {
-                    alert('Profile updated successfully!');
+                    this.toastService.success('Profile updated successfully!');
                     this.loadCurrentUser();
+                } else {
+                    this.toastService.error('Update failed');
                 }
             },
             error: () => this.isSaving = false
@@ -242,7 +308,7 @@ export class SettingsComponent implements OnInit {
 
     deleteEdu(id: number) {
         if (confirm('Are you sure you want to delete this education entry?')) {
-            this.profileService.deleteEducation(id).subscribe(() => this.loadCurrentUser());
+            this.profileService.deleteEducation(id).subscribe(() => { this.loadCurrentUser(); this.toastService.success('Deleted successfully'); });
         }
     }
 
@@ -285,7 +351,7 @@ export class SettingsComponent implements OnInit {
 
     deletePos(id: number) {
         if (confirm('Are you sure you want to delete this experience entry?')) {
-            this.profileService.deletePosition(id).subscribe(() => this.loadCurrentUser());
+            this.profileService.deletePosition(id).subscribe(() => { this.loadCurrentUser(); this.toastService.success('Deleted successfully'); });
         }
     }
 
@@ -309,8 +375,6 @@ export class SettingsComponent implements OnInit {
     }
 
 
-
-
     formatDateForInput(dateStr?: string): string {
         return dateStr ? (this.datePipe.transform(dateStr, 'yyyy-MM-dd') || '') : '';
     }
@@ -320,21 +384,100 @@ export class SettingsComponent implements OnInit {
 
     onAvatarSelected(event: any) {
         const file = event.target.files[0];
-        if (file) this.profileService.uploadAvatar(file).subscribe(res => { if (res.isSuccess) this.loadCurrentUser(); });
+        if (file) this.profileService.uploadAvatar(file).subscribe(res => { if (res.isSuccess) { this.loadCurrentUser(); this.toastService.success('Avatar updated'); } });
     }
 
     onCoverSelected(event: any) {
         const file = event.target.files[0];
-        if (file) this.profileService.uploadCover(file).subscribe(res => { if (res.isSuccess) this.loadCurrentUser(); });
+        if (file) this.profileService.uploadCover(file).subscribe(res => { if (res.isSuccess) { this.loadCurrentUser(); this.toastService.success('Cover updated'); } });
     }
 
-    // Security & Tags Placeholders
     saveSecurity() {
-        alert('Security settings saved (Simulation)');
+        this.toastService.success('Security settings saved (Simulation)');
     }
 
     saveTags() {
-        alert('Tags saved (Simulation)');
+        this.toastService.success('Tags saved (Simulation)');
+    }
+
+    // --- Verifications ---
+    verificationType: 'identity' | 'tag' = 'identity';
+
+    setVerificationType(type: 'identity' | 'tag') {
+        this.verificationType = type;
+        this.verificationForm.reset({ tagId: 0, documentType: 1 });
+        this.selectedVerificationFile = null;
+        this.clearTagSelection();
+    }
+
+    onVerificationFileSelected(event: any) {
+        if (event.target.files.length > 0) {
+            this.selectedVerificationFile = event.target.files[0];
+            this.verificationForm.patchValue({ file: this.selectedVerificationFile });
+        }
+    }
+
+    submitVerification() {
+        if (this.verificationForm.invalid) {
+            this.verificationForm.markAllAsTouched();
+            this.toastService.error('Please complete the verification form.');
+            return;
+        }
+
+        if (this.verificationType === 'tag' && !this.selectedTag) {
+            this.toastService.error('Please select a tag to verify.');
+            return;
+        }
+
+        if (!this.selectedVerificationFile) {
+            this.toastService.error('Please upload a document.');
+            return;
+        }
+
+        this.isSaving = true;
+
+        if (this.verificationType === 'identity') {
+            const data = {
+                Reason: this.verificationForm.value.reason,
+                DocumentType: this.verificationForm.value.documentType,
+                File: this.selectedVerificationFile
+            };
+
+            this.verificationService.submitIdentityVerification(data).subscribe({
+                next: (res) => this.handleVerificationSuccess(res),
+                error: () => this.handleVerificationError()
+            });
+
+        } else {
+            const data = {
+                TagId: this.verificationForm.value.tagId,
+                Reason: this.verificationForm.value.reason,
+                DocumentType: this.verificationForm.value.documentType,
+                File: this.selectedVerificationFile
+            };
+
+            this.verificationService.submitVerification(data).subscribe({
+                next: (res) => this.handleVerificationSuccess(res),
+                error: () => this.handleVerificationError()
+            });
+        }
+    }
+
+    private handleVerificationSuccess(res: any) {
+        this.isSaving = false;
+        if (res.isSuccess) {
+            this.toastService.success('Verification request submitted successfully!');
+            this.verificationForm.reset({ tagId: 0, documentType: 1 });
+            this.selectedVerificationFile = null;
+            this.clearTagSelection();
+        } else {
+            this.toastService.error(res.error?.message || 'Submission failed');
+        }
+    }
+
+    private handleVerificationError() {
+        this.isSaving = false;
+        this.toastService.error('Network error. Please try again.');
     }
 
 }

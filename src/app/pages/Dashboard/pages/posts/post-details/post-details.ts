@@ -6,6 +6,7 @@ import { environment } from '../../../../../environments/environment';
 import { PostsService } from '../services/posts';
 import { Post, PostCategoryList, InteractionType, Comment, FlagReasonType } from '../models/posts';
 import { AuthService } from '../../../../Authentication/Service/auth';
+import { ToastService } from '../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-post-details',
@@ -15,7 +16,7 @@ import { AuthService } from '../../../../Authentication/Service/auth';
   styleUrls: ['./post-details.scss']
 })
 export class PostDetailsComponent implements OnInit {
-  
+
   protected readonly environment = environment;
   protected readonly InteractionType = InteractionType;
 
@@ -24,18 +25,19 @@ export class PostDetailsComponent implements OnInit {
   private postsService = inject(PostsService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   // Data
   post: Post | null = null;
   isLoading = true;
   errorMessage = '';
   categories = PostCategoryList;
-  
+
   // User
   currentUserId: string | null = null;
   currentUserData: any = null;
   isAdmin = false;
-  
+
   // Interactions
   newCommentContent = '';
   replyInputs: { [key: number]: string } = {};
@@ -81,15 +83,21 @@ export class PostDetailsComponent implements OnInit {
         if (res.isSuccess && res.data) {
           this.post = res.data;
           // Safe Initialization
-          if (!this.post.stats) this.post.stats = { views:0, likes:0, dislikes:0, comments:0, shares:0 };
+          if (!this.post.stats) this.post.stats = { views: 0, likes: 0, dislikes: 0, comments: 0, shares: 0 };
           if (!this.post.comments) this.post.comments = [];
           this.cdr.detectChanges();
           this.checkFragment();
         } else {
           this.errorMessage = res.error?.message || 'Post not found.';
+          this.toastService.error(this.errorMessage);
         }
       },
-      error: () => { this.isLoading = false; this.errorMessage = 'Network error.'; this.cdr.detectChanges(); }
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Network error.';
+        this.toastService.error('Failed to load post details.');
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -125,10 +133,17 @@ export class PostDetailsComponent implements OnInit {
     this.postsService.reportPost(this.post.id, this.reportReason, this.reportDetails).subscribe({
       next: (res) => {
         this.isReporting = false;
-        if (res.isSuccess) { alert('Report submitted successfully.'); this.closeReportModal(); }
-        else { alert(res.error?.message || 'Failed.'); }
+        if (res.isSuccess) {
+          this.toastService.success('Report submitted successfully.');
+          this.closeReportModal();
+        } else {
+          this.toastService.error(res.error?.message || 'Failed to submit report.');
+        }
       },
-      error: () => { this.isReporting = false; alert('Network error.'); }
+      error: () => {
+        this.isReporting = false;
+        this.toastService.error('Network error. Please try again.');
+      }
     });
   }
 
@@ -157,13 +172,24 @@ export class PostDetailsComponent implements OnInit {
   // --- Actions ---
   onDelete() {
     if (this.post && confirm('Delete post?')) {
-      this.postsService.deletePost(this.post.id).subscribe({ next: () => this.router.navigate(['/admin/posts']) });
+      this.postsService.deletePost(this.post.id).subscribe({
+        next: () => {
+          this.toastService.success('Post deleted successfully.');
+          this.router.navigate(['/admin/posts']);
+        },
+        error: () => {
+          this.toastService.error('Failed to delete post.');
+        }
+      });
     }
   }
 
   toggleInteraction(type: InteractionType) {
     if (!this.post) return;
-    if (!this.currentUserId) { alert('Login required.'); return; }
+    if (!this.currentUserId) {
+      this.toastService.error('Login required to interact.');
+      return;
+    }
 
     const oldInteraction = this.post.currentUserInteraction;
     if (this.post.currentUserInteraction === type) {
@@ -177,25 +203,34 @@ export class PostDetailsComponent implements OnInit {
     }
 
     this.postsService.interact(this.post.id, type).subscribe({
-      error: () => { if(this.post) { this.post.currentUserInteraction = oldInteraction; if (type === InteractionType.Like) this.post.stats!.likes--; } }
+      error: () => {
+        if (this.post) {
+          this.post.currentUserInteraction = oldInteraction;
+          if (type === InteractionType.Like) this.post.stats!.likes--;
+        }
+        this.toastService.error('Failed to update interaction.');
+      }
     });
   }
 
   // --- Comments ---
   submitComment() {
     if (!this.newCommentContent.trim() || !this.post) return;
-    if (!this.currentUserId) { alert('Login required.'); return; }
-    
+    if (!this.currentUserId) {
+      this.toastService.error('Login required to comment.');
+      return;
+    }
+
     if (!this.post.comments) this.post.comments = [];
-    if (!this.post.stats) this.post.stats = { views:0, likes:0, dislikes:0, comments:0, shares:0 };
+    if (!this.post.stats) this.post.stats = { views: 0, likes: 0, dislikes: 0, comments: 0, shares: 0 };
 
     const content = this.newCommentContent;
-    const tempComment: any = { 
-      id: -Date.now(), 
-      content: content, 
-      author: { fullName: this.currentUserData?.fullName || 'User', imageUrl: this.currentUserData?.imageUrl }, 
-      createdAt: new Date().toISOString(), 
-      replies: [] 
+    const tempComment: any = {
+      id: -Date.now(),
+      content: content,
+      author: { fullName: this.currentUserData?.fullName || 'User', imageUrl: this.currentUserData?.imageUrl },
+      createdAt: new Date().toISOString(),
+      replies: []
     };
 
     this.post.comments.unshift(tempComment);
@@ -203,16 +238,18 @@ export class PostDetailsComponent implements OnInit {
     this.newCommentContent = '';
 
     this.postsService.addComment(this.post.id, content).subscribe({
-      next: (res) => { 
-        if (res.isSuccess && this.post?.comments) { 
-            this.post.comments.shift(); 
-            this.post.comments.unshift(res.data as any); 
-        } 
+      next: (res) => {
+        if (res.isSuccess && this.post?.comments) {
+          this.post.comments.shift();
+          this.post.comments.unshift(res.data as any);
+          this.toastService.success('Comment added.');
+        }
       },
-      error: () => { 
-        if(this.post?.comments) this.post.comments.shift(); 
-        if(this.post?.stats) this.post.stats.comments--; 
-        this.newCommentContent = content; 
+      error: () => {
+        if (this.post?.comments) this.post.comments.shift();
+        if (this.post?.stats) this.post.stats.comments--;
+        this.newCommentContent = content;
+        this.toastService.error('Failed to add comment.');
       }
     });
   }
@@ -222,16 +259,19 @@ export class PostDetailsComponent implements OnInit {
   submitReply(parent: Comment) {
     const content = this.replyInputs[parent.id];
     if (!content?.trim() || !this.post) return;
-    if (!this.currentUserId) { alert('Login required.'); return; }
+    if (!this.currentUserId) {
+      this.toastService.error('Login required to reply.');
+      return;
+    }
 
     if (!parent.replies) parent.replies = [];
-    if (!this.post.stats) this.post.stats = { views:0, likes:0, dislikes:0, comments:0, shares:0 };
+    if (!this.post.stats) this.post.stats = { views: 0, likes: 0, dislikes: 0, comments: 0, shares: 0 };
 
-    const tempReply: any = { 
-      id: -Date.now(), 
-      content: content, 
-      author: { fullName: this.currentUserData?.fullName || 'User', imageUrl: this.currentUserData?.imageUrl }, 
-      createdAt: new Date().toISOString() 
+    const tempReply: any = {
+      id: -Date.now(),
+      content: content,
+      author: { fullName: this.currentUserData?.fullName || 'User', imageUrl: this.currentUserData?.imageUrl },
+      createdAt: new Date().toISOString()
     };
     parent.replies.push(tempReply);
     this.replyInputs[parent.id] = '';
@@ -239,8 +279,18 @@ export class PostDetailsComponent implements OnInit {
     this.post.stats.comments++;
 
     this.postsService.addComment(this.post.id, content, parent.id).subscribe({
-      next: (res) => { if (res.isSuccess && parent.replies) { parent.replies.pop(); parent.replies.push(res.data as any); } },
-      error: () => { if(parent.replies) parent.replies.pop(); if(this.post?.stats) this.post.stats.comments--; }
+      next: (res) => {
+        if (res.isSuccess && parent.replies) {
+          parent.replies.pop();
+          parent.replies.push(res.data as any);
+          this.toastService.success('Reply added.');
+        }
+      },
+      error: () => {
+        if (parent.replies) parent.replies.pop();
+        if (this.post?.stats) this.post.stats.comments--;
+        this.toastService.error('Failed to add reply.');
+      }
     });
   }
 }

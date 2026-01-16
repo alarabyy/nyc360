@@ -11,8 +11,9 @@
                 <a (click)="activeTab = 'security'" [class.active]="activeTab === 'security'">
                     <i class="bi bi-shield-lock"></i> Security
                 </a>
-                <a (click)="activeTab = 'tags'" [class.active]="activeTab === 'tags'">
-                    <i class="bi bi-tags-fill"></i> User Tags
+
+                <a (click)="activeTab = 'verification'" [class.active]="activeTab === 'verification'">
+                    <i class="bi bi-patch-check-fill"></i> Verifications
                 </a>
             </nav>
         </aside>
@@ -203,6 +204,106 @@
                     <h3>Your Tags</h3>
                     <p>Tag management coming soon.</p>
                     <button class="btn-primary" (click)="saveTags()">Save Tags</button>
+                </div>
+            </section>
+
+            <!-- VERIFICATION TAB -->
+            <section *ngSwitchCase="'verification'" class="settings-section animate-fade-in">
+                <header class="section-header">
+                    <h1>Verifications</h1>
+                    <p>Submit documents to verify your identity or tags</p>
+                </header>
+
+                <div class="card-setting">
+                    <div class="verification-toggle">
+                        <button [class.active]="verificationType === 'identity'"
+                            (click)="setVerificationType('identity')">
+                            Verify Identity
+                        </button>
+                        <button [class.active]="verificationType === 'tag'" (click)="setVerificationType('tag')">
+                            Verify Tag
+                        </button>
+                    </div>
+
+                    <h3 class="mt-4"><i class="bi"
+                            [ngClass]="verificationType === 'identity' ? 'bi-person-badge' : 'bi-hash'"></i>
+                        {{ verificationType === 'identity' ? 'Identity Verification' : 'Tag Verification' }}
+                    </h3>
+                    <p class="text-muted mb-4 small">
+                        {{ verificationType === 'identity'
+                        ? 'Get a blue checkmark on your profile by verifying your identity.'
+                        : 'Verify ownership of a specific tag/topic on the platform.' }}
+                    </p>
+
+                    <form [formGroup]="verificationForm" (ngSubmit)="submitVerification()"
+                        class="form-grid layout-vertical">
+
+                        <!-- Tag Search Field (Conditionally Shown) -->
+                        <div class="form-group full-width position-relative" *ngIf="verificationType === 'tag'">
+                            <label>Tag</label>
+                            <input [formControl]="tagSearchControl" class="form-control"
+                                placeholder="Search for a tag...">
+
+                            <div class="selected-tag-chip" *ngIf="selectedTag">
+                                <span class="tag-name"><i class="bi bi-hash"></i> {{ selectedTag.name }}</span>
+                                <button type="button" class="btn-clear" (click)="clearTagSelection()">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+
+                            <!-- Dropdown Results -->
+                            <div class="dropdown-results" *ngIf="showTagDropdown">
+                                <div class="dropdown-item" *ngFor="let result of tagSearchResults"
+                                    (click)="selectTag(result)">
+                                    <span class="tag-name">{{ result.name }}</span>
+                                    <small class="tag-type text-muted">{{ result.type === 1 ? 'Media' : 'Organization'
+                                        }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Verification Reason</label>
+                            <textarea formControlName="reason" class="form-control" rows="3"
+                                placeholder="Explain why you are requesting verification..."></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Document Type</label>
+                            <select formControlName="documentType" class="form-control custom-select">
+                                <option *ngFor="let type of documentTypes" [value]="type.id">{{ type.name }}</option>
+                            </select>
+                        </div>
+
+                        <!-- Enhanced File Input -->
+                        <div class="form-group full-width">
+                            <label>Upload Document</label>
+                            <div class="file-upload-area" (click)="fileInput.click()"
+                                [class.has-file]="!!selectedVerificationFile">
+                                <input #fileInput type="file" (change)="onVerificationFileSelected($event)"
+                                    accept=".jpg,.png,.pdf,.jpeg" hidden>
+                                <i class="bi bi-cloud-arrow-up-fill upload-icon"></i>
+                                <div class="upload-text" *ngIf="!selectedVerificationFile">
+                                    <span>Click to upload verification document</span>
+                                    <small>Max size: 5MB</small>
+                                </div>
+                                <div class="file-info" *ngIf="selectedVerificationFile">
+                                    <i class="bi bi-file-earmark-check text-success"></i>
+                                    <span>{{ selectedVerificationFile.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions mt-4 gap-2">
+                            <button type="button" class="btn-outline"
+                                (click)="verificationForm.reset({tagId:0, documentType:1}); selectedVerificationFile=null">Reset</button>
+                            <button type="submit" class="btn-primary" [disabled]="isSaving">
+                                <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                {{ isSaving ? 'Submitting...' : 'Submit Verification' }}
+                            </button>
+                        </div>
+
+                    </form>
                 </div>
             </section>
 

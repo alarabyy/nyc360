@@ -78,6 +78,7 @@ $radius-lg: 12px;
             transition: all 0.2s ease;
             position: relative;
             background: transparent;
+            text-decoration: none; // Added to remove underline
 
             i {
                 font-size: 1.25rem;
@@ -674,5 +675,211 @@ textarea.form-control {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+// File Upload Area Custom
+.file-upload-area {
+    border: 2px dashed $border-color;
+    border-radius: $radius-lg;
+    padding: 2.5rem;
+    text-align: center;
+    background-color: #fafbfc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+
+    &:hover {
+        border-color: $primary-color;
+        background-color: rgba($primary-color, 0.05);
+
+        .upload-icon {
+            transform: translateY(-5px);
+            color: $primary-color;
+        }
+    }
+
+    &.has-file {
+        border-style: solid;
+        border-color: #48bb78; // Success Green
+        background-color: rgba(#48bb78, 0.05);
+
+        .upload-icon {
+            color: #48bb78;
+        }
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        color: $text-light;
+        margin-bottom: 1rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .upload-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        span {
+            font-weight: 600;
+            color: $text-medium;
+        }
+
+        small {
+            color: $text-light;
+        }
+    }
+
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 600;
+        color: $text-dark;
+
+        i {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+// Search Dropdown & Chips
+.position-relative {
+    position: relative;
+}
+
+.selected-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    background-color: #e6f7ff;
+    color: $primary-color;
+    border: 1px solid rgba($primary-color, 0.2);
+    border-radius: 50px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: fit-content;
+
+    .tag-name {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-clear {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.dropdown-results {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    max-height: 220px;
+    overflow-y: auto;
+
+    // Custom Scrollbar
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.15s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover {
+            background-color: #f8faff;
+            color: $primary-color;
+        }
+
+        .tag-name {
+            font-weight: 500;
+        }
+
+        .tag-type {
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    }
+}
+
+// Remove underline from all buttons generally (reset)
+button {
+    text-decoration: none !important;
+}
+
+// Verification Toggle
+.verification-toggle {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: $radius-md;
+    margin-bottom: 2rem;
+    gap: 4px;
+
+    button {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        background: transparent;
+        color: $text-medium;
+        font-weight: 500;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            color: $text-dark;
+            background: rgba($white, 0.5);
+        }
+
+        &.active {
+            background: $white;
+            color: $primary-color;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
     }
 }
