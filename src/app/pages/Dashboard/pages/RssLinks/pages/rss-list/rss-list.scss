@@ -1,199 +1,389 @@
-// --- Variables ---
-$bg-page: #f8f9fa;
-$card-bg: #ffffff;
-$gold: #DAA520;
-$text-main: #333;
-$text-muted: #6c757d;
-$border: #e9ecef;
-$primary-blue: #0d6efd;
-$danger-red: #dc3545;
-$success-green: #198754;
+// Variables
+$gold: #D4AF37;
+$blue: #3498DB;
+$red: #E74C3C;
+$green: #2ECC71;
+$dark: #1A1A1A;
+$white: #FFFFFF;
+$gray: #7F8C8D;
+$border: #ECF0F1;
+$radius: 16px;
 
-.page-container {
-  padding: 30px;
+.luxury-dashboard {
+  background: #f4f6f9;
   min-height: 100vh;
-  background-color: $bg-page;
-  color: $text-main;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', sans-serif;
+  padding-bottom: 50px;
 }
 
-// --- Header ---
-.page-header {
-  display: flex;
-  justify-content: space-between;
+// Typography
+.gold-title {
+  color: $dark;
+  font-weight: 800;
+  border-left: 5px solid $gold;
+  padding-left: 15px;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+
+// Buttons
+.btn-luxury-gold {
+  background: $dark;
+  color: $gold;
+  border: 1px solid $gold;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 30px;
+  text-decoration: none;
 
-  .title-section {
-    h2 { font-weight: 800; margin-bottom: 5px; }
-    p { color: $text-muted; font-size: 0.95rem; }
-  }
-
-  .btn-add {
-    background-color: $gold;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: 0.2s;
-    
-    &:hover { 
-      background-color: darken($gold, 10%); 
-      box-shadow: 0 4px 12px rgba($gold, 0.3); 
-    }
+  &:hover {
+    background: $gold;
+    color: $dark;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba($gold, 0.25);
   }
 }
 
-// --- RSS List ---
-.rss-list {
+// Glass Panel
+.glass-panel {
+  background: $white;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// Stats Cards
+.stat-card {
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-// --- Header Row (Desktop) ---
-.list-header {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto; 
-  padding: 0 25px;
-  margin-bottom: 5px;
-  
-  span {
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: $text-muted;
-    letter-spacing: 0.5px;
-  }
-}
-
-// --- Item (Row / Card) ---
-.rss-item {
-  background: $card-bg;
-  border: 1px solid $border;
-  border-radius: 12px;
-  padding: 20px 25px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  
-  // Desktop Layout: Grid Row
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
   align-items: center;
   gap: 20px;
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    border-left: 4px solid $gold;
+  &.gold {
+    --theme: #{$gold};
   }
 
-  // 1. Info Section
-  .rss-info {
+  &.blue {
+    --theme: #{$blue};
+  }
+
+  &.green {
+    --theme: #{$green};
+  }
+
+  .icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--theme), transparent 85%);
+    color: var(--theme);
     display: flex;
     align-items: center;
-    gap: 15px;
-    
-    .rss-img {
-      width: 50px; height: 50px; flex-shrink: 0;
-      
-      img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid $border; }
-      
-      .img-placeholder {
-        width: 100%; height: 100%; background: #f1f3f4; border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
-        color: $text-muted; font-size: 1.2rem;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 2;
+  }
+
+  .info-box {
+    z-index: 2;
+
+    .count {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1;
+      color: $dark;
+    }
+
+    .label {
+      font-size: 0.85rem;
+      color: $gray;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .bg-shape {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--theme);
+    opacity: 0.05;
+    z-index: 1;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+// Table
+.luxury-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead th {
+    background: #fbfbfb;
+    padding: 15px 20px;
+    color: $gray;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border;
+  }
+
+  tbody tr {
+    transition: background 0.2s;
+
+    &:hover {
+      background: #fafafa;
+
+      .action-btns {
+        opacity: 1;
       }
     }
 
-    .rss-text {
-      overflow: hidden;
-      h3 { margin: 0; font-size: 1rem; font-weight: 700; color: $text-main; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .rss-link { font-size: 0.85rem; color: $primary-blue; text-decoration: none; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { text-decoration: underline; } }
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid $border;
+      vertical-align: middle;
+    }
+
+    &:last-child td {
+      border-bottom: none;
     }
   }
 
-  // 2. Category
-  .cat-badge {
-    display: inline-block;
-    font-size: 0.75rem;
-    background: #f8f9fa;
-    border: 1px solid darken($border, 5%);
-    color: $text-main;
-    padding: 5px 12px;
+  .source-logo-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid $border;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .source-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .source-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $dark;
+    margin-bottom: 4px;
+  }
+
+  .source-link {
+    font-size: 0.8rem;
+    color: $gray;
+    text-decoration: none;
+
+    &:hover {
+      color: $blue;
+      text-decoration: underline;
+    }
+  }
+
+  .category-pill {
+    padding: 4px 12px;
     border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #f0f2f5;
+    color: $dark;
+    display: inline-block;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
     font-weight: 600;
-  }
+    color: $gray;
 
-  // 3. Status
-  .rss-status {
-    display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: $text-muted;
-    .status-dot {
-      width: 10px; height: 10px; border-radius: 50%; background: #ccc;
-      &.active { background: $success-green; box-shadow: 0 0 0 2px rgba($success-green, 0.2); }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+
+    &.active {
+      color: $green;
+
+      .dot {
+        background: $green;
+        box-shadow: 0 0 0 3px rgba($green, 0.2);
+      }
     }
   }
 
-  // 4. Date
-  .rss-date { font-size: 0.9rem; color: $text-muted; }
+  .action-btns {
+    opacity: 0.6;
+    transition: 0.2s;
+    white-space: nowrap;
 
-  // 5. Actions
-  .rss-actions {
-    display: flex; gap: 10px; justify-content: flex-end;
-    
-    .btn-icon {
-      width: 35px; height: 35px; border-radius: 8px; border: 1px solid $border; background: #fff; color: $text-muted; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
-      
-      &:hover { background: $gold; color: #fff; border-color: $gold; }
-      &.edit:hover { background: $primary-blue; border-color: $primary-blue; }
-      &.delete:hover { background: $danger-red; border-color: $danger-red; }
+    button {
+      border: none;
+      background: transparent;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: $gray;
+      transition: 0.2s;
+      margin-left: 4px;
+
+      &:hover {
+        background: #eee;
+        color: $dark;
+      }
+
+      &.edit:hover {
+        color: $blue;
+        background: #e8f6ff;
+      }
+
+      &.delete:hover {
+        color: $red;
+        background: #fdedec;
+      }
     }
   }
 }
 
-// --- Loading & Empty States ---
-.state-container {
-  text-align: center; padding: 50px; background: $card-bg; border-radius: 12px; border: 1px solid $border; color: $text-muted;
-  .spinner-border { color: $gold; margin-bottom: 10px; }
-}
+// Mobile Responsiveness
+@media (max-width: 992px) {
+  .luxury-dashboard {
+    padding: 15px 10px;
+  }
 
-// ============================================================
-// 📱 MOBILE RESPONSIVE (CARD VIEW)
-// ============================================================
-@media (max-width: 768px) {
-  
-  .list-header { display: none; } // Hide header row
+  .header-section {
+    text-align: center;
+    flex-direction: column;
+    align-items: stretch;
 
-  .rss-item {
-    display: flex; 
-    flex-direction: column; // Convert row to column stack
-    align-items: flex-start;
-    gap: 15px;
-    
-    // Full width card info
-    .rss-info {
-      width: 100%;
-      .rss-img { width: 60px; height: 60px; }
-      .rss-text { h3 { font-size: 1.1rem; white-space: normal; } }
+    .title-area h1 {
+      border-left: none;
+      padding-left: 0;
+      border-bottom: 3px solid $gold;
+      display: inline-block;
+      padding-bottom: 5px;
     }
 
-    // Metadata Row (Category + Status + Date)
-    .rss-category, .rss-status, .rss-date {
-      font-size: 0.85rem;
+    .d-flex.gap-2 {
+      flex-direction: column;
       width: 100%;
+
+      button,
+      a {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Table to Card
+  .luxury-table {
+    display: block;
+    border: none;
+
+    thead {
+      display: none;
     }
 
-    // Actions (Full width buttons at bottom)
-    .rss-actions {
-      width: 100%;
-      border-top: 1px solid $border;
-      padding-top: 15px;
-      justify-content: space-between; // Spread buttons
-      
-      .btn-icon { flex: 1; } // Make buttons expand
+    tbody {
+      display: block;
+
+      tr {
+        display: flex;
+        flex-direction: column;
+        background: $white;
+        border: 1px solid $border;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        position: relative;
+
+        td {
+          display: block;
+          padding: 5px 0;
+          border: none;
+          width: 100%;
+          text-align: left;
+
+          // Logo + Name
+          &:nth-child(1) {
+            .source-details {
+              width: 100%;
+            }
+
+            .source-link {
+              max-width: 100% !important;
+            }
+          }
+
+          // Category & Status
+          &:nth-child(2),
+          &:nth-child(3) {
+            display: inline-block;
+            width: auto;
+            margin-right: 10px;
+          }
+
+          // Date
+          &:nth-child(4) {
+            margin-top: 10px;
+            border-top: 1px dashed $border;
+            padding-top: 10px;
+          }
+
+          // Actions
+          &:nth-child(5) {
+            margin-top: 15px;
+            border-top: 1px solid $border;
+            padding-top: 15px;
+
+            .action-btns {
+              opacity: 1;
+              display: flex;
+              justify-content: flex-end;
+              gap: 10px;
+
+              button {
+                width: 40px;
+                height: 40px;
+                border: 1px solid $border;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

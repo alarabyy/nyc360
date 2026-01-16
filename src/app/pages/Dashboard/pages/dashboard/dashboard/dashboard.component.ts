@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { DashboardService } from '../service/dashboard';
+import { ToastService } from '../../../../../shared/services/toast.service';
 import { DashboardStats, UserSummary } from '../models/dashboard.';
 
 @Component({
@@ -13,36 +14,37 @@ import { DashboardStats, UserSummary } from '../models/dashboard.';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  
+
   // Expose environment to HTML for image URLs
   protected readonly environment = environment;
-  
+
   // Dependencies
   private dashboardService = inject(DashboardService);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   // --- State Variables ---
   stats: DashboardStats = {
     totalUsers: 0, totalAdmins: 0, totalOrganizations: 0, totalRegularUsers: 0,
     verifiedAccounts: 0, pendingAccounts: 0, lockedAccounts: 0
   };
-  
+
   recentUsers: UserSummary[] = [];
   isLoading = true;
 
   // --- Computed Analytics (Getters) ---
-  
+
   // Percentage of Verified Users
   get verificationRate(): number {
-    return this.stats.totalUsers > 0 
-      ? (this.stats.verifiedAccounts / this.stats.totalUsers) * 100 
+    return this.stats.totalUsers > 0
+      ? (this.stats.verifiedAccounts / this.stats.totalUsers) * 100
       : 0;
   }
 
   // Percentage of Admin Users
   get adminRatio(): number {
-    return this.stats.totalUsers > 0 
-      ? (this.stats.totalAdmins / this.stats.totalUsers) * 100 
+    return this.stats.totalUsers > 0
+      ? (this.stats.totalAdmins / this.stats.totalUsers) * 100
       : 0;
   }
 
@@ -69,6 +71,7 @@ export class DashboardComponent implements OnInit {
         },
         error: (err) => {
           console.error('Critical Error loading dashboard:', err);
+          this.toastService.error('Failed to load dashboard analytics');
         }
       });
   }

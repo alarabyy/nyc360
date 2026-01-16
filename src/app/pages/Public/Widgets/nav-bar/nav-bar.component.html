@@ -53,7 +53,7 @@
             <a routerLink="/public/profile/settings" class="dropdown-item">
               <i class="bi bi-gear"></i> Settings
             </a>
-            <a *ngIf="authService.hasPermission('Permissions.Dashboard.View')" routerLink="/dashboard"
+            <a *ngIf="authService.hasPermission('Permissions.Dashboard.View')" routerLink="/admin/dashboard"
               class="dropdown-item dashboard-link">
               <i class="bi bi-speedometer2"></i> Dashboard
             </a>
@@ -119,8 +119,8 @@
       <a routerLink="/public/profile/settings" (click)="toggleMenu()" class="mobile-sub-link-item">
         <i class="bi bi-gear"></i> Settings
       </a>
-      <a *ngIf="authService.hasPermission('Permissions.Dashboard.View')" routerLink="/dashboard" (click)="toggleMenu()"
-        class="mobile-sub-link-item dashboard-link">
+      <a *ngIf="authService.hasPermission('Permissions.Dashboard.View')" routerLink="/admin/dashboard"
+        (click)="toggleMenu()" class="mobile-sub-link-item dashboard-link">
         <i class="bi bi-speedometer2"></i> Dashboard
       </a>
       <hr style="border-top: 1px solid #eee; margin: 15px 0;">

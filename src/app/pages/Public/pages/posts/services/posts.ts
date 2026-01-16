@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { 
+import {
   ApiResponse, Post, FeedData, InteractionType, PostComment
 } from '../models/posts';
 
@@ -11,15 +11,15 @@ import {
 })
 export class PostsService {
   private http = inject(HttpClient);
-  
+
   private baseUrl = `${environment.apiBaseUrl}/posts`;
   private feedUrl = `${environment.apiBaseUrl}/feeds/all/home`;
-  private communitiesUrl = `${environment.apiBaseUrl}/communities`; 
+  private communitiesUrl = `${environment.apiBaseUrl}/communities`;
 
   // =================================================================
   // 1. PUBLIC METHODS
   // =================================================================
-  
+
   getPostsFeed(): Observable<ApiResponse<FeedData>> {
     return this.http.get<ApiResponse<FeedData>>(this.feedUrl);
   }
@@ -30,7 +30,7 @@ export class PostsService {
   }
 
   joinCommunity(id: number): Observable<ApiResponse<any>> {
-    const body = { CommunityId: id }; 
+    const body = { CommunityId: id };
     return this.http.post<ApiResponse<any>>(`${this.communitiesUrl}/join`, body);
   }
 
@@ -69,10 +69,24 @@ export class PostsService {
 
   createPost(data: any, files?: File[]): Observable<ApiResponse<any>> {
     const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('content', data.content);
-    if (data.category !== null) formData.append('category', data.category.toString());
-    if (files && files.length > 0) files.forEach(file => formData.append('attachments', file));
+    formData.append('Title', data.title);
+    formData.append('Content', data.content);
+    if (data.category !== null) formData.append('Category', data.category.toString());
+    if (data.type !== null) formData.append('Type', data.type.toString());
+    if (data.locationId !== null) formData.append('LocationId', data.locationId.toString());
+
+    // Handle Tags (Array of integers)
+    if (data.tags && Array.isArray(data.tags)) {
+      data.tags.forEach((tag: number) => {
+        formData.append('Tags', tag.toString());
+      });
+    }
+
+    // Handle Attachments
+    if (files && files.length > 0) {
+      files.forEach(file => formData.append('Attachments', file));
+    }
+
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/create`, formData);
   }
 
@@ -97,5 +111,18 @@ export class PostsService {
   addComment(postId: number, content: string, parentCommentId?: number): Observable<ApiResponse<PostComment>> {
     const body = { postId, content, parentCommentId: parentCommentId || 0 };
     return this.http.post<ApiResponse<PostComment>>(`${this.baseUrl}/comment`, body);
+  }
+  searchLocations(query: string, limit: number = 20): Observable<ApiResponse<any[]>> {
+    const params = new HttpParams().set('Query', query).set('Limit', limit.toString());
+    return this.http.get<ApiResponse<any[]>>(`${environment.apiBaseUrl}/locations/search`, { params });
+  }
+
+  // Tags endpoint based on User's request
+  searchTags(searchTerm: string, page: number = 1, pageSize: number = 20): Observable<ApiResponse<any[]>> {
+    const params = new HttpParams()
+      .set('SearchTerm', searchTerm)
+      .set('Page', page.toString())
+      .set('PageSize', pageSize.toString());
+    return this.http.get<ApiResponse<any[]>>(`${environment.apiBaseUrl}/tags/list`, { params });
   }
 }

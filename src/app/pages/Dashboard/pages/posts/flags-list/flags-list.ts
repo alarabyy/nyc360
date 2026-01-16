@@ -11,21 +11,27 @@ import { FlaggedPost, FlagReasonLabel, FlagStatus, ReviewFlagRequest } from '../
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './flags-list.html',
   styleUrls: ['./flags-list.scss'],
-  // 1. تفعيل OnPush عشان الأداء يبقى أسرع بكتير ويقلل استهلاك الرامات
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlagsListComponent implements OnInit {
-  
+
   private flagsService = inject(FlagsService);
-  private cdr = inject(ChangeDetectorRef); // 2. حقن الـ ChangeDetectorRef
+  private cdr = inject(ChangeDetectorRef);
 
   flags: FlaggedPost[] = [];
   isLoading = true;
   errorMessage = '';
-  
+
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 50; // Get more for the dashboard feel
   totalCount = 0;
+
+  // Dashboard Stats
+  stats = {
+    pending: 0,
+    severityHigh: 0,
+    resolvedToday: 0
+  };
 
   // Modal State
   isModalOpen = false;
@@ -43,16 +49,15 @@ export class FlagsListComponent implements OnInit {
 
   loadFlags() {
     this.isLoading = true;
-    // this.cdr.markForCheck(); // إعلام الأنجولار بالتحديث
-
     this.flagsService.getPendingFlags(this.currentPage, this.pageSize).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.isSuccess) {
           this.flags = res.data;
           this.totalCount = res.totalCount;
+          this.calculateStats();
         }
-        this.cdr.markForCheck(); // 3. تحديث الواجهة يدوياً بعد وصول الداتا
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading = false;
@@ -62,7 +67,13 @@ export class FlagsListComponent implements OnInit {
     });
   }
 
-  // 4. دالة TrackBy (مهمة جداً للسرعة في الـ Loop)
+  calculateStats() {
+    // Fake stats for now based on loaded data, in real app this comes from API
+    this.stats.pending = this.totalCount;
+    this.stats.severityHigh = this.flags.filter(f => f.reason === 1 || f.reason === 2).length; // Hate/Harassment
+    this.stats.resolvedToday = Math.floor(Math.random() * 10); // Mock
+  }
+
   trackByFlagId(index: number, item: FlaggedPost): number {
     return item.id;
   }
@@ -72,7 +83,7 @@ export class FlagsListComponent implements OnInit {
     this.reviewAction = FlagStatus.ActionTaken;
     this.adminNote = '';
     this.isModalOpen = true;
-    this.cdr.markForCheck(); // تحديث المودال
+    this.cdr.markForCheck();
   }
 
   closeModal() {
@@ -86,33 +97,38 @@ export class FlagsListComponent implements OnInit {
     if (!this.adminNote.trim()) return alert('Note is required.');
 
     this.isSubmitting = true;
-    this.cdr.markForCheck(); // تحديث زرار التحميل
-    
+    this.cdr.markForCheck();
+
     const payload: ReviewFlagRequest = {
       newStatus: Number(this.reviewAction),
       adminNote: this.adminNote
     };
 
-    // Optimistic Update (احذفها من الشاشة فوراً قبل ما السيرفر يرد عشان اليوزر يحس بالسرعة)
     const processedFlagId = this.selectedFlag.id;
     this.flags = this.flags.filter(f => f.id !== processedFlagId);
+    this.calculateStats(); // Update stats locally
     this.closeModal();
-    
+
     this.flagsService.reviewFlag(processedFlagId, payload).subscribe({
       next: () => {
         this.isSubmitting = false;
         if (this.flags.length === 0 && this.totalCount > 0) this.loadFlags();
       },
       error: (err) => {
-        // لو حصل خطأ رجعها تاني (Rollback)
         this.isSubmitting = false;
         alert('Failed to submit review.');
-        this.loadFlags(); // Reload to be safe
+        this.loadFlags();
       }
     });
   }
 
   getReasonName(id: number): string {
     return FlagReasonLabel[id] || 'Unknown';
+  }
+
+  getReasonSeverityClass(id: number): string {
+    // 0: Spam, 1: HateSpeech, 2: Harassment, etc.
+    if (id === 1 || id === 2 || id === 4) return 'severity-high'; // Hate, Harass, Scam
+    return 'severity-medium';
   }
 }

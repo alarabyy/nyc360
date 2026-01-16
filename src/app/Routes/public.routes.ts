@@ -13,7 +13,7 @@ export const PUBLIC_ROUTES: Routes = [
       { path: 'home', loadComponent: () => import('../pages/Public/pages/posts/home/home').then(m => m.Home) },
       { path: 'posts/details/:id', loadComponent: () => import('../pages/Public/pages/posts/post-details/post-details').then(m => m.PostDetailsComponent) },
       { path: 'posts/tags/:tag', loadComponent: () => import('../pages/Public/pages/posts/tag-posts/tag-posts').then(m => m.TagPostsComponent) },
-      { path: 'posts/create', loadComponent: () => import('../pages/Dashboard/pages/posts/post-form/post-form').then(m => m.PostFormComponent) },
+      { path: 'posts/create', loadComponent: () => import('../pages/Public/pages/posts/post-form/post-form').then(m => m.PostFormComponent) },
 
       // Community
       { path: 'community', loadComponent: () => import('../pages/Public/pages/communities/pages/community/community').then(m => m.CommunityComponent) },
@@ -34,6 +34,7 @@ export const PUBLIC_ROUTES: Routes = [
       { path: 'profession/jobs', loadComponent: () => import('../pages/Public/pages/jobs/pages/job-search/job-search').then(m => m.JobSearchComponent) },
       { path: 'profession/my-offers', loadComponent: () => import('../pages/Public/pages/jobs/pages/my-offers/my-offers').then(m => m.MyOffersComponent) },
       { path: 'edit-offer/:id', loadComponent: () => import('../pages/Public/pages/jobs/pages/edit-offer/edit-offer').then(m => m.EditOfferComponent) },
+
 
       // category home
       {

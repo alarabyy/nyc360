@@ -6,6 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { CATEGORY_LIST } from '../../../../../models/category-list';
 import { TagRequest, TagModel } from '../../models/tags.model';
 import { TagsService } from '../../service/tags-dashboard.service';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-tag-create',
@@ -18,16 +19,17 @@ export class TagCreateComponent implements OnInit {
   private tagsService = inject(TagsService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   tagName: string = '';
   selectedDivision: number | null = null;
-  selectedType: number = 3; 
-  parentTagId: number = 0; 
+  selectedType: number = 3;
+  parentTagId: number = 0;
 
   parentSearchTerm$ = new Subject<string>();
   parentSearchResults: TagModel[] = [];
   selectedParentName: string = 'NONE (TOP LEVEL)';
-  
+
   categories = CATEGORY_LIST;
   isSubmitting = false;
   formSubmitted = false;
@@ -76,13 +78,16 @@ export class TagCreateComponent implements OnInit {
 
     this.tagsService.createTag(payload).subscribe({
       next: (res) => {
-        if (res.isSuccess) this.router.navigate(['/admin/tags']);
+        if (res.isSuccess) {
+          this.toastService.success('Tag created successfully');
+          this.router.navigate(['/admin/tags']);
+        }
         this.isSubmitting = false;
         this.cdr.detectChanges();
       },
-      error: (err) => { 
+      error: (err) => {
         this.isSubmitting = false;
-        alert(`Error 400: ${err.error?.Message || 'Check your payload'}`);
+        this.toastService.error(err.error?.Message || 'Failed to create tag');
         this.cdr.detectChanges();
       }
     });

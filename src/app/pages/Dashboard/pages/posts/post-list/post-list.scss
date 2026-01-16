@@ -1,102 +1,597 @@
-@use "sass:color";
+// Variables
+$gold: #D4AF37;
+$blue: #3498DB;
+$green: #2ECC71;
+$dark: #1A1A1A;
+$white: #FFFFFF;
+$gray: #7F8C8D;
+$border: #ECF0F1;
+$radius: 16px;
 
-$bg-body: #f0f2f5;
-$white: #ffffff;
-$text-primary: #050505;
-$text-secondary: #65676b;
-$blue: #1877f2;
-$hover: #f2f2f2;
-$divider: #ced0d4;
-$gold: #DAA520;
-$red-danger: #dc3545;
-
-.page-container {
-  padding: 20px; background-color: $bg-body; min-height: 100vh;
-  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+.posts-dashboard {
+  background: #f4f6f9;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  padding-bottom: 50px;
 }
 
-.feed-header {
-  max-width: 680px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center;
-  h2 { font-weight: 700; color: $text-primary; margin: 0; font-size: 1.5rem; }
-  p { color: $text-secondary; margin: 0; }
-  .btn-create {
-    background: $gold; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: 0.2s;
-    &:hover { background: color.scale($gold, $lightness: -10%); }
+// Typography
+.gold-title {
+  color: $dark;
+  font-weight: 800;
+  border-left: 5px solid $gold;
+  padding-left: 15px;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+
+// Buttons
+.btn-luxury-gold {
+  background: $dark;
+  color: $gold;
+  border: 1px solid $gold;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    background: $gold;
+    color: $dark;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba($gold, 0.25);
   }
 }
 
-.filter-bar {
-  max-width: 680px; margin: 0 auto 20px; display: flex; gap: 8px; overflow-x: auto;
-  .pill {
-    background: $white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 600; color: $text-secondary; cursor: pointer; transition: 0.2s;
-    &:hover { background: #e4e6eb; }
-    &.active { background: $gold; color: $white; }
+// Glass Panel
+.glass-panel {
+  background: $white;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   }
 }
 
-.feed-layout { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+// Stats Cards
+.stat-card {
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 
-.post-card {
-  background: $white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); overflow: visible; animation: fadeIn 0.5s ease;
+  &.gold {
+    --theme: #{$gold};
+  }
 
-  .card-top {
-    padding: 12px 16px; display: flex; align-items: center; gap: 10px; position: relative;
-    .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; }
-    .meta { flex: 1; .username { font-size: 0.95rem; font-weight: 600; margin: 0; color: $text-primary; } .timestamp { font-size: 0.8rem; color: $text-secondary; .cat { color: $blue; font-weight: 600; margin-left: 5px; } } }
-    
-    // Dropdown
-    .post-menu-container { position: relative; }
-    .icon-btn { background: none; border: none; padding: 8px; border-radius: 50%; cursor: pointer; color: $text-secondary; font-size: 1.2rem; &:hover { background: $hover; } }
-    
-    .menu-dropdown {
-      position: absolute; top: 100%; right: 0; background: $white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10; width: 180px; padding: 8px; border: 1px solid #eee;
-      .menu-item { width: 100%; background: none; border: none; padding: 8px 12px; text-align: left; font-weight: 600; color: $text-secondary; border-radius: 6px; cursor: pointer; display: flex; gap: 10px; align-items: center; &:hover { background: $hover; } &.text-danger { color: $red-danger; &:hover { background: #ffebe8; } } }
+  &.blue {
+    --theme: #{$blue};
+  }
+
+  &.green {
+    --theme: #{$green};
+  }
+
+  .icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--theme), transparent 85%);
+    color: var(--theme);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 2;
+  }
+
+  .info-box {
+    z-index: 2;
+
+    .count {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1;
+      color: $dark;
+    }
+
+    .label {
+      font-size: 0.85rem;
+      color: $gray;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   }
 
-  .card-content { padding: 4px 16px 16px; .post-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; color: $text-primary; } .post-text { font-size: 0.95rem; margin: 0; white-space: pre-wrap; line-height: 1.4; } }
-  .card-media { width: 100%; background: #000; img { width: 100%; max-height: 500px; object-fit: contain; display: block; } }
-  .card-stats { padding: 10px 16px; display: flex; justify-content: space-between; font-size: 0.9rem; color: $text-secondary; border-bottom: 1px solid $divider; .stat-right:hover { text-decoration: underline; cursor: pointer; } }
-  
-  .card-actions {
-    display: flex; padding: 4px; border-bottom: 1px solid $divider;
-    .action-btn { flex: 1; background: none; border: none; padding: 8px; border-radius: 4px; font-weight: 600; color: $text-secondary; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; &:hover { background: $hover; } &.active { color: $blue; i { color: $blue; } } }
+  .bg-shape {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--theme);
+    opacity: 0.05;
+    z-index: 1;
   }
 
-  .comments-area {
-    padding: 8px 16px 12px;
-    .view-more-container .btn-view-more { background: none; border: none; color: $text-secondary; font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 0; &:hover { text-decoration: underline; } }
-    .comment-input-wrapper { margin-top: 10px; }
-    
-    .input-box {
-      width: 100%; position: relative;
-      input { width: 100%; background: $bg-body; border: none; padding: 10px 40px 10px 15px; border-radius: 20px; outline: none; font-size: 0.9rem; &:focus { background: color.scale($bg-body, $lightness: -2%); } }
-      button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: $blue; cursor: pointer; opacity: 0.4; pointer-events: none; &.active { opacity: 1; pointer-events: all; } }
-      &.small input { padding: 8px 35px 8px 12px; font-size: 0.85rem; height: 36px; }
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+// Filter Panel
+.filter-panel {
+  padding: 20px;
+
+  .search-box {
+    position: relative;
+
+    i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $gold;
     }
 
-    .comment-row {
-      display: flex; gap: 8px; margin-bottom: 6px;
-      .comment-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-      .comment-avatar.small { width: 24px; height: 24px; }
-      .bubble-container {
-        max-width: 90%;
-        .comment-bubble { background: $bg-body; padding: 8px 12px; border-radius: 18px; display: inline-block; .author { display: block; font-weight: 600; font-size: 0.8rem; color: $text-primary; margin-bottom: 1px; } p { margin: 0; font-size: 0.9rem; line-height: 1.3; } }
-        .comment-actions-text { font-size: 0.75rem; color: $text-secondary; margin-left: 12px; margin-top: 2px; span { cursor: pointer; margin-right: 12px; font-weight: 600; &:hover { text-decoration: underline; } } .time { font-weight: 400; cursor: default; } }
+    input {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 1px solid $border;
+      border-radius: 10px;
+      background: #f9f9f9;
+
+      &:focus {
+        outline: none;
+        border-color: $gold;
+        background: $white;
       }
     }
-    .nested-replies, .reply-input-wrapper { margin-left: 40px; margin-top: 5px; }
   }
 }
 
+.luxury-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid $border;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    background: $white;
+  }
+}
+
+.luxury-input {
+  border: 1px solid $border;
+  border-radius: 10px;
+  background: #f9f9f9;
+
+  &:focus {
+    outline: none;
+    border-color: $gold;
+    background: $white;
+  }
+}
+
+// Table
+.luxury-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead th {
+    background: #fbfbfb;
+    padding: 15px 20px;
+    color: $gray;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid $border;
+  }
+
+  tbody tr {
+    transition: background 0.2s;
+
+    &:hover {
+      background: #fafafa;
+
+      .action-btns {
+        opacity: 1;
+      }
+    }
+
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid $border;
+      vertical-align: middle;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .id-cell .id-badge {
+    background: #F1F2F6;
+    color: $gray;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: monospace;
+  }
+
+  .post-thumb-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid $border;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .post-info {
+    max-width: 300px;
+
+    .post-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: $dark;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+  }
+
+  .author-info {
+    .author-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid $white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    span {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  }
+
+  .category-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .stats-group {
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    i {
+      margin-right: 4px;
+    }
+  }
+
+  .action-btns {
+    opacity: 0.6;
+    transition: 0.2s;
+    white-space: nowrap;
+
+    button {
+      border: none;
+      background: transparent;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: $gray;
+      transition: 0.2s;
+      margin-left: 4px;
+
+      &:hover {
+        background: #eee;
+        color: $dark;
+      }
+
+      &.view:hover {
+        color: $blue;
+        background: #e8f6ff;
+      }
+
+      &.edit:hover {
+        color: $gold;
+        background: #fff9e6;
+      }
+
+      &.report:hover {
+        color: #e67e22;
+        background: #fdf2e9;
+      }
+
+      &.delete:hover {
+        color: #e74c3c;
+        background: #fdedec;
+      }
+    }
+  }
+}
+
+// Modal
 .modal-backdrop {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.2s;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+
   .modal-content {
-    background: $white; width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
-    .modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; h3 { margin: 0; font-size: 1.2rem; } .btn-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; } }
-    .modal-body { padding: 20px; .instruction { margin-bottom: 15px; font-weight: 600; color: $text-primary; } .form-group { margin-bottom: 15px; select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; &:focus { border-color: $blue; outline: none; } } } }
-    .modal-footer { padding: 15px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; .btn-cancel { background: none; border: none; color: $text-secondary; font-weight: 600; padding: 8px 16px; cursor: pointer; &:hover { background: $hover; border-radius: 4px; } } .btn-submit { background: $blue; color: white; border: none; padding: 8px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; &:disabled { opacity: 0.6; cursor: default; } } }
+    width: 90%;
+    max-width: 500px;
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: 0.2s;
+
+      &:hover {
+        opacity: 1;
+        transform: rotate(90deg);
+      }
+    }
   }
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+// Utils
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Responsive Design & Mobile Cards
+@media (max-width: 992px) {
+
+  .posts-dashboard {
+    padding-bottom: 80px;
+  }
+
+  // Extra space for mobile
+
+  .header-section {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+
+    .title-area {
+      margin-bottom: 20px;
+
+      h1 {
+        border-left: none;
+        padding-left: 0;
+        border-bottom: 3px solid $gold;
+        display: inline-block;
+        padding-bottom: 5px;
+      }
+    }
+
+    a.btn-luxury-gold {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .filter-panel {
+    padding: 15px;
+
+    .search-box input {
+      padding: 10px 15px 10px 40px;
+    }
+
+    .col-6 {
+      width: 100%;
+    }
+
+    // Stack filters
+  }
+
+  // Table to Card Transformation
+  .luxury-table {
+    display: block;
+    border: none;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      display: block;
+
+      tr {
+        display: flex;
+        flex-direction: column;
+        background: $white;
+        border: 1px solid $border;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        position: relative;
+
+        td {
+          display: block;
+          padding: 5px 0;
+          border: none;
+          width: 100%;
+          text-align: left;
+
+          // 1. Post Details (Image + Title) - TOP
+          &:nth-child(2) {
+            // Details column
+            order: -2;
+            margin-bottom: 15px;
+
+            .post-info {
+              max-width: 100%;
+            }
+
+            .post-title {
+              font-size: 1.1rem;
+              margin-top: 5px;
+            }
+
+            .d-flex {
+              align-items: flex-start;
+            }
+
+            .post-thumb-wrapper {
+              width: 80px;
+              height: 80px;
+            }
+          }
+
+          // 2. Author - Below Details
+          &:nth-child(3) {
+            order: -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 10px;
+
+            &::before {
+              content: "Author";
+              color: $gray;
+              font-size: 0.8rem;
+              font-weight: 700;
+            }
+          }
+
+          // 3. Category - Below Author
+          &:nth-child(4) {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+
+            &::before {
+              content: "Category";
+              color: $gray;
+              font-size: 0.8rem;
+              font-weight: 700;
+            }
+          }
+
+          // 4. Engagement - Below Category
+          &:nth-child(5) {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid $border;
+            padding-bottom: 15px;
+
+            &::before {
+              content: "Stats";
+              color: $gray;
+              font-size: 0.8rem;
+              font-weight: 700;
+            }
+          }
+
+          // 5. ID - Absolute Position top-right
+          &:first-child {
+            // ID column
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: auto;
+            padding: 0;
+
+            .id-badge {
+              font-size: 0.7rem;
+              background: $gold;
+              color: $dark;
+            }
+          }
+
+          // 6. Actions - Bottom
+          &:last-child {
+            order: 10;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            .action-btns {
+              width: 100%;
+              display: flex;
+              justify-content: space-between;
+
+              button {
+                flex: 1;
+                border-radius: 8px;
+                margin: 0 4px;
+                border: 1px solid #eee;
+
+                &:hover {
+                  transform: scale(1.05);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Very small devices
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 15px;
+
+    .icon-box {
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+    }
+
+    .info-box h3 {
+      font-size: 1.5rem;
+    }
+  }
+}

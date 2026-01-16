@@ -1,76 +1,150 @@
-<div class="timeline-container">
-  
-  <div class="trending-header">
-    <div class="header-icon"><i class="bi bi-graph-up-arrow"></i></div>
-    <div class="header-content">
-      <h1>Trending Now <span class="live-dot"></span></h1>
-      <p>Top stories making waves across the platform.</p>
+<div class="luxury-dashboard animate__animated animate__fadeIn">
+  <div class="container-fluid py-4 px-md-5">
+
+    <!-- Header -->
+    <div class="header-section d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+      <div class="title-area">
+        <h1 class="gold-title mb-0">TRENDING INSIGTS</h1>
+        <p class="text-muted small mb-0">Real-time content performance analysis</p>
+      </div>
+      <button class="btn-luxury-gold shadow-sm" (click)="loadPosts()">
+        <i class="bi bi-arrow-clockwise me-2"></i> UPDATE DATA
+      </button>
     </div>
-  </div>
 
-  <div *ngIf="isLoading && posts.length === 0" class="loading-state">
-    <div class="spinner"></div>
-  </div>
-
-  <div class="feed-wrapper" *ngIf="posts.length > 0">
-    
-    <article class="feed-card fade-up" *ngFor="let post of posts; let i = index" [style.animation-delay]="i * 0.1 + 's'">
-      
-      <div class="card-meta-header">
-        <div class="author-info">
-          <img [src]="getAuthorImage(post.author?.imageUrl)" class="avatar" (error)="$event.target['src'] = 'assets/images/avatar-placeholder.png'">
-          <div class="meta-text">
-            <span class="author-name">{{ getAuthorName(post.author) }}</span>
-            <span class="post-time">{{ post.createdAt | date:'mediumDate' }} • <span class="cat">{{ getCategoryName(post.category) }}</span></span>
+    <!-- Stats Row -->
+    <div class="row g-4 mb-5">
+      <!-- Total Active -->
+      <div class="col-md-4">
+        <div class="stat-card glass-panel gold">
+          <div class="icon-box"><i class="bi bi-fire"></i></div>
+          <div class="info-box">
+            <h3 class="count">{{ stats.totalTrending }}</h3>
+            <span class="label">Viral Posts</span>
           </div>
+          <div class="bg-shape"></div>
         </div>
-        <span class="trending-badge"><i class="bi bi-fire"></i> Hot</span>
       </div>
 
-      <div class="card-content-body" (click)="goToDetails(post.id)">
-        <h2 class="post-title">{{ post.title }}</h2>
-        <p class="post-text">{{ post.content | slice:0:180 }}{{ post.content.length > 180 ? '...' : '' }}</p>
+      <!-- Top Category -->
+      <div class="col-md-4">
+        <div class="stat-card glass-panel blue">
+          <div class="icon-box"><i class="bi bi-pie-chart-fill"></i></div>
+          <div class="info-box">
+            <h3 class="count text-truncate" style="font-size: 1.5rem;">{{ stats.topCategory }}</h3>
+            <span class="label">Top Category</span>
+          </div>
+          <div class="bg-shape"></div>
+        </div>
       </div>
 
-      <div class="card-media" (click)="goToDetails(post.id)">
-        <img [src]="getPostImage(post)" loading="lazy" (error)="$event.target['src'] = 'assets/images/news-placeholder.jpg'">
+      <!-- Engagement -->
+      <div class="col-md-4">
+        <div class="stat-card glass-panel green">
+          <div class="icon-box"><i class="bi bi-activity"></i></div>
+          <div class="info-box">
+            <h3 class="count">{{ stats.avgEngagement }}</h3>
+            <span class="label">Total Interactions</span>
+          </div>
+          <div class="bg-shape"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Grid/Table -->
+    <div class="table-card glass-panel animate__animated animate__fadeInUp">
+
+      <div *ngIf="!isLoading && posts.length === 0" class="text-center py-5">
+        <i class="bi bi-bar-chart text-muted display-4"></i>
+        <p class="mt-3 text-muted">No trending data available right now.</p>
       </div>
 
-      <div class="card-stats">
-        <div class="stat-left"><i class="bi bi-hand-thumbs-up-fill text-primary"></i> {{ post.stats.likes || 0 }}</div>
-        <div class="stat-right" (click)="goToDetails(post.id, 'comments-section')">{{ post.stats.comments || 0 }} Comments</div>
+      <div class="table-responsive" *ngIf="posts.length > 0">
+        <table class="luxury-table">
+          <thead>
+            <tr>
+              <th width="50">RANK</th>
+              <th width="40%">POST CONTENT</th>
+              <th>METRICS</th>
+              <th>AUTHOR</th>
+              <th class="text-end">MANAGEMENT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let post of posts; let i = index" class="animate__animated animate__fadeInRight table-row">
+
+              <!-- Rank -->
+              <td>
+                <div class="rank-circle" [class.top-3]="i < 3">{{ i + 1 }}</div>
+              </td>
+
+              <!-- Content -->
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="post-thumb-wrapper">
+                    <img [src]="getPostImage(post) || 'assets/images/placeholder-news.jpg'" class="post-thumb"
+                      loading="lazy">
+                  </div>
+                  <div class="post-info">
+                    <h5 class="post-title text-truncate-2" (click)="goToDetails(post.id)">{{ post.title }}</h5>
+                    <span class="category-badge">
+                      <i class="bi bi-circle-fill" style="font-size: 6px; color: #DAA520;"></i>
+                      {{ getCategoryName(post.category) }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Metrics -->
+              <td>
+                <div class="metrics-grid">
+                  <div class="metric" title="Likes">
+                    <i class="bi bi-heart-fill text-danger"></i> {{ post.stats.likes }}
+                  </div>
+                  <div class="metric" title="Comments">
+                    <i class="bi bi-chat-dots-fill text-primary"></i> {{ post.stats.comments }}
+                  </div>
+                  <div class="metric" title="Views">
+                    <i class="bi bi-eye-fill text-success"></i> {{ post.stats.views | number }}
+                  </div>
+                </div>
+              </td>
+
+              <!-- Author -->
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <img [src]="getAuthorImage(post.author?.imageUrl)" class="author-avatar">
+                  <span class="fw-bold text-dark small">{{ getAuthorName(post.author) }}</span>
+                </div>
+              </td>
+
+              <!-- Actions -->
+              <td class="text-end">
+                <div class="action-btns">
+                  <button class="btn-icon boost" title="Boost Visibility" (click)="boostPost(post.id)">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                  </button>
+                  <button class="btn-icon view" title="View Details" (click)="goToDetails(post.id)">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button class="btn-icon remove" title="Remove from Trending" (click)="removeFromTrending(post.id)">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <div class="card-actions">
-        <button class="action-btn" [class.active]="post.currentUserInteraction === InteractionType.Like" (click)="toggleLike(post)">
-          <i class="bi" [class.bi-hand-thumbs-up-fill]="post.currentUserInteraction === InteractionType.Like" 
-             [class.bi-hand-thumbs-up]="post.currentUserInteraction !== InteractionType.Like"></i> Like
+      <!-- Load More -->
+      <div class="text-center p-4 border-top" *ngIf="hasMore">
+        <button class="btn btn-link text-gold text-decoration-none fw-bold" (click)="loadMore()" [disabled]="isLoading">
+          {{ isLoading ? 'ANALYZING DATA...' : 'LOAD MORE TRENDS' }}
         </button>
-        
-        <button class="action-btn" (click)="goToDetails(post.id, 'comments-section')">
-          <i class="bi bi-chat-bubble"></i> Comment
-        </button>
-        
-        <button class="action-btn" (click)="goToDetails(post.id)">
-          <i class="bi bi-share"></i> View
-        </button>
       </div>
-
-    </article>
+    </div>
 
   </div>
-
-  <div class="pagination-wrapper" *ngIf="hasMore && !isLoading && posts.length > 0">
-    <button class="btn-load-more" (click)="loadMore()">Show Older Trends</button>
-  </div>
-
-  <div *ngIf="isLoading && posts.length > 0" class="loading-more">
-    <div class="spinner-sm"></div> <span>Loading...</span>
-  </div>
-
-  <div *ngIf="!isLoading && posts.length === 0" class="no-data">
-    <i class="bi bi-clock-history"></i>
-    <p>No trending stories yet.</p>
-  </div>
-
 </div>

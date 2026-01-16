@@ -8,6 +8,7 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { TagRequest, TagModel } from '../../models/tags.model';
 import { CATEGORY_LIST } from '../../../../../models/category-list';
 import { TagsService } from '../../service/tags-dashboard.service';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-tag-update',
@@ -21,6 +22,7 @@ export class TagUpdateComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   // Data
   tagId: string | null = null;
@@ -32,8 +34,8 @@ export class TagUpdateComponent implements OnInit {
   // Form Fields
   tagName: string = '';
   selectedDivision: number | null = null;
-  selectedType: number = 3; 
-  parentTagId: number = 0; 
+  selectedType: number = 3;
+  parentTagId: number = 0;
 
   // Search Logic for Parent
   parentSearchTerm$ = new Subject<string>();
@@ -44,9 +46,12 @@ export class TagUpdateComponent implements OnInit {
     this.tagId = this.route.snapshot.paramMap.get('id');
     if (this.tagId) {
       this.fetchInitialData();
+    } else {
+      this.toastService.error('Invalid Tag ID');
+      this.router.navigate(['/admin/tags']);
     }
 
-    // إعداد البحث اللحظي عن التاج الأب
+    // search parent
     this.parentSearchTerm$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
@@ -61,21 +66,32 @@ export class TagUpdateComponent implements OnInit {
 
   fetchInitialData(): void {
     this.isLoading = true;
-    // جلب بيانات التاج الحالي لملء الحقول
-    this.tagsService.getAllTags('', undefined, undefined).subscribe({
-      next: (res) => {
-        const currentTag = res.data.find(t => t.id.toString() === this.tagId);
-        if (currentTag) {
-          this.tagName = currentTag.name;
-          this.selectedDivision = currentTag.division;
-          this.selectedType = currentTag.type;
-          // ملاحظة: لو الباك إند بيبعت اسم الأب عرضه هنا، لو لأ بنسيبه NONE لحد ما يسرش
-          this.selectedParentName = currentTag.parent ? currentTag.parent.toUpperCase() : 'NONE (TOP LEVEL)';
+    if (!this.tagId) return;
+
+    this.tagsService.getTagById(this.tagId).subscribe({
+      next: (res: any) => {
+        // Assume res is the tag object or res.data is the tag object. 
+        // Based on typical API, it might be res.data or just res.
+        // Let's assume res.data if wrapped, or res if direct.
+        const tag = res.data || res;
+
+        if (tag) {
+          this.tagName = tag.name;
+          this.selectedDivision = tag.division;
+          this.selectedType = tag.type;
+          // Check if parent info is available
+          this.parentTagId = tag.parentTagId || 0;
+          this.selectedParentName = tag.parent ? tag.parent.name || tag.parent.toUpperCase() : 'NONE (TOP LEVEL)';
         }
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.isLoading = false; this.cdr.detectChanges(); }
+      error: (err) => {
+        this.toastService.error('Failed to fetch tag details');
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        this.router.navigate(['/admin/tags']);
+      }
     });
   }
 
@@ -95,14 +111,13 @@ export class TagUpdateComponent implements OnInit {
   }
 
   onSubmit(event: Event) {
-    event.preventDefault(); // ✅ منع ريلود الصفحة
+    event.preventDefault();
     this.formSubmitted = true;
 
     if (!this.tagName.trim() || this.selectedDivision === null || !this.tagId) return;
 
     this.isSubmitting = true;
-    
-    // ✅ البيانات كاملة بأسلوب PascalCase كما يطلب السيرفر
+
     const payload: TagRequest = {
       Name: this.tagName.trim(),
       Type: Number(this.selectedType),
@@ -113,14 +128,17 @@ export class TagUpdateComponent implements OnInit {
     this.tagsService.updateTag(this.tagId, payload).subscribe({
       next: (res) => {
         if (res.isSuccess) {
+          this.toastService.success('Tag updated successfully');
           this.router.navigate(['/admin/tags']);
+        } else {
+          this.toastService.error('Update returned failure status');
         }
         this.isSubmitting = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.isSubmitting = false;
-        alert(`Error: ${err.error?.Message || 'Update Failed'}`);
+        this.toastService.error(err.error?.Message || 'Update Failed');
         this.cdr.detectChanges();
       }
     });

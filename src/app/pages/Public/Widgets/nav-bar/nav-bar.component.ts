@@ -67,7 +67,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/public/coming-soon',
+      id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/public/category/health',
       topLinks: [
         { label: 'Feed', route: '/public/feed/health' },
         { label: 'Directors', route: '/public/health/directors' },
