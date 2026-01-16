@@ -5,9 +5,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { environment } from '../../../../../environments/environment';
 import { ProfileService } from '../service/profile';
 import { AuthService } from '../../../../Authentication/Service/auth';
-import { 
+import {
   UserProfileData, UpdateBasicProfileDto, AddEducationDto, UpdateEducationDto,
-  AddPositionDto, UpdatePositionDto, Education, Position, SocialPlatform, SocialLinkDto 
+  AddPositionDto, UpdatePositionDto, Education, Position, SocialPlatform, SocialLinkDto
 } from '../models/profile';
 import { Post } from '../../posts/models/posts';
 
@@ -25,13 +25,13 @@ export interface DashboardCard {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule ,RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   providers: [DatePipe],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
 export class ProfileComponent implements OnInit {
-  
+
   protected readonly environment = environment;
   private profileService = inject(ProfileService);
   private authService = inject(AuthService);
@@ -42,15 +42,15 @@ export class ProfileComponent implements OnInit {
 
   // --- State ---
   user: UserProfileData | null = null;
-  savedPosts: Post[] = []; 
+  savedPosts: Post[] = [];
   currentUsername: string = '';
 
   isLoading = true;
-  isSavedLoading = false; 
+  isSavedLoading = false;
   isOwner = false;
-  activeTab = 'posts'; 
+  activeTab = 'posts';
   isSaving = false;
-  
+
   // --- Forms ---
   basicForm!: FormGroup;
   eduForm!: FormGroup;
@@ -94,7 +94,7 @@ export class ProfileComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       headline: ['', [Validators.required, Validators.maxLength(100)]],
       bio: ['', [Validators.maxLength(500)]],
-      locationId: [0] 
+      locationId: [0]
     });
 
     this.eduForm = this.fb.group({
@@ -124,7 +124,7 @@ export class ProfileComponent implements OnInit {
     let targetUsername = routeUsername;
     if (!targetUsername) {
       targetUsername = currentUser?.username || '';
-      this.isOwner = true; 
+      this.isOwner = true;
     } else {
       this.isOwner = (currentUser?.username?.toLowerCase() === targetUsername.toLowerCase());
     }
@@ -173,8 +173,8 @@ export class ProfileComponent implements OnInit {
   openBasicModal() {
     if (!this.user) return;
     this.basicForm.patchValue({
-      firstName: this.user.profile.firstName, lastName: this.user.profile.lastName,
-      headline: this.user.profile.headline, bio: this.user.profile.bio, locationId: this.user.profile.locationId || 1 
+      firstName: this.user.firstName, lastName: this.user.lastName,
+      headline: this.user.headline, bio: this.user.bio, locationId: this.user.locationId || 1
     });
     this.modalState.basic = true;
   }
@@ -192,13 +192,13 @@ export class ProfileComponent implements OnInit {
     this.eduForm.patchValue({ school: edu.school, degree: edu.degree, fieldOfStudy: edu.fieldOfStudy, startDate: this.formatDateForInput(edu.startDate), endDate: this.formatDateForInput(edu.endDate) });
     this.modalState.education = true;
   }
-  saveEdu() { /* Call service logic same as before */ 
+  saveEdu() { /* Call service logic same as before */
     if (this.eduForm.invalid) return; this.isSaving = true; const val = this.eduForm.value;
     const dtoAdd: AddEducationDto = { School: val.school, Degree: val.degree, FieldOfStudy: val.fieldOfStudy, StartDate: new Date(val.startDate).toISOString(), EndDate: val.endDate ? new Date(val.endDate).toISOString() : undefined };
     const dtoUpdate: UpdateEducationDto = { EducationId: this.selectedItemId!, ...dtoAdd };
     this.isEditMode ? this.profileService.updateEducation(dtoUpdate).subscribe(res => this.handleResponse(res, 'education')) : this.profileService.addEducation(dtoAdd).subscribe(res => this.handleResponse(res, 'education'));
   }
-  deleteEdu(id: number) { if(confirm('Delete?')) this.profileService.deleteEducation(id).subscribe(() => this.reload()); }
+  deleteEdu(id: number) { if (confirm('Delete?')) this.profileService.deleteEducation(id).subscribe(() => this.reload()); }
 
   // Position
   openAddPos() { this.isEditMode = false; this.posForm.reset({ isCurrent: false }); this.modalState.position = true; }
@@ -207,46 +207,46 @@ export class ProfileComponent implements OnInit {
     this.posForm.patchValue({ title: pos.title, company: pos.company, startDate: this.formatDateForInput(pos.startDate), endDate: this.formatDateForInput(pos.endDate), isCurrent: pos.isCurrent });
     this.modalState.position = true;
   }
-  savePos() { /* Call service logic */ 
+  savePos() { /* Call service logic */
     if (this.posForm.invalid) return; this.isSaving = true; const val = this.posForm.value;
     const dtoAdd: AddPositionDto = { Title: val.title, Company: val.company, StartDate: new Date(val.startDate).toISOString(), EndDate: val.endDate ? new Date(val.endDate).toISOString() : undefined, IsCurrent: val.isCurrent };
     const dtoUpdate: UpdatePositionDto = { PositionId: this.selectedItemId!, ...dtoAdd };
     this.isEditMode ? this.profileService.updatePosition(dtoUpdate).subscribe(res => this.handleResponse(res, 'position')) : this.profileService.addPosition(dtoAdd).subscribe(res => this.handleResponse(res, 'position'));
   }
-  deletePos(id: number) { if(confirm('Delete?')) this.profileService.deletePosition(id).subscribe(() => this.reload()); }
+  deletePos(id: number) { if (confirm('Delete?')) this.profileService.deletePosition(id).subscribe(() => this.reload()); }
 
   // Social
   openAddSocial() { this.isEditMode = false; this.socialForm.reset({ platform: 0 }); this.modalState.social = true; }
   openEditSocial(link: any) { this.isEditMode = true; this.selectedItemId = link.id || link.linkId; this.socialForm.patchValue({ platform: link.platform, url: link.url }); this.modalState.social = true; }
-  saveSocial() { 
-    if(this.socialForm.invalid) return; this.isSaving = true;
+  saveSocial() {
+    if (this.socialForm.invalid) return; this.isSaving = true;
     const dto: SocialLinkDto = { LinkId: this.isEditMode ? this.selectedItemId! : 0, Platform: Number(this.socialForm.value.platform), Url: this.socialForm.value.url };
     this.isEditMode ? this.profileService.updateSocialLink(dto).subscribe(res => this.handleResponse(res, 'social')) : this.profileService.addSocialLink(dto).subscribe(res => this.handleResponse(res, 'social'));
   }
 
   // Uploads
-  onAvatarSelected(event: any) { if (!this.isOwner) return; const file = event.target.files[0]; if (file) this.profileService.uploadAvatar(file).subscribe(res => { if(res.isSuccess) this.reload(); }); }
-  onCoverSelected(event: any) { if (!this.isOwner) return; const file = event.target.files[0]; if (file) this.profileService.uploadCover(file).subscribe(res => { if(res.isSuccess) this.reload(); }); }
+  onAvatarSelected(event: any) { if (!this.isOwner) return; const file = event.target.files[0]; if (file) this.profileService.uploadAvatar(file).subscribe(res => { if (res.isSuccess) this.reload(); }); }
+  onCoverSelected(event: any) { if (!this.isOwner) return; const file = event.target.files[0]; if (file) this.profileService.uploadCover(file).subscribe(res => { if (res.isSuccess) this.reload(); }); }
 
   // Helpers
-  reload() { if(this.currentUsername) this.loadProfile(this.currentUsername); }
+  reload() { if (this.currentUsername) this.loadProfile(this.currentUsername); }
   handleResponse(res: any, modalKey: keyof typeof this.modalState) { this.isSaving = false; if (res.isSuccess) { this.modalState[modalKey] = false; this.reload(); } }
   closeModals() { Object.keys(this.modalState).forEach(key => this.modalState[key as keyof typeof this.modalState] = false); }
   formatDateForInput(dateStr?: string): string { return dateStr ? (this.datePipe.transform(dateStr, 'yyyy-MM-dd') || '') : ''; }
   getPlatformName(id: number): string { return this.socialPlatforms.find(p => p.id === id)?.name || 'Link'; }
   getPlatformIcon(id: number): string { return this.socialPlatforms.find(p => p.id === id)?.icon || 'bi-link'; } // Helper for icons
-  
+
   resolveImage(url: string | null | undefined): string {
-    if (!url) return 'assets/images/default-avatar.png';
+    if (!url) return '/assets/images/default-avatar.png';
     if (url.includes('http') || url.startsWith('data:')) return url;
-    return `${environment.apiBaseUrl2}/avatars/${url}`; 
+    return `${environment.apiBaseUrl2}/avatars/${url}`;
   }
   resolveCover(url: string | null | undefined): string {
-    if (!url) return 'assets/images/default-cover.jpg';
+    if (!url) return '/assets/images/default-cover.jpg';
     if (url.includes('http') || url.startsWith('data:')) return url;
-    return `${environment.apiBaseUrl2}/covers/${url}`; 
+    return `${environment.apiBaseUrl2}/covers/${url}`;
   }
-// Helper for Post Images in Feed/Saved
+  // Helper for Post Images in Feed/Saved
   // قمنا بتغيير النوع من Post إلى any ليقبل النوعين (ProfilePost و Post)
   resolvePostImage(post: any): string {
     if (post.attachments && post.attachments.length > 0) {
@@ -254,18 +254,18 @@ export class ProfileComponent implements OnInit {
       if (url.includes('http')) return url;
       return `${this.environment.apiBaseUrl3}/${url}`;
     }
-    return 'assets/images/default-post.jpg'; 
+    return '/assets/images/default-post.jpg';
   }
   getAuthorImage(author: any): string {
     if (author && author.imageUrl) {
-        if (author.imageUrl.includes('http')) return author.imageUrl;
-        return `${environment.apiBaseUrl2}/avatars/${author.imageUrl}`;
+      if (author.imageUrl.includes('http')) return author.imageUrl;
+      return `${environment.apiBaseUrl2}/avatars/${author.imageUrl}`;
     }
-    return 'assets/images/default-avatar.png';
+    return '/assets/images/default-avatar.png';
   }
   getAuthorName(author: any): string { return author?.name || author?.username || 'User'; }
-  get displayName() { return this.user ? `${this.user.profile.firstName} ${this.user.profile.lastName}` : ''; }
-  
+  get displayName() { return this.user ? `${this.user.firstName} ${this.user.lastName}` : ''; }
+
   // Helper for Initials (Community)
   getInitials(name: string): string { return name ? name.substring(0, 2).toUpperCase() : 'CO'; }
 }
