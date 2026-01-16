@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommunityPostService } from '../../services/community-post';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-create-community-post',
@@ -17,15 +18,16 @@ export class CreateCommunityPostComponent implements OnInit {
   private locationService = inject(Location);
   private postService = inject(CommunityPostService);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   // Data
   communityId: number = 0;
   title: string = '';
   content: string = '';
-  
+
   // Tags Logic (Manual String Tags)
   tags: string[] = [];
-  currentTagInput: string = ''; 
+  currentTagInput: string = '';
 
   // Images
   images: File[] = [];
@@ -95,14 +97,15 @@ export class CreateCommunityPostComponent implements OnInit {
       next: (res) => {
         this.isPosting = false;
         if (res.isSuccess) {
+          this.toastService.success('Post created successfully!');
           this.locationService.back(); // العودة للصفحة السابقة عند النجاح
         } else {
-          alert(res.error?.message || 'Failed to create post');
+          this.toastService.error(res.error?.message || 'Failed to create post');
         }
       },
       error: () => {
         this.isPosting = false;
-        alert('Network error, please try again.');
+        this.toastService.error('Network error, please try again.');
       }
     });
   }

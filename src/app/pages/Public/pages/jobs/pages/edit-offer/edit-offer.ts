@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MyOffersService } from '../../service/my-offers';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-edit-offer',
@@ -19,6 +20,7 @@ export class EditOfferComponent implements OnInit {
   private router = inject(Router);
   private locationService = inject(Location);
   private offersService = inject(MyOffersService);
+  private toastService = inject(ToastService);
 
   offerId!: number;
   editForm!: FormGroup;
@@ -77,7 +79,7 @@ export class EditOfferComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess && res.data?.offer) {
           const offer = res.data.offer;
-          
+
           if (offer.location) {
             this.selectedLocationName = offer.location.neighborhood || offer.location.borough;
           }
@@ -100,7 +102,7 @@ export class EditOfferComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        alert('Failed to load offer details');
+        this.toastService.error('Failed to load offer details');
         this.locationService.back();
       }
     });
@@ -134,15 +136,15 @@ export class EditOfferComponent implements OnInit {
     this.offersService.updateOffer(this.offerId, payload).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          alert('Job offer updated successfully!');
+          this.toastService.success('Job offer updated successfully!');
           this.router.navigate(['/public/profession/my-offers']);
         } else {
-          alert(res.error?.message || 'Update failed');
+          this.toastService.error(res.error?.message || 'Update failed');
         }
         this.isSubmitting = false;
       },
       error: () => {
-        alert('Something went wrong');
+        this.toastService.error('Something went wrong');
         this.isSubmitting = false;
       }
     });

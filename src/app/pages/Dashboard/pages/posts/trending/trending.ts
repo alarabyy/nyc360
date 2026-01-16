@@ -12,7 +12,7 @@ import { ToastService } from '../../../../../shared/services/toast.service';
 @Component({
   selector: 'app-trending',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './trending.html',
   styleUrls: ['./trending.scss']
 })

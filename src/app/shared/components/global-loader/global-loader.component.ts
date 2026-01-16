@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GlobalLoaderService } from './global-loader.service';
 
 @Component({
-    selector: 'app-global-loader',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-nyc-loader',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="global-loader" *ngIf="loading$ | async">
       <div class="loader-content">
         <div class="brand">NYC-360</div>
@@ -14,7 +14,7 @@ import { GlobalLoaderService } from './global-loader.service';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .global-loader {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -75,6 +75,6 @@ import { GlobalLoaderService } from './global-loader.service';
   `]
 })
 export class GlobalLoaderComponent {
-    constructor(public loaderService: GlobalLoaderService) { }
-    get loading$() { return this.loaderService.loading$; }
+  private loaderService = inject(GlobalLoaderService);
+  loading$ = this.loaderService.loading$;
 }

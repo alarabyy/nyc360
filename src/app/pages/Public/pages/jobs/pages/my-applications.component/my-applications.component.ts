@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MyApplicationsService } from '../../service/my-applications';
 import { MyApplication } from '../../models/my-applications';
+import { ToastService } from '../../../../../../shared/services/toast.service';
+import { ConfirmationService } from '../../../../../../shared/services/confirmation.service';
 
 @Component({
   selector: 'app-my-applications',
@@ -14,6 +16,8 @@ import { MyApplication } from '../../models/my-applications';
 export class MyApplicationsComponent implements OnInit {
   private appsService = inject(MyApplicationsService);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
+  private confirmationService = inject(ConfirmationService);
 
   applications: MyApplication[] = [];
   isLoading = true;
@@ -38,20 +42,27 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   onWithdraw(appId: number) {
-    if (!confirm('Are you sure you want to withdraw this application?')) return;
-
-    this.isWithdrawing = appId;
-    this.appsService.withdrawApplication(appId).subscribe({
-      next: (res) => {
-        if (res.isSuccess) {
-          alert('Application withdrawn successfully.');
-          this.loadApps(); // إعادة تحميل القائمة
-        }
-        this.isWithdrawing = null;
-      },
-      error: () => {
-        alert('Failed to withdraw application.');
-        this.isWithdrawing = null;
+    this.confirmationService.confirm({
+      title: 'Withdraw Application',
+      message: 'Are you sure you want to withdraw this application?',
+      confirmText: 'Withdraw',
+      type: 'danger'
+    }).then(confirmed => {
+      if (confirmed) {
+        this.isWithdrawing = appId;
+        this.appsService.withdrawApplication(appId).subscribe({
+          next: (res) => {
+            if (res.isSuccess) {
+              this.toastService.success('Application withdrawn successfully.');
+              this.loadApps(); // إعادة تحميل القائمة
+            }
+            this.isWithdrawing = null;
+          },
+          error: () => {
+            this.toastService.error('Failed to withdraw application.');
+            this.isWithdrawing = null;
+          }
+        });
       }
     });
   }

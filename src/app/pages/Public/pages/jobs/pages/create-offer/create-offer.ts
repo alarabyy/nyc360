@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } 
 import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
 import { CreateOfferService } from '../../service/create-offer';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-create-offer',
@@ -16,6 +17,7 @@ export class CreateOfferComponent implements OnInit {
   private fb = inject(FormBuilder);
   private offerService = inject(CreateOfferService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   isSubmitting = false;
   locationSearchControl = new FormControl('');
@@ -92,13 +94,15 @@ export class CreateOfferComponent implements OnInit {
       next: (res) => {
         this.isSubmitting = false;
         if (res.isSuccess) {
-          alert('Job Offer Created Successfully!');
+          this.toastService.success('Job Offer Created Successfully!');
           this.router.navigate(['/public/profession']);
+        } else {
+          this.toastService.error(res.error?.message || 'Failed to create offer');
         }
       },
       error: () => {
         this.isSubmitting = false;
-        alert('Server Error: Make sure all fields are valid.');
+        this.toastService.error('Server Error: Make sure all fields are valid.');
       }
     });
   }

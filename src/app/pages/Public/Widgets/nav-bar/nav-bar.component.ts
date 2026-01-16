@@ -186,7 +186,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   toggleProfileDropdown(event: Event) {
     event.stopPropagation();
+    event.preventDefault(); // Prevent accidental navigation or weird behavior
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
+    this.cdr.detectChanges(); // Force update
   }
 
   @HostListener('document:click', ['$event'])

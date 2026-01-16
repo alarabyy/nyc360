@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { GlobalLoaderService } from '../../shared/components/global-loader/global-loader.service';
+import { GlobalLoaderService } from '../shared/components/global-loader/global-loader.service';
 import { finalize } from 'rxjs/operators';
 
 export const globalLoaderInterceptor: HttpInterceptorFn = (req, next) => {
