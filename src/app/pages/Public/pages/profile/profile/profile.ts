@@ -153,12 +153,19 @@ export class ProfileComponent implements OnInit {
   }
 
   resolvePostImage(post: any): string {
-    if (post.attachments && post.attachments.length > 0) {
-      const url = post.attachments[0].url;
-      if (url.includes('http')) return url;
-      return `${this.environment.apiBaseUrl3}/${url}`;
-    }
-    return '/assets/images/default-post.jpg';
+    const attachment = post.attachments?.[0];
+    let url = attachment?.url || post.imageUrl;
+
+    if (!url || url.trim() === '') return '/assets/images/default-post.jpg';
+
+    // تنظيف المسار
+    url = url.replace('@local://', '');
+
+    // لو لينك خارجي
+    if (url.startsWith('http')) return url;
+
+    // لو صورة من السيرفر (posts)
+    return `${this.environment.apiBaseUrl3}/${url}`;
   }
 
   getAuthorImage(author: any): string {

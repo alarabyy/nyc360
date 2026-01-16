@@ -77,7 +77,14 @@ export class PostFormComponent implements OnInit {
       if (params['id']) {
         this.isEditMode = true;
         this.postId = +params['id'];
-        this.loadPostData(this.postId);
+
+        // Check if data passed via router state
+        const stateData = (typeof window !== 'undefined') ? window.history.state?.postData : null;
+        if (stateData && stateData.id === this.postId) {
+          this.populateForm(stateData);
+        } else {
+          this.loadPostData(this.postId);
+        }
       }
     });
   }
@@ -183,31 +190,7 @@ export class PostFormComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         if (res.isSuccess && res.data) {
-          const post = res.data;
-          this.form.patchValue({
-            title: post.title,
-            content: post.content,
-            category: post.category,
-            type: post.postType || 0,
-            locationSearch: post.location?.neighborhoodNet || ''
-          });
-
-          if (post.location) this.selectedLocation = post.location;
-
-          // Map tags
-          if (post.tags && Array.isArray(post.tags)) {
-            this.selectedTags = post.tags.map((t: any) => {
-              if (typeof t === 'object') return t;
-              return { id: 0, name: t };
-            });
-          }
-
-          // Map attachments
-          if (post.attachments && Array.isArray(post.attachments)) {
-            this.existingAttachments = [...post.attachments];
-          } else if (post.imageUrl) {
-            this.existingAttachments = [{ id: 0, url: post.imageUrl }];
-          }
+          this.populateForm(res.data);
         }
       },
       error: () => {
@@ -215,6 +198,33 @@ export class PostFormComponent implements OnInit {
         this.toastService.error('Failed to load post data');
       }
     });
+  }
+
+  populateForm(post: any) {
+    this.form.patchValue({
+      title: post.title,
+      content: post.content,
+      category: post.category,
+      type: post.postType || 0,
+      locationSearch: post.location?.neighborhoodNet || ''
+    });
+
+    if (post.location) this.selectedLocation = post.location;
+
+    // Map tags
+    if (post.tags && Array.isArray(post.tags)) {
+      this.selectedTags = post.tags.map((t: any) => {
+        if (typeof t === 'object') return t;
+        return { id: 0, name: t };
+      });
+    }
+
+    // Map attachments
+    if (post.attachments && Array.isArray(post.attachments)) {
+      this.existingAttachments = [...post.attachments];
+    } else if (post.imageUrl) {
+      this.existingAttachments = [{ id: 0, url: post.imageUrl }];
+    }
   }
 
   // --- Submit ---

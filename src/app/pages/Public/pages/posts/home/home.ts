@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../Authentication/Service/auth';
 import { environment } from '../../../../../environments/environment';
@@ -28,6 +28,7 @@ export class Home implements OnInit {
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
 
+  private router = inject(Router);
   private toastService = inject(ToastService);
 
   // Data
@@ -181,6 +182,12 @@ export class Home implements OnInit {
 
     this.trendingTags = data.trendingTags || [];
     this.suggestedCommunities = data.suggestedCommunities || [];
+  }
+
+  goToPost(post: Post) {
+    this.router.navigate(['/public/posts/details', post.id], {
+      state: { postData: post }
+    });
   }
 
   onSavePost(post: Post, event: Event) {

@@ -3,9 +3,10 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostsService } from '../../feeds/services/posts';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
-    standalone: true,
+  standalone: true,
   selector: 'app-initiatives-layout',
   templateUrl: './initiatives-layout.html',
   styleUrls: ['./initiatives-layout.scss'],
@@ -22,19 +23,20 @@ export class InitiativesLayoutComponent implements OnInit {
 
   // البحث والفلاتر
   searchQuery = '';
-  
+
   // الباجينيشن
   currentPage = 1;
   pageSize = 10;
   totalCount = 0;
   totalPages = 0;
+  protected readonly environment = environment;
 
   constructor(
     private route: ActivatedRoute,
     private postsService: PostsService,
     private el: ElementRef,
     private renderer: Renderer2
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
@@ -85,7 +87,7 @@ export class InitiativesLayoutComponent implements OnInit {
     return data.map(item => ({
       ...item,
       // صورة افتراضية في حالة عدم وجود صورة
-      image: item.attachments?.[0]?.url || 'assets/images/placeholder-initiative.jpg',
+      image: this.resolvePostImage(item),
       // استخدام العنوان والوصف
       title: item.title,
       description: item.content,
@@ -93,12 +95,31 @@ export class InitiativesLayoutComponent implements OnInit {
       date: item.createdAt,
       locationName: item.location?.neighborhood || 'NYC Wide',
       // اسم المؤسسة أو الناشر
-      organizer: item.author?.fullName || 'Community Organization'
+      organizer: item.author?.fullName || 'Community Organization',
+      organizerImg: this.resolveAuthorImage(item.author)
     }));
   }
 
   onSearch() {
     this.currentPage = 1;
     this.loadInitiatives();
+  }
+
+  // --- Image Resolvers ---
+  resolvePostImage(post: any): string {
+    const attachment = post.attachments?.[0];
+    let url = attachment?.url || post.imageUrl;
+    if (!url || url.trim() === '') return 'assets/images/placeholder-initiative.jpg';
+    url = url.replace('@local://', '');
+    if (url.startsWith('http')) return url;
+    return `${this.environment.apiBaseUrl3}/${url}`;
+  }
+
+  resolveAuthorImage(author: any): string {
+    let url = author?.imageUrl;
+    if (!url || url.trim() === '') return 'assets/images/default-avatar.png';
+    url = url.replace('@local://', '');
+    if (url.startsWith('http')) return url;
+    return `${this.environment.apiBaseUrl3}/${url}`;
   }
 }

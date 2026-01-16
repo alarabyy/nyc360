@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CategoryPost } from '../models/category-home.models';
 import { CategoryHomeService } from '../service/category-home.service';
 import { CATEGORY_THEMES } from '../../feeds/models/categories';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-category-home',
@@ -16,6 +17,7 @@ export class CategoryHomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private homeService = inject(CategoryHomeService);
   private cdr = inject(ChangeDetectorRef);
+  protected readonly environment = environment;
 
   // --- Data Buckets ---
   heroPost: CategoryPost | null = null;       // 1. الصورة الكبيرة (Hero)
@@ -24,7 +26,7 @@ export class CategoryHomeComponent implements OnInit {
   moreNewsPosts: CategoryPost[] = [];         // 4. القائمة السفلية (More News)
   textOnlyPosts: CategoryPost[] = [];         // 5. بوستات بدون صور (التصميم الجديد في الأسفل)
   trendingPosts: CategoryPost[] = [];         // 6. التريند (Sidebar)
-  
+
   // --- Theme ---
   activeTheme: any = null;
   isLoading = true;
@@ -39,7 +41,7 @@ export class CategoryHomeComponent implements OnInit {
   resolveCategory(path: string) {
     this.isLoading = true;
     const categoryEntry = Object.entries(CATEGORY_THEMES).find(([key, val]: any) => val.path === path);
-    
+
     if (categoryEntry) {
       this.activeTheme = categoryEntry[1];
       const divisionId = Number(categoryEntry[0]);
@@ -93,9 +95,23 @@ export class CategoryHomeComponent implements OnInit {
 
   // جلب رابط الصورة
   getImg(post: CategoryPost): string {
-    if (post.attachments && post.attachments.length > 0) return post.attachments[0].url;
-    if (post.parentPost?.attachments && post.parentPost.attachments.length > 0) return post.parentPost.attachments[0].url;
-    return 'assets/images/placeholder.jpg'; 
+    let url = '';
+    if (post.attachments && post.attachments.length > 0) {
+      url = post.attachments[0].url;
+    } else if (post.parentPost?.attachments && post.parentPost.attachments.length > 0) {
+      url = post.parentPost.attachments[0].url;
+    }
+
+    if (!url || url.trim() === '') return 'assets/images/placeholder.jpg';
+
+    // تنظيف المسار
+    url = url.replace('@local://', '');
+
+    // لو لينك خارجي
+    if (url.startsWith('http') || url.startsWith('https')) return url;
+
+    // لو صورة من السيرفر (posts)
+    return `${this.environment.apiBaseUrl3}/${url}`;
   }
 
   get dynamicDescription(): string {

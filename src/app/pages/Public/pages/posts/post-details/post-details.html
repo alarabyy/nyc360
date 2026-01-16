@@ -47,19 +47,28 @@
             <button class="action-btn-circle" (click)="toggleSave()" [class.active]="post.isSaved">
               <i class="bi" [ngClass]="post.isSaved ? 'bi-bookmark-fill' : 'bi-bookmark'"></i>
             </button>
-            <button class="action-btn-circle" (click)="toggleMenu()">
-              <i class="bi bi-three-dots"></i>
-            </button>
+            <div class="dropdown-wrapper">
+              <button class="action-btn-circle" (click)="toggleMenu()">
+                <i class="bi bi-three-dots"></i>
+              </button>
 
-            <div class="dropdown-menu-custom" *ngIf="showMenu">
-              <div class="menu-item" *ngIf="canEdit" routerLink="/public/posts/edit/{{post.id}}">
-                <i class="bi bi-pencil"></i> <span>Edit Post</span>
-              </div>
-              <div class="menu-item text-danger" *ngIf="canEdit" (click)="onDelete()">
-                <i class="bi bi-trash"></i> <span>Delete Post</span>
-              </div>
-              <div class="menu-item" (click)="openReportModal()">
-                <i class="bi bi-flag"></i> <span>Report / Feedback</span>
+              <div class="dropdown-menu-custom animate__animated animate__fadeIn" *ngIf="showMenu">
+                <button class="menu-item-btn" *ngIf="canEdit" (click)="goToEdit()">
+                  <div class="icon-box"><i class="bi bi-pencil-square"></i></div>
+                  <span>Edit Post</span>
+                </button>
+
+                <button class="menu-item-btn danger" *ngIf="canEdit" (click)="onDelete()">
+                  <div class="icon-box"><i class="bi bi-trash3"></i></div>
+                  <span>Delete Post</span>
+                </button>
+
+                <div class="menu-divider"></div>
+
+                <button class="menu-item-btn" (click)="openReportModal()">
+                  <div class="icon-box"><i class="bi bi-flag"></i></div>
+                  <span>Report / Feedback</span>
+                </button>
               </div>
             </div>
           </div>
@@ -85,7 +94,7 @@
         </button>
 
         <!-- Owners can edit directly here too -->
-        <button *ngIf="canEdit" class="btn-action-premium ms-2" routerLink="/public/posts/edit/{{post.id}}">
+        <button *ngIf="canEdit" class="btn-action-premium ms-2" (click)="goToEdit()">
           <i class="bi bi-pencil-square"></i>
           <span>Edit</span>
         </button>
@@ -180,8 +189,7 @@
       <div class="premium-sidebar-card" *ngIf="relatedPosts.length > 0">
         <h4 class="card-title">More Like This</h4>
         <div class="related-list">
-          <div class="related-post-item" *ngFor="let item of relatedPosts"
-            [routerLink]="['/public/posts/details', item.id]">
+          <div class="related-post-item" *ngFor="let item of relatedPosts" (click)="goToRelatedPost(item)">
             <img *ngIf="item.imageUrl" [src]="resolveImageUrl(item.imageUrl)" class="rel-img" alt="">
             <div class="rel-meta">
               <h5 class="rel-title">{{ item.title }}</h5>

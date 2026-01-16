@@ -8,7 +8,7 @@
         <h1 class="page-title">NYC360 Featured Posts</h1>
 
         <div class="featured-row">
-          <div class="feat-card" *ngFor="let post of featuredPosts" [routerLink]="['/public/posts/details', post.id]">
+          <div class="feat-card" *ngFor="let post of featuredPosts" (click)="goToPost(post)">
             <img [src]="resolvePostImage(post)" alt="Post Image">
 
             <button class="save-btn" [class.saved]="post.isSaved" (click)="onSavePost(post, $event)">
@@ -26,7 +26,7 @@
       </section>
 
       <section class="hero-section" *ngIf="heroBanner">
-        <div class="hero-card" [routerLink]="['/public/posts/details', heroBanner.id]">
+        <div class="hero-card" (click)="goToPost(heroBanner)">
           <img [src]="resolvePostImage(heroBanner)" alt="Hero Image">
 
           <button class="save-btn" [class.saved]="heroBanner.isSaved" (click)="onSavePost(heroBanner, $event)">
@@ -47,8 +47,7 @@
         </div>
 
         <div class="posts-grid">
-          <div class="std-card" *ngFor="let post of group.posts | slice:0:4"
-            [routerLink]="['/public/posts/details', post.id]">
+          <div class="std-card" *ngFor="let post of group.posts | slice:0:4" (click)="goToPost(post)">
             <div class="img-wrapper">
               <img [src]="resolvePostImage(post)">
               <button class="save-btn" [class.saved]="post.isSaved" (click)="onSavePost(post, $event)">
@@ -69,8 +68,7 @@
           <h2>Top Stories</h2>
         </div>
         <div class="horizontal-cards-list">
-          <div class="horizontal-card" *ngFor="let post of highlightedPosts"
-            [routerLink]="['/public/posts/details', post.id]">
+          <div class="horizontal-card" *ngFor="let post of highlightedPosts" (click)="goToPost(post)">
             <div class="h-img-wrapper">
               <span class="h-badge">{{ getCategoryName(post.category) }}</span>
               <button class="save-btn" [class.saved]="post.isSaved" (click)="onSavePost(post, $event)">
@@ -101,7 +99,7 @@
         </div>
 
         <div class="text-grid">
-          <div class="text-card" *ngFor="let post of textOnlyPosts" [routerLink]="['/public/posts/details', post.id]">
+          <div class="text-card" *ngFor="let post of textOnlyPosts" (click)="goToPost(post)">
             <span class="cat-pill" [ngClass]="'cat-'+post.category">{{ getCategoryName(post.category) }}</span>
             <h3>{{ post.title | slice:0:70 }}{{ post.title.length > 70 ? '...' : '' }}</h3>
             <p>{{ post.content | slice:0:120 }}{{ post.content.length > 120 ? '...' : '' }}</p>

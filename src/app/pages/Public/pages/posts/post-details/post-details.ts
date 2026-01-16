@@ -95,6 +95,14 @@ export class PostDetailsComponent implements OnInit {
   }
 
   loadPost(id: number) {
+    const stateData = (typeof window !== 'undefined') ? window.history.state?.postData : null;
+    if (stateData && stateData.id === id) {
+      this.handlePostData({ post: stateData, relatedPosts: [] });
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
     const POST_KEY = makeStateKey<any>('post_data_' + id);
     if (this.transferState.hasKey(POST_KEY)) {
       const savedData = this.transferState.get(POST_KEY, null);
@@ -341,6 +349,17 @@ export class PostDetailsComponent implements OnInit {
     const scrolled = (winScroll / height) * 100;
     const progress = document.getElementById('readingProgress');
     if (progress) progress.style.width = scrolled + '%';
+  }
+
+  goToEdit() {
+    if (!this.post) return;
+    this.router.navigate(['/public/posts/edit', this.post.id], {
+      state: { postData: this.post }
+    });
+  }
+
+  goToRelatedPost(item: RelatedPost) {
+    this.router.navigate(['/public/posts/details', item.id]);
   }
 
   async onDelete() {

@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostsService } from '../services/posts';
+import { environment } from '../../../../../environments/environment';
 
 // --- Enums & Themes ---
 export enum CategoryEnum { Community = 0, Culture = 1, Education = 2, Housing = 3, Health = 4, Legal = 5, Lifestyle = 6, News = 7, Professions = 8, Social = 9, Transportation = 10, Tv = 11 }
@@ -31,13 +32,13 @@ export const CATEGORY_THEMES: any = {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   // ⚡ PERFORMANCE BOOST: استراتيجية التحديث اليدوي
-  changeDetection: ChangeDetectionStrategy.OnPush 
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedLayoutComponent implements OnInit, OnDestroy {
   posts: any[] = [];
   locations: any[] = [];
   loading = true;
-  
+
   // Pagination & Filters
   totalCount: number = 0;
   totalPages: number = 0;
@@ -47,7 +48,8 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   selectedLocationId: number | null = null;
   currentPage: number = 1;
-  pageSize: number = 9; 
+  pageSize: number = 9;
+  protected readonly environment = environment;
 
   private searchSubject = new Subject<string>();
   private locationSearch$ = new Subject<string>();
@@ -64,7 +66,7 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
       this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe(txt => {
         this.searchQuery = txt;
         this.currentPage = 1;
-        this.loadPosts(); 
+        this.loadPosts();
       }),
       this.locationSearch$.pipe(debounceTime(400), distinctUntilChanged()).subscribe(term => this.fetchLocations(term))
     );
@@ -91,13 +93,13 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
   }
 
   applyTheme(color: string) {
-    if(this.el?.nativeElement) this.el.nativeElement.style.setProperty('--primary-color', color);
+    if (this.el?.nativeElement) this.el.nativeElement.style.setProperty('--primary-color', color);
   }
 
   loadPosts() {
     this.loading = true;
     this.cdr.markForCheck(); // إظهار السكيلتون
-    
+
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const params = {
@@ -105,12 +107,12 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
       pageSize: this.pageSize,
       category: this.currentCategory,
       locationId: this.selectedLocationId,
-      search: this.searchQuery 
+      search: this.searchQuery
     };
 
     this.postsService.getFeed(params).subscribe({
       next: (res: any) => {
-        if (res.isSuccess) { 
+        if (res.isSuccess) {
           this.totalCount = res.totalCount;
           this.totalPages = res.totalPages;
           this.posts = this.mapAndSortPosts(res.data);
@@ -130,18 +132,14 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
   private mapAndSortPosts(rawPosts: any[]): any[] {
     const mapped = rawPosts.map(post => {
       const isShared = !!post.parentPost;
-      let displayImage = null;
-      if (post.attachments?.length > 0) displayImage = post.attachments[0].url;
-      else if (post.parentPost?.attachments?.length > 0) displayImage = post.parentPost.attachments[0].url;
-
       const catTheme = CATEGORY_THEMES[post.category] || { label: 'General', color: '#999' };
-      
+
       return {
         ...post,
-        ui: { 
+        ui: {
           isShared,
-          displayImage,
-          authorImg: post.author?.imageUrl || 'assets/images/default-avatar.png',
+          displayImage: this.resolvePostImage(post),
+          authorImg: this.resolveAuthorImage(post.author),
           authorName: post.author?.fullName || post.author?.username || 'Member',
           title: post.title || post.parentPost?.title,
           content: post.content,
@@ -167,10 +165,10 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
     let start = Math.max(1, this.currentPage - 1);
     let end = Math.min(this.totalPages, this.currentPage + 1);
     if (this.totalPages >= 3) {
-        if (this.currentPage === 1) end = 3;
-        else if (this.currentPage === this.totalPages) start = this.totalPages - 2;
+      if (this.currentPage === 1) end = 3;
+      else if (this.currentPage === this.totalPages) start = this.totalPages - 2;
     } else { start = 1; end = this.totalPages; }
-    this.pagesArray = Array.from({length: (end - start) + 1}, (_, i) => start + i);
+    this.pagesArray = Array.from({ length: (end - start) + 1 }, (_, i) => start + i);
   }
 
   changePage(page: number) {
@@ -182,10 +180,10 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
 
   // Actions
   onSearchInput(event: any) { this.searchSubject.next(event.target.value); }
-  onLocationType(term: string) { if(term.length > 2) this.locationSearch$.next(term); }
+  onLocationType(term: string) { if (term.length > 2) this.locationSearch$.next(term); }
   fetchLocations(term: string) {
     this.postsService.searchLocations(term).subscribe((res: any) => {
-      if(res.isSuccess) { this.locations = res.data; this.cdr.markForCheck(); }
+      if (res.isSuccess) { this.locations = res.data; this.cdr.markForCheck(); }
     });
   }
   selectLocation(locId: number) {
@@ -195,4 +193,25 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
     this.loadPosts();
   }
   resetFilters() { this.searchQuery = ''; this.selectedLocationId = null; this.currentPage = 1; }
+
+  // --- Image Resolvers ---
+  resolvePostImage(post: any): string {
+    const attachment = post.attachments?.[0];
+    let url = attachment?.url || post.imageUrl;
+    if (!url || url.trim() === '') {
+      if (post.parentPost) return this.resolvePostImage(post.parentPost);
+      return 'assets/images/placeholder.jpg';
+    }
+    url = url.replace('@local://', '');
+    if (url.startsWith('http')) return url;
+    return `${this.environment.apiBaseUrl3}/${url}`;
+  }
+
+  resolveAuthorImage(author: any): string {
+    let url = author?.imageUrl;
+    if (!url || url.trim() === '') return 'assets/images/default-avatar.png';
+    url = url.replace('@local://', '');
+    if (url.startsWith('http')) return url;
+    return `${this.environment.apiBaseUrl3}/${url}`;
+  }
 }

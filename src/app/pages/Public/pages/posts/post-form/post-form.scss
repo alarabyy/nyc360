@@ -1,77 +1,84 @@
-// Luxury Theme Variables
+// --- Modern Luxury Design Tokens ---
+$primary: #000000;
 $gold: #D4AF37;
-$dark: #1A1A1A;
-$white: #FFFFFF;
-$light-gray: #F8F9FA;
-$border: #E0E0E0;
-$radius: 16px;
+$bg-faint: #f8f9fc;
+$white: #ffffff;
+$border-light: rgba(0, 0, 0, 0.06);
+$text-main: #1a1a1a;
+$text-muted: #64748b;
+$radius-lg: 24px;
+$radius-md: 16px;
+$shadow-elegant: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
 
 .luxury-theme {
-  font-family: 'DM Sans', sans-serif;
-  background: #f4f7fc;
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: $bg-faint;
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 60px 20px;
+  color: $text-main;
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  max-width: 900px;
-  margin: 0 auto 30px;
+  align-items: flex-end;
+  max-width: 800px;
+  margin: 0 auto 40px;
 
   .title-section {
     h2 {
-      font-weight: 800;
-      color: $dark;
+      font-weight: 900;
+      color: $primary;
       margin: 0;
-      font-size: 2rem;
-
-      &.gold-text {
-        color: $dark;
-        border-bottom: 3px solid $gold;
-        display: inline-block;
-        padding-bottom: 5px;
-      }
+      font-size: 2.5rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-family: 'Playfair Display', serif;
     }
 
     .subtitle {
-      color: #777;
-      margin: 5px 0 0;
-      font-size: 0.95rem;
+      color: $text-muted;
+      margin: 12px 0 0;
+      font-size: 1.1rem;
+      font-weight: 500;
     }
   }
 
   .btn-back {
-    background: transparent;
-    border: 1px solid $border;
+    background: $white;
+    border: 1px solid $border-light;
     border-radius: 50px;
-    padding: 10px 20px;
-    font-weight: 600;
-    color: #555;
-    transition: 0.3s;
+    padding: 12px 24px;
+    font-weight: 700;
+    color: $primary;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 
     &:hover {
-      background: $dark;
-      color: $gold;
-      border-color: $dark;
+      background: $primary;
+      color: $white;
+      transform: translateX(-5px);
     }
   }
 }
 
 .glass-panel {
   background: $white;
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 40px;
-  border-radius: $radius;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  padding: 50px;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-elegant;
+  border: 1px solid $white;
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+  }
 }
 
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 30px;
   flex-wrap: wrap;
 
   .form-group {
@@ -81,19 +88,20 @@ $radius: 16px;
 }
 
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 
   label {
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 800;
     text-transform: uppercase;
-    color: #888;
-    margin-bottom: 8px;
+    color: $primary;
+    margin-bottom: 12px;
     display: block;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
 
     .req {
-      color: #e74c3c;
+      color: #ef4444;
+      margin-left: 4px;
     }
   }
 
@@ -103,109 +111,125 @@ $radius: 16px;
 
     i {
       position: absolute;
-      left: 15px;
+      left: 18px;
       top: 50%;
       transform: translateY(-50%);
-      color: $gold;
-      opacity: 0.7;
+      color: $text-muted;
+      font-size: 1.1rem;
+      transition: 0.3s;
     }
 
     input,
     select {
       width: 100%;
-      padding: 14px 15px 14px 45px;
-      border: 1px solid $border;
-      border-radius: 12px;
+      padding: 16px 20px 16px 52px;
+      border: 2px solid #edeff5;
+      border-radius: $radius-md;
       font-size: 1rem;
-      background: #FAFAFA;
-      transition: 0.3s;
+      background: #fbfbfd;
+      color: $text-main;
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+
+      &::placeholder {
+        color: #a0aec0;
+      }
 
       &:focus {
-        border-color: $gold;
-        outline: none;
+        border-color: $primary;
         background: $white;
-        box-shadow: 0 0 0 4px rgba($gold, 0.1);
+        box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.1);
+        outline: none;
+
+        +i {
+          color: $primary;
+        }
       }
     }
   }
 
   .textarea-wrapper textarea {
     width: 100%;
-    padding: 15px;
-    border: 1px solid $border;
-    border-radius: 12px;
-    background: #FAFAFA;
-    font-size: 1rem;
+    padding: 20px;
+    border: 2px solid #edeff5;
+    border-radius: $radius-md;
+    background: #fbfbfd;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    min-height: 250px;
+    resize: vertical;
+    transition: 0.3s;
 
     &:focus {
-      border-color: $gold;
-      outline: none;
+      border-color: $primary;
       background: $white;
-      box-shadow: 0 0 0 4px rgba($gold, 0.1);
+      outline: none;
     }
   }
 
   .error-msg {
-    color: #e74c3c;
+    color: #ef4444;
     font-size: 0.8rem;
-    margin-top: 5px;
-    display: block;
-    font-weight: 500;
+    margin-top: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &:before {
+      content: '●';
+      font-size: 0.6rem;
+    }
   }
 }
 
-// --- File Upload ---
+// --- Enhanced File Upload ---
 .file-upload-zone {
-  position: relative;
-
-  .hidden-input {
-    display: none;
-  }
-
   .upload-label {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    border: 2px dashed $border;
-    border-radius: 12px;
-    background: #FAFAFA;
+    padding: 50px;
+    border: 2px dashed #cbd5e0;
+    border-radius: $radius-md;
+    background: #f8fafc;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.3s ease;
 
     i {
-      font-size: 2rem;
+      font-size: 3rem;
       color: $gold;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     span {
-      font-weight: 600;
-      color: #666;
+      font-weight: 700;
+      color: $text-main;
+      font-size: 1.1rem;
     }
 
     &:hover {
       border-color: $gold;
-      background: rgba($gold, 0.05);
+      background: rgba($gold, 0.03);
+      transform: scale(0.99);
     }
   }
 }
 
 .attachments-preview {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   flex-wrap: wrap;
-  margin-top: 15px;
+  margin-top: 25px;
 
   .preview-item {
     position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 12px;
+    width: 120px;
+    height: 120px;
+    border-radius: $radius-md;
     overflow: hidden;
-    border: 1px solid $border;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
 
     img {
       width: 100%;
@@ -215,34 +239,25 @@ $radius: 16px;
 
     .btn-remove {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: $white;
       border: none;
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       cursor: pointer;
-      font-size: 1rem;
-      z-index: 2;
       transition: 0.2s;
 
       &:hover {
-        background: #e74c3c;
+        background: #ef4444;
         transform: scale(1.1);
-      }
-
-      &.danger:hover {
-        background: #c0392b;
       }
     }
 
     &.new-file {
-      border-color: $gold;
+      border: 3px solid $gold;
 
       .new-badge {
         position: absolute;
@@ -250,102 +265,154 @@ $radius: 16px;
         left: 0;
         width: 100%;
         background: $gold;
-        color: #fff;
-        font-size: 0.6rem;
-        font-weight: 800;
+        color: $white;
+        font-size: 0.7rem;
+        font-weight: 900;
         text-align: center;
-        padding: 2px 0;
+        padding: 3px 0;
       }
     }
   }
 }
 
-// --- Tag Badges ---
+// --- Modern Tags ---
 .tags-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 
   .tag-badge {
-    background: $gold;
-    color: $white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: #f1f5f9;
+    color: $primary;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    transition: 0.2s;
+
+    &:hover {
+      background: $primary;
+      color: $white;
+      border-color: $primary;
+    }
 
     .remove-tag {
       cursor: pointer;
-      opacity: 0.8;
+      color: #94a3b8;
 
       &:hover {
-        opacity: 1;
+        color: #f87171;
       }
     }
   }
 }
 
-// --- Actions ---
+// --- Action Buttons ---
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
+  gap: 20px;
+  padding-top: 40px;
+  margin-top: 40px;
+  border-top: 1px solid #edf2f7;
 
   .btn-ghost {
-    background: transparent;
-    color: #666;
+    background: none;
     border: none;
+    color: $text-muted;
     font-weight: 700;
-    padding: 12px 25px;
+    padding: 12px 30px;
+    transition: 0.3s;
 
     &:hover {
-      color: $dark;
-      text-decoration: underline;
+      color: $primary;
+      transform: translateY(-2px);
     }
   }
 
   .btn-luxury {
-    background: $dark;
-    color: $gold;
-    border: 1px solid $dark;
-    padding: 12px 40px;
+    background: $primary;
+    color: $white;
+    padding: 16px 50px;
     border-radius: 50px;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-weight: 800;
     text-transform: uppercase;
-    transition: 0.3s;
+    letter-spacing: 0.05em;
+    border: none;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 
     &:hover:not(:disabled) {
-      background: $gold;
-      color: $dark;
-      border-color: $gold;
-      box-shadow: 0 10px 20px rgba($gold, 0.3);
-      transform: translateY(-2px);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15);
+      background: #222;
     }
 
     &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+      opacity: 0.5;
+      filter: grayscale(1);
     }
   }
 }
 
-// Animations
+// Dropdown Results
+.dropdown-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: $white;
+  border-radius: $radius-md;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 10px;
+  border: 1px solid #edf2f7;
+  list-style: none;
+  padding: 8px;
+
+  li {
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      color: $primary;
+      font-weight: 700;
+    }
+
+    small {
+      color: $text-muted;
+      font-size: 0.8rem;
+    }
+
+    &:hover {
+      background: #f8fafc;
+    }
+  }
+}
+
+// --- Animations ---
 .fade-in-down {
-  animation: fadeInDown 0.6s ease;
+  animation: fadeInDown 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .fade-in-up {
-  animation: fadeInUp 0.6s ease 0.1s backwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.1s backwards;
 }
 
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-30px);
   }
 
   to {
@@ -357,61 +424,11 @@ $radius: 16px;
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-// --- Search Dropdowns ---
-.position-relative {
-  position: relative;
-}
-
-.dropdown-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  max-height: 250px;
-  overflow-y: auto;
-  z-index: 1000;
-  list-style: none;
-  padding: 0;
-  margin: 5px 0 0;
-
-  li {
-    padding: 12px 15px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    transition: 0.2s;
-    display: flex;
-    flex-direction: column;
-
-    strong {
-      color: $dark;
-      font-size: 0.95rem;
-    }
-
-    small {
-      color: #888;
-      font-size: 0.8rem;
-    }
-
-    &:hover {
-      background: rgba($gold, 0.1);
-      color: $dark;
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
   }
 }
