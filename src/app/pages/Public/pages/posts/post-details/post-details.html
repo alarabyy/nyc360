@@ -90,6 +90,11 @@
           <span>Edit</span>
         </button>
 
+        <button class="btn-action-premium" (click)="openReportModal()">
+          <i class="bi bi-flag"></i>
+          <span>Report</span>
+        </button>
+
         <button class="share-btn-accent" (click)="openShareModal()">
           <i class="bi bi-share-fill"></i> SHARE
         </button>
@@ -231,6 +236,12 @@
 <div class="modal-overlay animate__animated animate__fadeIn" *ngIf="showReportModal" (click)="closeReportModal()">
   <div class="modal-card luxury-modal animate__animated animate__slideInUp" (click)="$event.stopPropagation()">
 
+    <!-- Loading Overlay -->
+    <div class="loading-overlay-modal" *ngIf="isReporting">
+      <div class="spinner-premium"></div>
+      <p class="mt-3 fw-bold">Submitting Report...</p>
+    </div>
+
     <ng-container *ngIf="!reportSuccess">
       <div class="modal-header border-bottom">
         <h3 class="merriweather-font text-danger"><i class="bi bi-flag-fill me-2"></i> Feedback & Report</h3>
@@ -239,32 +250,45 @@
       <div class="modal-body p-4">
         <p class="modal-desc fw-bold text-dark mb-3">Help us understand the issue. What represents this post?</p>
 
-        <div class="report-reasons-grid mb-4">
+        <div class="report-reasons-grid mb-1">
           <label *ngFor="let r of reportReasonsList" class="report-reason-item" [class.active]="reportReason === r.id">
             <input type="radio" name="reportReason" [value]="r.id" [(ngModel)]="reportReason" class="d-none">
-            <span class="reason-dot"></span>
+            <i [class]="'bi ' + r.icon + ' reason-icon'"></i>
             <span class="reason-label">{{ r.label }}</span>
           </label>
         </div>
+        <div class="error-hint mb-3" *ngIf="!reportReason && isReportingAttempted">
+          <i class="bi bi-exclamation-circle-fill"></i> Please select a reason for reporting.
+        </div>
 
         <div class="form-group mb-2">
-          <label class="small fw-bold text-muted uppercase mb-2">Additional Details</label>
-          <textarea class="luxury-textarea form-control" rows="4"
-            placeholder="Please provide more information to help our moderation team..."
-            [(ngModel)]="reportDetails"></textarea>
+          <label class="small fw-bold text-muted uppercase mb-2 d-flex justify-content-between">
+            <span>Additional Details</span>
+            <span class="text-lowercase fw-normal" *ngIf="reportDetails.length < 10 && isReportingAttempted">(Min 10
+              chars)</span>
+          </label>
+          <div class="luxury-textarea-wrapper">
+            <textarea class="luxury-textarea form-control" rows="4" maxlength="500"
+              placeholder="Please provide more information to help our moderation team..."
+              [(ngModel)]="reportDetails"></textarea>
+            <div class="char-counter" [class.limit-near]="reportDetails.length > 450">
+              {{ reportDetails.length }}/500
+            </div>
+          </div>
+          <div class="error-hint mt-2" *ngIf="reportDetails.length > 0 && reportDetails.length < 10">
+            <i class="bi bi-info-circle"></i> Please provide at least 10 characters.
+          </div>
         </div>
 
         <div class="audit-info-box p-3 rounded d-flex gap-3 align-items-center bg-light">
-          <i class="bi bi-info-circle text-primary"></i>
-          <p class="mb-0 x-small text-muted">Your report is anonymous. We take all reports seriously to keep NYC360
-            safe.
-          </p>
+          <i class="bi bi-shield-lock-fill"></i>
+          <p class="mb-0 x-small text-muted">Your report is anonymous. Our safety team will review this content against
+            our community guidelines.</p>
         </div>
       </div>
       <div class="modal-footer border-top p-3 d-flex gap-2">
         <button class="btn-cancel-luxury" (click)="closeReportModal()">CANCEL</button>
-        <button class="btn-submit-luxury danger ms-auto" (click)="submitReport()"
-          [disabled]="!reportReason || isReporting">
+        <button class="btn-submit-luxury danger ms-auto" (click)="submitReport()" [disabled]="isReporting">
           <span *ngIf="isReporting" class="spinner-border spinner-border-sm me-2"></span>
           <i class="bi bi-exclamation-triangle me-2" *ngIf="!isReporting"></i> SUBMIT REPORT
         </button>

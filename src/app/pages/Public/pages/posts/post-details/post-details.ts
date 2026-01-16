@@ -61,15 +61,16 @@ export class PostDetailsComponent implements OnInit {
   reportDetails = '';
   isReporting = false;
   reportSuccess = false;
+  isReportingAttempted = false;
 
   reportReasonsList = [
-    { id: FlagReasonType.Spam, label: 'Spam' },
-    { id: FlagReasonType.HateSpeech, label: 'Hate Speech' },
-    { id: FlagReasonType.Harassment, label: 'Harassment' },
-    { id: FlagReasonType.InappropriateContent, label: 'Inappropriate Content' },
-    { id: FlagReasonType.ScamOrFraud, label: 'Scam or Fraud' },
-    { id: FlagReasonType.ViolationOfPolicy, label: 'Violation of Policy' },
-    { id: FlagReasonType.Other, label: 'Other' }
+    { id: FlagReasonType.Spam, label: 'Spam', icon: 'bi-mailbox' },
+    { id: FlagReasonType.HateSpeech, label: 'Hate Speech', icon: 'bi-megaphone' },
+    { id: FlagReasonType.Harassment, label: 'Harassment', icon: 'bi-person-x' },
+    { id: FlagReasonType.InappropriateContent, label: 'Inappropriate Content', icon: 'bi-image' },
+    { id: FlagReasonType.ScamOrFraud, label: 'Scam or Fraud', icon: 'bi-shield-exclamation' },
+    { id: FlagReasonType.ViolationOfPolicy, label: 'Violation of Policy', icon: 'bi-file-earmark-restricted' },
+    { id: FlagReasonType.Other, label: 'Other', icon: 'bi-three-dots' }
   ];
 
   showShareModal = false;
@@ -211,6 +212,7 @@ export class PostDetailsComponent implements OnInit {
     this.showReportModal = true;
     this.reportReason = null;
     this.reportDetails = '';
+    this.isReportingAttempted = false;
   }
 
   closeReportModal() {
@@ -222,7 +224,8 @@ export class PostDetailsComponent implements OnInit {
   }
 
   submitReport() {
-    if (!this.reportReason || !this.post) return;
+    this.isReportingAttempted = true;
+    if (!this.reportReason || !this.post || this.reportDetails.length < 10) return;
     this.isReporting = true;
 
     this.postsService.reportPost(this.post.id, this.reportReason, this.reportDetails).subscribe({
