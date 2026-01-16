@@ -91,6 +91,24 @@
           </div>
         </div>
       </div>
+
+      <div class="text-only-section" *ngIf="textOnlyPosts.length > 0">
+        <div class="block-header">
+           <div class="vertical-bar" style="background: #FF7F50;"></div>
+           <h2>Latest Insights</h2>
+        </div>
+        
+        <div class="text-grid">
+           <div class="text-card" *ngFor="let post of textOnlyPosts" [routerLink]="['/public/posts/details', post.id]">
+               <span class="cat-pill" [ngClass]="'cat-'+post.category">{{ getCategoryName(post.category) }}</span>
+               <h3>{{ post.title | slice:0:70 }}{{ post.title.length > 70 ? '...' : '' }}</h3>
+               <p>{{ post.content | slice:0:120 }}{{ post.content.length > 120 ? '...' : '' }}</p>
+               <div class="t-footer">
+                  <span class="read-more">Read Insight <i class="bi bi-arrow-right"></i></span>
+               </div>
+           </div>
+        </div>
+      </div>
     </main>
 
     <aside class="sidebar">

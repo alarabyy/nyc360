@@ -63,13 +63,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
       topLinks: [
         { label: 'Feed', route: '/public/feed/housing' },
         { label: 'Properties', route: '/public/housing/properties' },
-        { label: 'Agents', route: '/public/initiatives/housing' }
+        { label: 'initiatives', route: '/public/initiatives/housing' }
       ]
     },
     {
       id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/public/coming-soon',
       topLinks: [
-        { label: 'Feed', route: '/public/health/feed' },
+        { label: 'Feed', route: '/public/feed/health' },
         { label: 'Directors', route: '/public/health/directors' },
         { label: 'Initiatives', route: '/public/initiatives/health' }
       ]
@@ -79,15 +79,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
       topLinks: [
         { label: 'Feed', route: '/public/lifestyle/feed' },
         { label: 'Trends', route: '/public/lifestyle/trends' },
-        { label: 'Tips', route: '/public/initiatives/lifestyle' }
+        { label: 'initiatives', route: '/public/initiatives/lifestyle' }
       ]
     },
     {
       id: 'legal', name: 'Legal', icon: 'bi-bank2', route: '/public/category/legal',
       topLinks: [
-        { label: 'Feed', route: '/public/legal/feed' },
+        { label: 'Feed', route: '/public/feed/legal' },
         { label: 'Consult', route: '/public/legal/consult' },
-        { label: 'Library', route: '/public/initiatives/legal' }
+        { label: 'initiatives', route: '/public/initiatives/legal' }
       ]
     },
     {
@@ -110,7 +110,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     {
       id: 'social', name: 'Social', icon: 'bi-globe', route: '/public/category/social',
       topLinks: [
-        { label: 'Feed', route: '/public/social/feed' },
+        { label: 'Feed', route: '/public/feed/social' },
         { label: 'Campaigns', route: '/public/social/campaigns' },
         { label: 'initiatives', route: '/public/initiatives/social' }
       ]

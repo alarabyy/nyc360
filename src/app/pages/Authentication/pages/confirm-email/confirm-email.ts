@@ -52,7 +52,7 @@ export class ConfirmEmailComponent implements OnInit {
         if (res.isSuccess) {
           this.isSuccess = true;
           // Auto-redirect
-          setTimeout(() => this.router.navigate(['/Login']), 5000);
+          setTimeout(() => this.router.navigate(['/auth/login']), 5000);
         } else {
           this.handleError(res.error?.message || 'Verification failed. Please try logging in.');
         }
