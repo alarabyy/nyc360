@@ -180,6 +180,21 @@ export class ProfileComponent implements OnInit {
   getPlatformIcon(id: number): string { return this.socialPlatforms.find(p => p.id === id)?.icon || 'bi-link'; }
   getAuthorName(author: any): string { return author?.name || author?.username || 'User'; }
   get displayName() { return this.user ? `${this.user.firstName} ${this.user.lastName}` : ''; }
+
+  get isVerified(): boolean {
+    if (!this.user || !this.user.stats) return false;
+
+    // Check if stats say verified
+    const verifiedByStats = this.user.stats.isVerified === true;
+
+    // Check if user is a visitor (id: 4 or name: "NYC Visitors")
+    const isVisitor = this.user.tags?.some(tag =>
+      tag.id === 4 || tag.name?.toLowerCase().includes('visitor')
+    );
+
+    return verifiedByStats && !isVisitor;
+  }
+
   getInitials(name: string): string { return name ? name.substring(0, 2).toUpperCase() : 'CO'; }
 
 }

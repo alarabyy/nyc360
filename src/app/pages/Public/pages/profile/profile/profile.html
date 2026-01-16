@@ -26,7 +26,8 @@
             <div class="info-details">
                <div class="name-row">
                   <h1>{{ displayName }}</h1>
-                  <span class="badge-ny">New Yorker</span>
+                  <i class="bi bi-patch-check-fill verified-badge" *ngIf="isVerified" title="Verified Account"></i>
+                  <span class="badge-ny">{{ isVerified ? 'Verified New Yorker' : 'Local Soul' }}</span>
                </div>
                <p class="headline">{{ user.headline || 'No headline available' }}</p>
                <div class="location" *ngIf="user.location || user.locationId">

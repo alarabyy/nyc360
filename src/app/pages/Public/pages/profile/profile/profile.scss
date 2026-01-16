@@ -208,10 +208,33 @@ $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         .badge-ny {
           background: $primary-color;
           color: #fff;
-          padding: 4px 10px;
+          padding: 4px 12px;
           border-radius: 20px;
           font-size: 0.75rem;
           font-weight: 700;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 4px rgba($primary-color, 0.2);
+        }
+
+        .verified-badge {
+          color: #3b82f6;
+          /* Premium Blue */
+          font-size: 1.4rem;
+          display: flex;
+          align-items: center;
+          animation: badge-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes badge-pop {
+          from {
+            transform: scale(0);
+            opacity: 0;
+          }
+
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
         }
 
         .btn-icon-edit {
