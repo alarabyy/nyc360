@@ -156,7 +156,7 @@
                 <div class="comments-list">
                   <div class="comment-item" *ngFor="let comment of post.comments">
                     <div class="c-flex">
-                      <img [src]="resolveUserAvatar(comment.author?.imageUrl)" class="user-avatar-md">
+                      <img [src]="resolveUserAvatar(comment.author.imageUrl)" class="user-avatar-md" loading="lazy">
                       <div class="c-content">
                         <div class="c-bubble">
                           <div class="c-header">

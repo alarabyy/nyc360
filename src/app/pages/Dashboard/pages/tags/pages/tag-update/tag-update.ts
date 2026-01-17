@@ -2,7 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 // Services & Models
 import { TagRequest, TagModel } from '../../models/tags.model';
@@ -58,7 +58,7 @@ export class TagUpdateComponent implements OnInit {
     this.parentSearchTerm$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
-      switchMap(term => term.length > 0 ? this.tagsService.searchTags(term) : [])
+      switchMap(term => term.length > 0 ? this.tagsService.searchTags(term) : of({ isSuccess: true, data: [] }))
     ).subscribe({
       next: (res: any) => {
         this.parentSearchResults = res.data || [];
@@ -79,12 +79,17 @@ export class TagUpdateComponent implements OnInit {
         const tag = res.data || res;
 
         if (tag) {
-          this.tagName = tag.name;
+          this.tagName = tag.name || '';
           this.selectedDivision = tag.division;
-          this.selectedType = tag.type;
+          this.selectedType = tag.type || 3;
           // Check if parent info is available
           this.parentTagId = tag.parentTagId || 0;
-          this.selectedParentName = tag.parent ? tag.parent.name || tag.parent.toUpperCase() : 'NONE (TOP LEVEL)';
+
+          if (tag.parent) {
+            this.selectedParentName = typeof tag.parent === 'object' ? (tag.parent.name || 'UNKNOWN') : String(tag.parent).toUpperCase();
+          } else {
+            this.selectedParentName = 'NONE (TOP LEVEL)';
+          }
         }
         this.isLoading = false;
         this.cdr.detectChanges();

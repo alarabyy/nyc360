@@ -2,7 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { CATEGORY_THEMES, CategoryEnum } from '../../../../../Public/Widgets/feeds/models/categories';
 import { TagRequest, TagModel } from '../../models/tags.model';
 import { TagsService } from '../../service/tags-dashboard.service';
@@ -41,7 +41,7 @@ export class TagCreateComponent implements OnInit {
     this.parentSearchTerm$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
-      switchMap(term => term.length > 0 ? this.tagsService.searchTags(term) : [])
+      switchMap(term => term.length > 0 ? this.tagsService.searchTags(term) : of({ isSuccess: true, data: [] }))
     ).subscribe({
       next: (res: any) => {
         this.parentSearchResults = res.data || [];
