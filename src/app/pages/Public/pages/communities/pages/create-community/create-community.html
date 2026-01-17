@@ -79,41 +79,7 @@
         </div>
       </div>
 
-      <div class="form-card tags-card">
-        <h3><i class="bi bi-tags-fill"></i> Community Tags</h3>
-        <p class="hint">Select up to 5 tags to help people find your community.</p>
-
-        <!-- Selected Tags (Chips) -->
-        <div class="selected-tags mb-3" *ngIf="selectedTags.length > 0">
-          <span class="tag-chip" *ngFor="let tag of selectedTags">
-            #{{ tag.name }}
-            <button type="button" (click)="removeTag(tag)">&times;</button>
-          </span>
-        </div>
-
-        <div class="search-wrapper">
-          <input type="text" [formControl]="tagSearchControl" placeholder="Search tags... (e.g. Sports, Art, News)"
-            (blur)="onTagBlur()" (focus)="showTagResults = true">
-
-          <i class="bi bi-search search-icon" *ngIf="!isSearchingTags"></i>
-          <div class="spinner-sm" *ngIf="isSearchingTags"></div>
-
-          <div class="search-results" *ngIf="showTagResults && tagResults.length > 0">
-            <div class="result-item" *ngFor="let tag of tagResults" (mousedown)="onTagSelect(tag)">
-              <div class="loc-icon"><i class="bi bi-hash"></i></div>
-              <div class="loc-info">
-                <strong>{{ tag.name }}</strong>
-                <span class="small text-muted" *ngIf="tag.type">{{ tag.type }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="search-results"
-            *ngIf="showTagResults && tagResults.length === 0 && tagSearchControl.value?.length! > 1 && !isSearchingTags">
-            <div class="no-result">No tags found.</div>
-          </div>
-        </div>
-      </div>
+      <!-- Tags form card removed -->
 
       <div class="form-card privacy-card">
         <h3><i class="bi bi-shield-lock-fill"></i> Privacy</h3>

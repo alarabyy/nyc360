@@ -1,3 +1,7 @@
+<div *ngIf="isLoading && !community" class="spinner-center" style="height: 80vh; align-items: center;">
+  <div class="spinner"></div>
+</div>
+
 <div class="community-wrapper" *ngIf="community">
 
   <div class="community-header">
@@ -152,7 +156,7 @@
                 <div class="comments-list">
                   <div class="comment-item" *ngFor="let comment of post.comments">
                     <div class="c-flex">
-                      <img [src]="resolveUserAvatar(comment.author?.imageUrl)" class="user-avatar-md">
+                      <img [src]="resolveUserAvatar(comment.author.imageUrl)" class="user-avatar-md">
                       <div class="c-content">
                         <div class="c-bubble">
                           <div class="c-header">
@@ -163,8 +167,6 @@
                         </div>
 
                         <div class="c-actions">
-                          <button (click)="toggleInteraction(post, InteractionType.Like)" class="tiny-btn">Like</button>
-                          <span class="dot">•</span>
                           <button (click)="openReplyInput(post, comment.id)" class="tiny-btn">Reply</button>
                         </div>
 
