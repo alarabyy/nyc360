@@ -51,4 +51,9 @@ export class CommunityProfileService {
     const body = { NewOwnerId: newOwnerId };
     return this.http.post<ApiResponse<string>>(`${this.apiUrl}/${communityId}/transfer-ownership`, body);
   }
+
+  // 8. Disband Community
+  disbandCommunity(communityId: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/${communityId}/disband`);
+  }
 }

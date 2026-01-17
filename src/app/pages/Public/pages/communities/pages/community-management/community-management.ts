@@ -209,16 +209,33 @@ export class CommunityManagementComponent implements OnInit {
     }
 
     // --- Danger Zone ---
-    onDeleteCommunity() {
+    onDisbandCommunity() {
         if (!this.community) return;
-        const confirmText = prompt(`Type "${this.community.name}" to confirm deletion:`);
+
+        const confirmText = prompt(`Type "${this.community.name}" to confirm you want to DISBAND this community. This action is irreversible:`);
         if (confirmText !== this.community.name) {
-            this.toastService.error('Community name did not match. Deletion cancelled.');
+            this.toastService.error('Community name did not match. Action cancelled.');
             return;
         }
 
-        // TODO: Implement actual delete API when available
-        this.toastService.info('Community deletion is not yet implemented on the server.');
+        this.isLoading = true;
+        this.profileService.disbandCommunity(this.community.id).subscribe({
+            next: (res) => {
+                this.isLoading = false;
+                if (res.isSuccess) {
+                    this.toastService.success('Community has been disbanded.');
+                    this.router.navigate(['/public/community']);
+                } else {
+                    this.toastService.error(res.error?.message || 'Failed to disband community.');
+                }
+                this.cdr.detectChanges();
+            },
+            error: (err) => {
+                this.isLoading = false;
+                this.toastService.error('Error disbanding community');
+                this.cdr.detectChanges();
+            }
+        });
     }
 
     onTransferOwnership() {
