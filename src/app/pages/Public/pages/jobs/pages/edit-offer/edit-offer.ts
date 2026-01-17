@@ -1,10 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MyOffersService } from '../../service/my-offers';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
@@ -21,6 +19,7 @@ export class EditOfferComponent implements OnInit {
   private locationService = inject(Location);
   private offersService = inject(MyOffersService);
   private toastService = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef); // Inject CDR
 
   offerId!: number;
   editForm!: FormGroup;
@@ -58,7 +57,6 @@ export class EditOfferComponent implements OnInit {
   }
 
   initForm() {
-    // تعريف الفورم داخلياً (camelCase عشان الأنجولار)
     this.editForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -84,7 +82,6 @@ export class EditOfferComponent implements OnInit {
             this.selectedLocationName = offer.location.neighborhood || offer.location.borough;
           }
 
-          // ملء الفورم بالبيانات القادمة من الـ GET
           this.editForm.patchValue({
             title: offer.title,
             description: offer.description,
@@ -100,10 +97,12 @@ export class EditOfferComponent implements OnInit {
           });
         }
         this.isLoading = false;
+        this.cdr.detectChanges(); // Force update
       },
       error: () => {
         this.toastService.error('Failed to load offer details');
         this.locationService.back();
+        this.cdr.detectChanges(); // Force update
       }
     });
   }
@@ -117,7 +116,6 @@ export class EditOfferComponent implements OnInit {
     this.isSubmitting = true;
     const formValue = this.editForm.value;
 
-    // --- التعديل هنا: تجهيز الـ Payload بنفس الشكل المطلوب بالضبط ---
     const payload = {
       Title: formValue.title,
       Description: formValue.description,
@@ -131,7 +129,6 @@ export class EditOfferComponent implements OnInit {
       EmploymentLevel: Number(formValue.employmentLevel),
       LocationId: Number(formValue.locationId)
     };
-    // -------------------------------------------------------------
 
     this.offersService.updateOffer(this.offerId, payload).subscribe({
       next: (res) => {
@@ -142,14 +139,17 @@ export class EditOfferComponent implements OnInit {
           this.toastService.error(res.error?.message || 'Update failed');
         }
         this.isSubmitting = false;
+        this.cdr.detectChanges(); // Force update
       },
       error: () => {
         this.toastService.error('Something went wrong');
         this.isSubmitting = false;
+        this.cdr.detectChanges(); // Force update
       }
     });
   }
 
+  // ... (goBack)
   goBack() {
     this.locationService.back();
   }

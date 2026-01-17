@@ -59,7 +59,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      id: 'Housing', name: 'Housing', icon: 'bi-calendar-event-fill', route: '/public/category/housing',
+      id: 'housing', name: 'Housing', icon: 'bi-calendar-event-fill', route: '/public/category/housing',
       topLinks: [
         { label: 'Feed', route: '/public/feed/housing' },
         // { label: 'Properties', route: '/public/housing/properties' },
@@ -116,11 +116,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      id: 'Transportation', name: 'Tourism', icon: 'bi-map-fill', route: '/public/category/transportation',
+      id: 'transportation', name: 'Transportation', icon: 'bi-map-fill', route: '/public/category/transportation',
       topLinks: [
-        { label: 'Feed', route: '/public/feed/Transportation' },
+        { label: 'Feed', route: '/public/feed/transportation' },
         // { label: 'Map', route: '/public/tour/map' },
-        { label: 'initiatives', route: '/public/initiatives/Transportation' }
+        { label: 'initiatives', route: '/public/initiatives/transportation' }
       ]
     },
     {

@@ -34,25 +34,7 @@
       </div>
 
       <!-- Stats Section -->
-      <div class="dashboard-section" *ngIf="topCards && topCards.length > 0">
-         <div class="h-scroll-cards">
-            <div class="status-card" *ngFor="let card of topCards" [class.event-card]="card.isEvent">
-               <div class="card-top">
-                  <span class="badge-status">{{ card.type }}</span>
-                  <span class="time-badge">{{ card.sub }}</span>
-               </div>
-               <h3>{{ card.title }}</h3>
-               <div class="card-meta">
-                  <p><i class="bi bi-building"></i> {{ card.detail }}</p>
-                  <p *ngIf="card.isEvent"><i class="bi bi-geo-alt"></i> Manhattan</p>
-               </div>
-               <div class="card-footer">
-                  <span>{{ card.status }}</span>
-                  <button class="btn-check">{{ card.action }}</button>
-               </div>
-            </div>
-         </div>
-      </div>
+
 
       <div class="nav-tabs-custom">
          <a [class.active]="activeTab === 'posts'" (click)="switchTab('posts')">Posts</a>
@@ -140,7 +122,8 @@
                </div>
 
                <ng-container *ngIf="user.recentPosts && user.recentPosts.length > 0; else emptyPosts">
-                  <div class="post-card" *ngFor="let post of user.recentPosts">
+                  <div class="post-card" *ngFor="let post of user.recentPosts"
+                     [routerLink]="['/public/posts/details', post.id]" style="cursor: pointer;">
                      <div class="post-header">
                         <img [src]="resolveImage(user.imageUrl)">
                         <div>
@@ -240,7 +223,8 @@
             <!-- 3. Saved Tab -->
             <div *ngSwitchCase="'saved'">
                <ng-container *ngIf="savedPosts && savedPosts.length > 0; else emptySaved">
-                  <div class="post-card" *ngFor="let post of savedPosts">
+                  <div class="post-card" *ngFor="let post of savedPosts"
+                     [routerLink]="['/public/posts/details', post.id]" style="cursor: pointer;">
                      <div class="post-header">
                         <img [src]="getAuthorImage(post.author)">
                         <div>

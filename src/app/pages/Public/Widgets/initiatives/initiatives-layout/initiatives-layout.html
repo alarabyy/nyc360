@@ -23,19 +23,6 @@
     </div>
   </section>
 
-  <section class="filters-section">
-    <div class="dropdown-filters">
-      <button class="filter-btn">Location <i class="bi bi-chevron-down"></i></button>
-      <button class="filter-btn">Service Type <i class="bi bi-chevron-down"></i></button>
-      <button class="filter-btn">Cost <i class="bi bi-chevron-down"></i></button>
-      <button class="filter-btn">Urgency <i class="bi bi-chevron-down"></i></button>
-    </div>
-
-    <div class="toggle-filters">
-      <button class="toggle-btn active">open now</button>
-    </div>
-  </section>
-
   <section class="content-section">
 
     <!-- Skeleton Loading State -->
@@ -63,22 +50,26 @@
 
     <div class="cards-list" *ngIf="!loading">
 
-      <div class="initiative-card" *ngFor="let item of initiatives">
-        <div class="card-image">
-          <img [src]="item.image" alt="{{ item.title }}">
+      <div class="initiative-card" *ngFor="let item of initiatives" [class.text-only]="!item.image">
+        <div class="card-image" *ngIf="item.image">
+          <img [src]="item.image" loading="lazy" alt="{{ item.title }}">
         </div>
 
         <div class="card-body">
+          <div class="accent-bar" *ngIf="!item.image" [style.background]="themeColor"></div>
+
           <div class="card-meta">
             <span class="date">{{ item.date | date:'EEE, h a' | uppercase }}</span>
-            <span class="organizer-badge">{{ item.organizer }}</span>
+            <span class="organizer-badge" [style.color]="!item.image ? themeColor : ''">{{ item.organizer }}</span>
           </div>
 
           <h3 class="card-title">{{ item.title }}</h3>
 
           <p class="card-desc">{{ item.description }}</p>
 
-          <a href="javascript:void(0)" class="learn-more">Learn More</a>
+          <a [routerLink]="['/public/posts/details', item.id]" class="learn-more" [style.color]="themeColor">
+            Learn More
+          </a>
         </div>
       </div>
 

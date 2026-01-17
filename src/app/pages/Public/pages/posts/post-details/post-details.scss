@@ -35,6 +35,8 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
   }
 }
 
+
+// --- Main Article Column ---
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -47,6 +49,11 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     max-width: 800px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 15px;
+    gap: 25px;
   }
 }
 
@@ -70,6 +77,14 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 
       &:hover {
         transform: scale(1.02);
+      }
+
+      @media (max-width: 768px) {
+        max-height: 400px;
+      }
+
+      @media (max-width: 480px) {
+        max-height: 280px;
       }
     }
   }
@@ -156,6 +171,18 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 
       .dropdown-wrapper {
         position: relative;
+      }
+
+      @media (max-width: 576px) {
+        flex-wrap: wrap;
+
+        .more-options-wrapper {
+          margin-left: 0;
+          width: 100%;
+          justify-content: flex-end;
+          padding-top: 15px;
+          border-top: 1px dashed $border-color;
+        }
       }
 
       .dropdown-menu-custom {
@@ -253,6 +280,10 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 
     @media (max-width: 768px) {
       font-size: 2.2rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.8rem;
     }
   }
 
@@ -397,6 +428,38 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
       }
     }
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap;
+      padding: 15px;
+      gap: 10px;
+
+      .btn-action-premium {
+        flex: 1;
+        justify-content: center;
+        min-width: auto;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+
+        span {
+          display: none;
+        }
+
+        // Hide text, keep icons on small screens if passing crowding
+        @media (min-width: 480px) {
+          span {
+            display: inline;
+          }
+        }
+      }
+
+      .share-btn-accent {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+        margin-top: 10px;
+      }
+    }
   }
 
   // --- Comments Section ---
@@ -529,6 +592,11 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
           margin-top: 20px;
           border-left: 2px solid #eee;
           padding-left: 25px;
+
+          @media (max-width: 576px) {
+            margin-left: 20px;
+            padding-left: 15px;
+          }
 
           .reply-node {
             margin-bottom: 20px;
@@ -694,25 +762,33 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 .luxury-modal {
   background: #fff;
   width: 95%;
-  max-width: 440px;
-  border-radius: 24px !important;
-  overflow: hidden;
+  max-width: 380px;
+  border-radius: 20px !important;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   animation: springEntry 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+  // Flex layout for sticky header/footer behavior
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh; // Limit height to fit on mobile screens
+
   .modal-header {
     border: none !important;
     padding: 25px 25px 5px !important;
+    flex-shrink: 0;
   }
 
   .modal-body {
     padding: 20px 25px !important;
+    overflow-y: auto; // Scroll content internally
+    overflow-x: hidden;
   }
 
   .modal-footer {
     border: none !important;
     padding: 5px 25px 25px !important;
+    flex-shrink: 0;
   }
 
   .close-btn {
@@ -948,5 +1024,36 @@ $shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 
   .sidebar-column {
     position: static;
+  }
+}
+
+// Distinct layout for posts without images
+.main-column.no-image-mode {
+  .article-header {
+    background: linear-gradient(135deg, rgba($accent, 0.08), rgba($primary, 0.02));
+    padding: 60px 40px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+    margin-top: 10px;
+    text-align: center;
+    border: 1px solid rgba($accent, 0.2);
+    box-shadow: 0 10px 30px -10px rgba($accent, 0.15);
+
+    .tags-row.justify-center {
+      justify-content: center;
+    }
+
+    .article-title {
+      font-size: 3.2rem;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+
+    .meta-row {
+      justify-content: center;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
 }

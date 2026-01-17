@@ -23,12 +23,12 @@ export class JobProfileComponent implements OnInit {
   private jobService = inject(JobProfileService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
-  
+
   // Data
   job: JobProfile | null = null;
   relatedJobs: RelatedJob[] = [];
   applicants: Applicant[] = [];
-  
+
   // UI States
   activeTab: string = 'overview';
   isLoading: boolean = true;
@@ -36,7 +36,7 @@ export class JobProfileComponent implements OnInit {
   imgBase = environment.apiBaseUrl2;
 
   // Author Logic
-  currentUserId: number | null = null; 
+  currentUserId: number | null = null;
   isAuthor: boolean = false;
 
   // Apply Modal State
@@ -73,7 +73,7 @@ export class JobProfileComponent implements OnInit {
         if (res.isSuccess && res.data) {
           this.job = res.data.offer;
           this.relatedJobs = res.data.relatedJobs || [];
-          
+
           if (this.currentUserId && this.job.author.id === this.currentUserId) {
             this.isAuthor = true;
           } else {
@@ -83,9 +83,9 @@ export class JobProfileComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: () => { 
-        this.isLoading = false; 
-        this.cdr.detectChanges(); 
+      error: () => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -119,7 +119,7 @@ export class JobProfileComponent implements OnInit {
   onStatusChange(applicant: Applicant, newStatus: any): void {
     // newStatus يأتي من الـ select كـ string أحياناً لذا نحوله لـ number
     const statusValue = Number(newStatus);
-    
+
     this.jobService.updateApplicationStatus(applicant.applicationId, statusValue).subscribe({
       next: (res) => {
         if (res.isSuccess) {
@@ -142,7 +142,7 @@ export class JobProfileComponent implements OnInit {
   confirmShare(): void {
     if (!this.job) return;
     this.isSharing = true;
-    
+
     this.jobService.shareOffer(this.job.id).subscribe({
       next: (res) => {
         this.isSharing = false;
@@ -166,7 +166,7 @@ export class JobProfileComponent implements OnInit {
   }
 
   getAvatarUrl(imageName: string | undefined): string {
-    if (!imageName) return 'assets/images/default-avatar.png';
+    if (!imageName) return '/covers.jpg';
     if (imageName.startsWith('http')) return imageName;
     return `${this.imgBase}/avatars/${imageName}`;
   }
@@ -196,7 +196,7 @@ export class JobProfileComponent implements OnInit {
   getArrangement(v: number) { return ['On-Site', 'Remote', 'Hybrid'][v] || 'On-Site'; }
   getType(v: number) { return ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'][v] || 'Full-time'; }
   getLevel(v: number) { return ['Entry', 'Junior', 'Mid-Level', 'Senior-Mid', 'Senior'][v] || 'N/A'; }
-  
+
   // Helper for UI Badge (للواجهة فقط إذا لم نستخدم الـ Dropdown)
   getApplicantStatusLabel(s: number) {
     return this.statusOptions.find(opt => opt.value === s)?.label || 'Pending';

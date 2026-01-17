@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostsService } from '../../feeds/services/posts';
 import { environment } from '../../../../../environments/environment';
+import { CATEGORY_THEMES, CategoryEnum } from '../../feeds/models/categories';
 
 @Component({
   standalone: true,
@@ -11,7 +12,7 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './initiatives-layout.html',
   styleUrls: ['./initiatives-layout.scss'],
   imports: [CommonModule, FormsModule, RouterModule],
-  changeDetection: ChangeDetectionStrategy.OnPush // ⚡ تحسين الأداء
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InitiativesLayoutComponent implements OnInit {
   initiatives: any[] = [];
@@ -37,17 +38,25 @@ export class InitiativesLayoutComponent implements OnInit {
     private postsService: PostsService,
     private el: ElementRef,
     private renderer: Renderer2,
-    private cdr: ChangeDetectorRef // ⚡
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.route.data.subscribe(data => {
       this.currentCategory = data['categoryEnum'];
       this.pageTitle = data['title'];
-      this.themeColor = data['themeColor'];
+
+      // Use efficient lookup from centralized themes
+      const theme = CATEGORY_THEMES[this.currentCategory as CategoryEnum];
+      if (theme) {
+        this.themeColor = theme.color;
+      } else {
+        this.themeColor = data['themeColor'] || '#00c3ff';
+      }
 
       this.applyTheme(this.themeColor);
       this.loadInitiatives();
+      this.cdr.markForCheck();
     });
   }
 
@@ -56,6 +65,7 @@ export class InitiativesLayoutComponent implements OnInit {
       this.renderer.setStyle(this.el.nativeElement, '--theme-color', color);
       // لون خفيف للخلفيات والفلاتر النشطة
       this.renderer.setStyle(this.el.nativeElement, '--theme-light', color + '1a'); // 10% opacity hex code approx
+      this.cdr.detectChanges(); // Ensure UI reflects changes immediately
     }
   }
 
@@ -91,7 +101,7 @@ export class InitiativesLayoutComponent implements OnInit {
   }
 
   mapData(data: any[]): any[] {
-    return data.map(item => ({
+    const mapped = data.map(item => ({
       ...item,
       // صورة افتراضية في حالة عدم وجود صورة
       image: this.resolvePostImage(item),
@@ -105,6 +115,9 @@ export class InitiativesLayoutComponent implements OnInit {
       organizer: item.author?.fullName || 'Community Organization',
       organizerImg: this.resolveAuthorImage(item.author)
     }));
+
+    // Sort: Images first, Text-only last
+    return mapped.sort((a, b) => (b.image ? 1 : 0) - (a.image ? 1 : 0));
   }
 
   onSearch() {
@@ -113,10 +126,10 @@ export class InitiativesLayoutComponent implements OnInit {
   }
 
   // --- Image Resolvers ---
-  resolvePostImage(post: any): string {
+  resolvePostImage(post: any): string | null {
     const attachment = post.attachments?.[0];
     let url = attachment?.url || post.imageUrl;
-    if (!url || url.trim() === '') return 'assets/images/placeholder-initiative.jpg';
+    if (!url || url.trim() === '') return null; // ✅ Null for text-only layout
     url = url.replace('@local://', '');
     if (url.startsWith('http')) return url;
     return `${this.environment.apiBaseUrl3}/${url}`;

@@ -26,6 +26,6 @@ export const CATEGORY_THEMES = {
   [CategoryEnum.News]: { color: '#333333', label: 'News', path: 'news' },                // Black
   [CategoryEnum.Professions]: { color: '#2ecc71', label: 'Professions', path: 'professions' },
   [CategoryEnum.Social]: { color: '#17a2b8', label: 'Social', path: 'social' },
-  [CategoryEnum.Transportation]: { color: '#f1c40f', label: 'Transportation', path: 'tour' }, // Yellow
+  [CategoryEnum.Transportation]: { color: '#f1c40f', label: 'Transportation', path: 'transportation' }, // Yellow
   [CategoryEnum.Tv]: { color: '#0d47a1', label: 'TV', path: 'tv' }
 };

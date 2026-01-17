@@ -18,6 +18,9 @@ export interface JobOfferSummary {
   employmentType: EmploymentType;
   employmentLevel: EmploymentLevel;
   companyName: string;
+  location?: string;
+  authorAvatarUrl?: string; // Updated from imageUrl
+  description?: string;
 }
 
 export interface JobSearchFilters {

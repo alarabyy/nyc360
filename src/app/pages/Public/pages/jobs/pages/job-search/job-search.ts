@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { JobOfferSummary, JobSearchFilters, LocationSearchResult } from '../../models/job-search';
 import { JobSearchService } from '../../service/job-search';
+import { environment } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-job-search',
@@ -14,6 +15,7 @@ import { JobSearchService } from '../../service/job-search';
 })
 export class JobSearchComponent implements OnInit {
   private jobService = inject(JobSearchService);
+  private cdr = inject(ChangeDetectorRef); // Inject CDR
 
   jobs: JobOfferSummary[] = [];
   locations: LocationSearchResult[] = [];
@@ -51,7 +53,7 @@ export class JobSearchComponent implements OnInit {
   fetchJobs(): void {
     this.isLoading = true;
     this.errorMsg = '';
-    
+
     this.jobService.searchJobs(this.filters).subscribe({
       next: (res) => {
         if (res.isSuccess) {
@@ -62,10 +64,12 @@ export class JobSearchComponent implements OnInit {
           this.errorMsg = 'Failed to load jobs.';
         }
         this.isLoading = false;
+        this.cdr.detectChanges(); // Force update
       },
       error: () => {
         this.isLoading = false;
         this.errorMsg = 'Server error occurred.';
+        this.cdr.detectChanges(); // Force update
       }
     });
   }
@@ -74,10 +78,12 @@ export class JobSearchComponent implements OnInit {
     if (this.locationQuery.length >= 3) {
       this.jobService.searchLocations(this.locationQuery).subscribe(res => {
         this.locations = res.data || [];
+        this.cdr.detectChanges(); // Force update
       });
     } else {
       this.locations = [];
       this.filters.LocationId = null;
+      this.cdr.detectChanges(); // Force update
     }
   }
 
@@ -99,4 +105,10 @@ export class JobSearchComponent implements OnInit {
   getArrangement(v: number) { return ['On-Site', 'Remote', 'Hybrid'][v] || 'On-Site'; }
   getType(v: number) { return ['Full-Time', 'Part-Time', 'Contract', 'Internship', 'Freelance'][v] || 'Full-Time'; }
   getLevel(v: number) { return ['N/A', 'Junior', 'Mid', 'Senior-Mid', 'Senior'][v] || 'N/A'; }
+
+  resolveJobImage(url: string | undefined): string {
+    if (!url) return 'assets/images/placeholder-job.jpg';
+    if (url.startsWith('http')) return url;
+    return `${environment.apiBaseUrl2}/avatars/${url}`;
+  }
 }

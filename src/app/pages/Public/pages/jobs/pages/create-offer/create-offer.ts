@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,6 +18,7 @@ export class CreateOfferComponent implements OnInit {
   private offerService = inject(CreateOfferService);
   private router = inject(Router);
   private toastService = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef); // Inject CDR
 
   isSubmitting = false;
   locationSearchControl = new FormControl('');
@@ -51,12 +52,14 @@ export class CreateOfferComponent implements OnInit {
       filter(term => (term || '').length >= 2),
       switchMap(term => {
         this.isSearchingLocation = true;
+        this.cdr.detectChanges(); // Update loader
         return this.offerService.searchLocations(term || '');
       })
     ).subscribe(res => {
       this.isSearchingLocation = false;
       this.locationResults = res.isSuccess ? res.data : [];
       this.showLocationResults = this.locationResults.length > 0;
+      this.cdr.detectChanges(); // Update results
     });
   }
 
@@ -64,15 +67,18 @@ export class CreateOfferComponent implements OnInit {
     this.form.get('locationId')?.setValue(loc.id);
     this.locationSearchControl.setValue(`${loc.neighborhood}, ${loc.borough}`, { emitEvent: false });
     this.showLocationResults = false;
+    this.cdr.detectChanges(); // Update selection
   }
 
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched(); // دي اللي هتخلي رسائل الخطأ تظهر لو فيه حاجة ناقصة
+      this.cdr.detectChanges(); // Ensure validation errors show
       return;
     }
 
     this.isSubmitting = true;
+    this.cdr.detectChanges(); // Update loading state
     const val = this.form.value;
 
     // ✅ تحويل البيانات لـ PascalCase عشان الـ API يقبلها
@@ -99,10 +105,12 @@ export class CreateOfferComponent implements OnInit {
         } else {
           this.toastService.error(res.error?.message || 'Failed to create offer');
         }
+        this.cdr.detectChanges(); // Update final state
       },
       error: () => {
         this.isSubmitting = false;
         this.toastService.error('Server Error: Make sure all fields are valid.');
+        this.cdr.detectChanges(); // Update error state
       }
     });
   }

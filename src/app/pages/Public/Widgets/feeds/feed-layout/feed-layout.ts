@@ -197,13 +197,15 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
   resetFilters() { this.searchQuery = ''; this.selectedLocationId = null; this.currentPage = 1; }
 
   // --- Image Resolvers ---
-  resolvePostImage(post: any): string {
+  resolvePostImage(post: any): string | null {
     const attachment = post.attachments?.[0];
     let url = attachment?.url || post.imageUrl;
+
     if (!url || url.trim() === '') {
       if (post.parentPost) return this.resolvePostImage(post.parentPost);
-      return 'assets/images/placeholder.jpg';
+      return null; // ✅ Return null to identify as Text-Only
     }
+
     url = url.replace('@local://', '');
     if (url.startsWith('http')) return url;
     return `${this.environment.apiBaseUrl3}/${url}`;

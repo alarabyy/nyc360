@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MyOffersService } from '../../service/my-offers';
@@ -13,11 +13,12 @@ import { MyOffer } from '../../models/my-offers';
 })
 export class MyOffersComponent implements OnInit {
   private offersService = inject(MyOffersService);
+  private cdr = inject(ChangeDetectorRef); // Inject CDR
 
   offers: MyOffer[] = [];
   isLoading = true;
-  isDeleting = false; // عشان نمنع التكرار وقت الحذف
-  
+  isDeleting = false;
+
   // Filters & Pagination
   currentFilter: 'all' | 'active' | 'closed' = 'all';
   pagination = { page: 1, pageSize: 20, totalPages: 1, totalCount: 0 };
@@ -28,7 +29,7 @@ export class MyOffersComponent implements OnInit {
 
   loadOffers() {
     this.isLoading = true;
-    
+
     let isActiveParam: boolean | undefined = undefined;
     if (this.currentFilter === 'active') isActiveParam = true;
     if (this.currentFilter === 'closed') isActiveParam = false;
@@ -36,13 +37,17 @@ export class MyOffersComponent implements OnInit {
     this.offersService.getMyOffers(this.pagination.page, this.pagination.pageSize, isActiveParam).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          this.offers = res.data;
+          this.offers = res.data || []; // Ensure array
           this.pagination.totalPages = res.totalPages;
           this.pagination.totalCount = res.totalCount;
         }
         this.isLoading = false;
+        this.cdr.detectChanges(); // Force update
       },
-      error: () => this.isLoading = false
+      error: () => {
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Force update
+      }
     });
   }
 
@@ -70,7 +75,7 @@ export class MyOffersComponent implements OnInit {
 
   setFilter(filter: 'all' | 'active' | 'closed') {
     this.currentFilter = filter;
-    this.pagination.page = 1; 
+    this.pagination.page = 1;
     this.loadOffers();
   }
 

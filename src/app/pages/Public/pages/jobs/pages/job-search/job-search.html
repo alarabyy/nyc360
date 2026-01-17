@@ -1,5 +1,5 @@
 <div class="job-search-page">
-  
+
   <section class="hero-section" style="background-image: url('covers.jpg');">
     <div class="hero-content">
       <h1>NYC Careers & Opportunities</h1>
@@ -8,30 +8,24 @@
   </section>
 
   <div class="container search-container">
-    
+
     <div class="main-search-bar">
       <i class="bi bi-search search-icon"></i>
-      <input type="text" 
-             [(ngModel)]="filters.Search" 
-             (keyup.enter)="onSearchSubmit()" 
-             placeholder="Search by job offer (name, model, location...)">
+      <input type="text" [(ngModel)]="filters.Search" (keyup.enter)="onSearchSubmit()"
+        placeholder="Search by job offer (name, model, location...)">
       <button class="btn-search" (click)="onSearchSubmit()">Search</button>
     </div>
 
     <div class="filters-row">
-      
+
       <div class="location-wrapper">
-        <input class="filter-pill" 
-               type="text" 
-               [(ngModel)]="locationQuery" 
-               (input)="onLocInput()" 
-               placeholder="Location"
-               style="width: 160px;">
-        
+        <input class="filter-pill" type="text" [(ngModel)]="locationQuery" (input)="onLocInput()" placeholder="Location"
+          style="width: 160px;">
+
         <div class="dropdown-list" *ngIf="locations.length > 0">
-           <div class="item" *ngFor="let loc of locations" (click)="selectLoc(loc)">
-             {{loc.neighborhood}}, {{loc.borough}}
-           </div>
+          <div class="item" *ngFor="let loc of locations" (click)="selectLoc(loc)">
+            {{loc.neighborhood}}, {{loc.borough}}
+          </div>
         </div>
       </div>
 
@@ -61,32 +55,33 @@
   </div>
 
   <div class="container main-content">
-    
+
     <div class="section-header">
-       <h3>NYC Health Resources Directory</h3>
-       <p>Find trusted hospitals, clinics, and community care centers across the 5 boroughs.</p>
+      <h3>Current Job Openings</h3>
+      <p>Browse through the latest opportunities across all categories.</p>
     </div>
 
     <div class="job-grid">
-      
+
       <div *ngIf="isLoading" class="w-100 text-center py-5" style="grid-column: 1/-1;">
         <div class="spinner-border text-success" role="status"></div>
       </div>
 
       <div class="job-card" *ngFor="let job of jobs">
         <div class="card-img-top">
-          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=500&q=80" alt="Job Image">
+          <img [src]="resolveJobImage(job.authorAvatarUrl)" alt="Job Image" onerror="this.src='/covers.jpg'">
         </div>
-        
+
         <div class="card-body">
           <h4 class="job-title">{{ job.title }}</h4>
-                <div class="location-text">
-                    <i class="bi bi-geo-alt-fill"></i> 
-                    <span>{{ job.companyName }} (Midtown West)</span>
-                </div>
-          
+          <div class="location-text">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>{{ job.companyName }} ({{ job.location || 'NYC' }})</span>
+          </div>
+
           <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px; line-height: 1.4;">
-            Full-services hospital offering emergency care, surgery, and...
+            {{ job.description ? (job.description | slice:0:100) + '...' : 'View details to learn more about this
+            opportunity.' }}
           </p>
 
           <div class="tags-container">
@@ -112,15 +107,14 @@
       <button class="page-btn" (click)="changePage(filters.Page - 1)" [disabled]="filters.Page === 1">
         <i class="bi bi-chevron-left"></i>
       </button>
-      
-      <button class="page-btn" 
-              *ngFor="let p of [].constructor(pagination.totalPages); let i = index" 
-              [class.active]="filters.Page === i+1"
-              (click)="changePage(i+1)">
+
+      <button class="page-btn" *ngFor="let p of [].constructor(pagination.totalPages); let i = index"
+        [class.active]="filters.Page === i+1" (click)="changePage(i+1)">
         {{ i + 1 }}
       </button>
-      
-      <button class="page-btn" (click)="changePage(filters.Page + 1)" [disabled]="filters.Page === pagination.totalPages">
+
+      <button class="page-btn" (click)="changePage(filters.Page + 1)"
+        [disabled]="filters.Page === pagination.totalPages">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>

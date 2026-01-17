@@ -91,7 +91,9 @@ export class CategoryHomeComponent implements OnInit {
   hasImage(post: CategoryPost): boolean {
     const direct = !!(post.attachments && post.attachments.length > 0);
     const parent = !!(post.parentPost?.attachments && post.parentPost.attachments.length > 0);
-    return direct || parent;
+    // Safety check for imageUrl property if it exists on the data but not in interface
+    const hasUrl = !!((post as any).imageUrl && (post as any).imageUrl.trim() !== '');
+    return direct || parent || hasUrl;
   }
 
   // جلب رابط الصورة
@@ -101,6 +103,8 @@ export class CategoryHomeComponent implements OnInit {
       url = post.attachments[0].url;
     } else if (post.parentPost?.attachments && post.parentPost.attachments.length > 0) {
       url = post.parentPost.attachments[0].url;
+    } else if ((post as any).imageUrl) {
+      url = (post as any).imageUrl;
     }
 
     if (!url || url.trim() === '') return 'assets/images/placeholder.jpg';

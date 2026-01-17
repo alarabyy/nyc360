@@ -1,31 +1,153 @@
-$primary-green: #00695C; 
+$primary-green: #00695C;
 $bg-mint: #E0F2F1;
 $radius: 16px;
 $font-header: 'Merriweather', serif;
 
-.profession-feed-page { background: #fcfdfd; min-height: 100vh; }
-.merriweather-font { font-family: $font-header; color: #2c2c2c; }
+.profession-feed-page {
+  background: #fcfdfd;
+  min-height: 100vh;
+}
+
+.merriweather-font {
+  font-family: $font-header;
+  color: #2c2c2c;
+}
 
 .page-header {
-  background: $bg-mint; padding: 80px 20px;
-  h1 { font-size: 3.5rem; color: #3c6e61; }
-  p { color: #5a8a7d; font-size: 1.2rem; }
+  background: $bg-mint;
+  padding: 80px 20px;
+
+  h1 {
+    font-size: 3.5rem;
+    color: #3c6e61;
+  }
+
+  p {
+    color: #5a8a7d;
+    font-size: 1.2rem;
+  }
 }
 
 .btn-view-all {
-  font-weight: 700; color: #5a8a7d; text-decoration: none; border: 1.5px solid #ddd;
-  padding: 8px 24px; border-radius: 50px; font-size: 0.85rem;
+  font-weight: 700;
+  color: #5a8a7d;
+  text-decoration: none;
+  border: 1.5px solid #ddd;
+  padding: 8px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
   transition: 0.3s;
-  &:hover { border-color: $primary-green; color: $primary-green; }
-  &.text-white { border-color: rgba(255,255,255,0.4); &:hover { border-color: #fff; } }
+
+  &:hover {
+    border-color: $primary-green;
+    color: $primary-green;
+  }
+
+  &.text-white {
+    border-color: rgba(255, 255, 255, 0.4);
+
+    &:hover {
+      border-color: #fff;
+    }
+  }
 }
 
 .hiring-section {
-  background: #2D8A6D; border-radius: $radius; 
-  @media (max-width: 768px) { padding: 30px 20px; }
+  background: #2D8A6D;
+  border-radius: $radius;
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+  }
 }
 
 .job-card-white {
-  background: #fff; border-radius: 12px; cursor: pointer; transition: 0.3s;
-  &:hover { transform: translateY(-5px); }
+  background: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+// --- Text Only Articles ---
+.text-only-section {
+  .text-card-design {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 20px;
+    padding: 30px;
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 5px solid $primary-green; // Green Accent
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border-color: $primary-green;
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+
+      .pill-tag {
+        background-color: #e0f2f1;
+        color: $primary-green;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+
+      .post-time {
+        font-size: 0.8rem;
+        color: #888;
+      }
+    }
+
+    .text-title {
+      font-family: $font-header;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111;
+      line-height: 1.3;
+      margin-bottom: 15px;
+    }
+
+    .text-excerpt {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .card-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #333;
+
+      .mini-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .read-more-link {
+        color: $primary-green;
+        cursor: pointer;
+      }
+    }
+  }
 }

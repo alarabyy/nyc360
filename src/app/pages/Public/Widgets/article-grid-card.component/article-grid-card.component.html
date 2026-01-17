@@ -1,9 +1,9 @@
 <div class="grid-card shadow-sm">
-  <div class="card-img">
+  <div class="card-img" [routerLink]="link" style="cursor: pointer;">
     <img [src]="image" alt="Article Image">
   </div>
   <div class="card-body">
-    <h4 class="merriweather-font">{{ title }}</h4>
+    <h4 class="merriweather-font" [routerLink]="link" style="cursor: pointer;">{{ title }}</h4>
     <p>{{ description }}</p>
     <a [routerLink]="link" class="read-more" [style.color]="customColor">
       Read More <i class="bi bi-arrow-right-short"></i>

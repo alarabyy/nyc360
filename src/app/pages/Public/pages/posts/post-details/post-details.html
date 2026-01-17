@@ -12,17 +12,21 @@
   <div *ngIf="post" class="content-grid">
 
     <!-- Main Column -->
-    <main class="main-column animate__animated animate__fadeInLeft">
+    <main class="main-column animate__animated animate__fadeInLeft"
+      [class.no-image-mode]="!((post.attachments && post.attachments.length > 0) || post.imageUrl)">
 
-      <div class="featured-media" *ngIf="(post.attachments && post.attachments.length > 0) || post.imageUrl">
+      <!-- Image Section (Only if image exists) -->
+      <div class="featured-media animate__animated animate__zoomIn"
+        *ngIf="(post.attachments && post.attachments.length > 0) || post.imageUrl">
         <img *ngIf="post.attachments && post.attachments.length > 0" [src]="resolveImageUrl(post.attachments[0].url)"
           alt="Post Image" class="main-feat-img">
         <img *ngIf="(!post.attachments || post.attachments.length === 0) && post.imageUrl"
           [src]="resolveImageUrl(post.imageUrl)" alt="Post Image" class="main-feat-img">
       </div>
 
-      <div class="article-header">
-        <div class="tags-row">
+      <div class="article-header animate__animated animate__fadeInUp">
+        <div class="tags-row"
+          [class.justify-center]="!((post.attachments && post.attachments.length > 0) || post.imageUrl)">
           <span class="tag-link category-link">{{ getCategoryName(post.category) }}</span>
           <a *ngFor="let tag of post.tags; let i = index" [routerLink]="['/public/posts/tags', tag]" class="tag-link">
             #{{ tag }}
@@ -32,11 +36,8 @@
         <h1 class="article-title">{{ post.title }}</h1>
 
         <div class="meta-row">
-          <div class="author-info" [routerLink]="['/public/profile', getAuthorName(post.author)]"
-            style="cursor: pointer;">
-            <div class="author-avatar-wrapper">
-              <img [src]="getAuthorAvatar(post.author)" alt="Author">
-            </div>
+          <div class="author-info" style="cursor: pointer;">
+            <!-- Avatar (Optional, if desired) -->
             <div class="author-meta">
               <span class="author-name">{{ getAuthorName(post.author) }}</span>
               <span class="post-date">{{ post.createdAt | date:'longDate' }} • 5 min read</span>
@@ -75,10 +76,10 @@
         </div>
       </div>
 
-      <div class="article-body" [innerHTML]="post.content"></div>
+      <div class="article-body animate__animated animate__fadeInUp" [innerHTML]="post.content"></div>
 
       <!-- Interaction Bar -->
-      <div class="interaction-card">
+      <div class="interaction-card animate__animated animate__fadeInUp">
         <button class="btn-action-premium" [class.active-like]="post.userInteraction === InteractionType.Like"
           (click)="toggleInteraction(InteractionType.Like)">
           <i class="bi"
@@ -93,7 +94,6 @@
           <span>{{ post.stats?.dislikes || 0 }}</span>
         </button>
 
-        <!-- Owners can edit directly here too -->
         <button *ngIf="canEdit" class="btn-action-premium ms-2" (click)="goToEdit()">
           <i class="bi bi-pencil-square"></i>
           <span>Edit</span>
@@ -110,7 +110,7 @@
       </div>
 
       <!-- Comments Section -->
-      <section class="premium-comments">
+      <section class="premium-comments animate__animated animate__fadeInUp">
         <h3 class="section-title">
           <i class="bi bi-chat-left-dots text-accent"></i>
           Talk to the community ({{ post.comments?.length || 0 }})
@@ -127,7 +127,6 @@
         <div class="comments-thread">
           <div class="comment-node" *ngFor="let comment of post.comments">
             <div class="comment-card">
-              <img [src]="getAuthorAvatar(comment.author)" class="avatar-mini" alt="">
               <div class="comment-content-box">
                 <div class="header">
                   <strong>{{ getAuthorName(comment.author) }}</strong>
@@ -153,7 +152,6 @@
             <div class="reply-indent" *ngIf="comment.replies?.length">
               <div class="reply-node" *ngFor="let reply of comment.replies">
                 <div class="comment-card">
-                  <img [src]="getAuthorAvatar(reply.author)" class="avatar-mini" alt="">
                   <div class="comment-content-box">
                     <div class="header">
                       <strong>{{ getAuthorName(reply.author) }}</strong>
@@ -178,12 +176,9 @@
     <aside class="sidebar-column animate__animated animate__fadeInRight">
 
       <div class="premium-sidebar-card author-card">
-        <img [src]="getAuthorAvatar(post.author)" class="author-avatar-lg" alt="">
         <h4>{{ getAuthorName(post.author) }}</h4>
         <span class="author-role">Contributor</span>
         <p>Committed to bringing the most relevant and high-quality content to NYC360 readers.</p>
-        <!-- <button class="sidebar-btn-full" [routerLink]="['/public/profile', getAuthorName(post.author)]">VIEW
-          PROFILE</button> -->
       </div>
 
       <div class="premium-sidebar-card" *ngIf="relatedPosts.length > 0">
@@ -198,13 +193,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Promotion widget? -->
-      <!-- <div class="premium-sidebar-card bg-dark text-white">
-        <h4 class="card-title text-white border-accent">Join NYC360</h4>
-        <p class="small text-white-50">Get the best of NYC in your feed everyday. Follow topics you love.</p>
-        <button class="btn btn-outline-warning w-100 rounded-pill fw-bold btn-sm mt-3">JOIN COMMUNITY</button>
-      </div> -->
     </aside>
 
   </div>

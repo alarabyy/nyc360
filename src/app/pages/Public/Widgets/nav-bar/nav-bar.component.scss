@@ -18,7 +18,7 @@ $c-legal: #1A237E;
 $c-news: #424242;
 $c-profession: #00695C;
 $c-social: #00838F;
-$c-tour: #FBC02D;
+$c-transportation: #FBC02D;
 $c-tv: #1565C0;
 
 // SCSS Map to loop through colors easily
@@ -33,7 +33,7 @@ $cat-colors: (
   'news': $c-news,
   'profession': $c-profession,
   'social': $c-social,
-  'tour': $c-tour,
+  'transportation': $c-transportation,
   'tv': $c-tv
 );
 
@@ -439,8 +439,8 @@ $cat-colors: (
     @include apply-color($c-social);
   }
 
-  &.tour {
-    @include apply-color($c-tour);
+  &.transportation {
+    @include apply-color($c-transportation);
   }
 
   &.tv {
@@ -717,8 +717,8 @@ $cat-colors: (
           @include mobile-active($c-social);
         }
 
-        &.tour {
-          @include mobile-active($c-tour);
+        &.transportation {
+          @include mobile-active($c-transportation);
         }
 
         &.tv {

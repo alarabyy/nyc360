@@ -32,10 +32,10 @@
 
       </div>
       <ng-container *ngIf="isLoggedIn; else loginTemplate">
-        <button class="notification-btn">
+        <!-- <button class="notification-btn">
           <i class="bi bi-bell-fill"></i>
           <span *ngIf="hasNotifications" class="notification-dot"></span>
-        </button>
+        </button> -->
 
         <div class="user-profile-container">
           <button (click)="toggleProfileDropdown($event)" class="user-profile-btn" title="Profile">
