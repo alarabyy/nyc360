@@ -6,6 +6,7 @@ import { AuthService } from '../../../../../Authentication/Service/auth';
 import { CommunityRequestsComponent } from '../community-requests/community-requests';
 import { CommunityProfileService } from '../../services/community-profile';
 import { CommunityDetails, CommunityMember, Post } from '../../models/community-profile';
+import { ToastService } from '../../../../../../shared/services/toast.service';
 
 // Enum Matching Backend
 export enum CommunityRole {
@@ -28,6 +29,7 @@ export class CommunityProfileComponent implements OnInit {
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private location = inject(Location);
+  private toastService = inject(ToastService);
   protected readonly environment = environment;
 
   // Data
@@ -121,10 +123,16 @@ export class CommunityProfileComponent implements OnInit {
         if (res.isSuccess) {
           this.memberRole = CommunityRole.Member; // Default role
           if (this.community) this.community.memberCount++;
+          this.toastService.success('You have joined the community!');
+        } else {
+          this.toastService.error((res as any).message || 'Failed to join.');
         }
         this.cdr.detectChanges();
       },
-      error: () => this.isJoinLoading = false
+      error: () => {
+        this.isJoinLoading = false;
+        this.toastService.error('An error occurred.');
+      }
     });
   }
 
@@ -138,6 +146,9 @@ export class CommunityProfileComponent implements OnInit {
         if (res.isSuccess) {
           this.memberRole = null; // Reset role
           if (this.community) this.community.memberCount--;
+          this.toastService.success('You have left the community.');
+        } else {
+          this.toastService.error('Failed to leave community.');
         }
         this.cdr.detectChanges();
       },
@@ -152,6 +163,9 @@ export class CommunityProfileComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess) {
           this.members = this.members.filter(m => m.userId !== memberId);
+          this.toastService.success('Member removed successfully.');
+        } else {
+          this.toastService.error('Failed to remove member.');
         }
       }
     });

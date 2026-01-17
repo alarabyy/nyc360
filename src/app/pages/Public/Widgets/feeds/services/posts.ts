@@ -11,7 +11,7 @@ export class PostsService {
   // استخدام الرابط الأساسي من ملف البيئة
   private apiUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * 1. Get Feed (Main Function)
@@ -23,7 +23,7 @@ export class PostsService {
       .set('PageSize', params.pageSize || 20);
 
     // إضافة الفلاتر فقط إذا كانت موجودة (غير null أو undefined)
-    
+
     // فلتر القسم (Category)
     if (params.category !== null && params.category !== undefined) {
       httpParams = httpParams.set('Category', params.category);
@@ -53,9 +53,9 @@ export class PostsService {
    */
   searchLocations(query: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/locations/search`, {
-      params: { 
-        Query: query, 
-        Limit: 20 
+      params: {
+        Query: query,
+        Limit: 20
       }
     });
   }

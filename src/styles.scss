@@ -4,15 +4,22 @@
 
 
 /* تصفير المسافات الافتراضية للمتصفح */
-html, body {
+html,
+body {
   margin: 0 !important;
   padding: 0 !important;
   width: 100%;
-  height: 100%;
-  overflow-x: hidden; /* عشان يمنع السكرول العرضي لو ظهر */
+  min-height: 100%;
+  /* Allow body to grow, disabling potential scroll trapping */
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
+  position: relative;
+  /* Ensure it's a valid offset parent if needed */
 }
 
 /* ضبط حسابات الأبعاد لكل العناصر */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }

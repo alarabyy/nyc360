@@ -46,7 +46,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'culture', name: 'Culture', icon: 'bi-masks', route: '/public/category/culture',
       topLinks: [
         { label: 'Feed', route: '/public/feed/culture' },
-        { label: 'Exhibitions', route: '/public/culture/exhibitions' },
+        // { label: 'Exhibitions', route: '/public/culture/exhibitions' },
         { label: 'initiatives', route: '/public/initiatives/culture' }
       ]
     },
@@ -54,15 +54,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'education', name: 'Education', icon: 'bi-book-fill', route: '/public/category/education',
       topLinks: [
         { label: 'Feed', route: '/public/feed/education' },
-        { label: 'Courses', route: '/public/education/courses' },
-        { label: 'initiatives', route: '/public/initiatives/schools' }
+        // { label: 'Courses', route: '/public/education/courses' },
+        { label: 'initiatives', route: '/public/initiatives/education' }
       ]
     },
     {
       id: 'Housing', name: 'Housing', icon: 'bi-calendar-event-fill', route: '/public/category/housing',
       topLinks: [
         { label: 'Feed', route: '/public/feed/housing' },
-        { label: 'Properties', route: '/public/housing/properties' },
+        // { label: 'Properties', route: '/public/housing/properties' },
         { label: 'initiatives', route: '/public/initiatives/housing' }
       ]
     },
@@ -70,14 +70,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'health', name: 'Health', icon: 'bi-heart-pulse-fill', route: '/public/category/health',
       topLinks: [
         { label: 'Feed', route: '/public/feed/health' },
-        { label: 'Directors', route: '/public/health/directors' },
+        // { label: 'Directors', route: '/public/health/directors' },
         { label: 'Initiatives', route: '/public/initiatives/health' }
       ]
     },
     {
       id: 'lifestyle', name: 'Lifestyle', icon: 'bi-person-arms-up', route: '/public/category/lifestyle',
       topLinks: [
-        { label: 'Feed', route: '/public/lifestyle/feed' },
+        { label: 'Feed', route: '/public/feed/lifestyle' },
         { label: 'Trends', route: '/public/lifestyle/trends' },
         { label: 'initiatives', route: '/public/initiatives/lifestyle' }
       ]
@@ -86,7 +86,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'legal', name: 'Legal', icon: 'bi-balance-scale', route: '/public/category/legal',
       topLinks: [
         { label: 'Feed', route: '/public/feed/legal' },
-        { label: 'Consult', route: '/public/legal/consult' },
+        // { label: 'Consult', route: '/public/legal/consult' },
         { label: 'initiatives', route: '/public/initiatives/legal' }
       ]
     },
@@ -94,7 +94,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'news', name: 'News', icon: 'bi-newspaper', route: '/public/category/news',
       topLinks: [
         { label: 'Feed', route: '/public/feed/news' },
-        { label: 'Latest', route: '/public/news/latest' },
+        // { label: 'Latest', route: '/public/news/latest' },
         { label: 'initiatives', route: '/public/initiatives/news' }
       ]
     },
@@ -111,7 +111,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'social', name: 'Social', icon: 'bi-globe-americas', route: '/public/category/social',
       topLinks: [
         { label: 'Feed', route: '/public/feed/social' },
-        { label: 'Campaigns', route: '/public/social/campaigns' },
+        // { label: 'Campaigns', route: '/public/social/campaigns' },
         { label: 'initiatives', route: '/public/initiatives/social' }
       ]
     },
@@ -119,7 +119,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'Transportation', name: 'Tourism', icon: 'bi-map-fill', route: '/public/category/transportation',
       topLinks: [
         { label: 'Feed', route: '/public/feed/Transportation' },
-        { label: 'Map', route: '/public/tour/map' },
+        // { label: 'Map', route: '/public/tour/map' },
         { label: 'initiatives', route: '/public/initiatives/Transportation' }
       ]
     },
@@ -127,7 +127,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       id: 'tv', name: 'TV', icon: 'bi-tv-fill', route: '/public/category/tv',
       topLinks: [
         { label: 'Feed', route: '/public/feed/tv' },
-        { label: 'Live', route: '/public/tv/live' },
+        // { label: 'Live', route: '/public/tv/live' },
         { label: 'initiatives', route: '/public/initiatives/tv' }
       ]
     }

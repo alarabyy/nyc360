@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,8 @@ import { environment } from '../../../../../environments/environment';
   selector: 'app-initiatives-layout',
   templateUrl: './initiatives-layout.html',
   styleUrls: ['./initiatives-layout.scss'],
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [CommonModule, FormsModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush // ⚡ تحسين الأداء
 })
 export class InitiativesLayoutComponent implements OnInit {
   initiatives: any[] = [];
@@ -35,7 +36,8 @@ export class InitiativesLayoutComponent implements OnInit {
     private route: ActivatedRoute,
     private postsService: PostsService,
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef // ⚡
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +60,10 @@ export class InitiativesLayoutComponent implements OnInit {
   }
 
   loadInitiatives() {
-    this.loading = true;
+    if (this.initiatives.length === 0) {
+      this.loading = true;
+      this.cdr.markForCheck();
+    }
     const params = {
       page: this.currentPage,
       pageSize: this.pageSize,
@@ -75,10 +80,12 @@ export class InitiativesLayoutComponent implements OnInit {
           this.totalPages = res.totalPages;
         }
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load initiatives', err);
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

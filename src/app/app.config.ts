@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router'; // Import updated
 import { routes } from './Routes/app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -15,7 +15,13 @@ import { loaderInterceptor } from './interceptor/loader-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top', // ✅ الحل السحري: العودة لأعلى الصفحة عند التنقل
+        anchorScrolling: 'enabled'
+      })
+    ),
 
     provideClientHydration(withEventReplay()),
     provideHttpClient(

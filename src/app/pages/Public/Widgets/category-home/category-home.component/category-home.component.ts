@@ -1,6 +1,6 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CategoryPost } from '../models/category-home.models';
 import { CategoryHomeService } from '../service/category-home.service';
 import { CATEGORY_THEMES } from '../../feeds/models/categories';
@@ -11,7 +11,8 @@ import { environment } from '../../../../../environments/environment';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './category-home.component.html',
-  styleUrls: ['./category-home.component.scss']
+  styleUrls: ['./category-home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CategoryHomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -112,6 +113,36 @@ export class CategoryHomeComponent implements OnInit {
 
     // لو صورة من السيرفر (posts)
     return `${this.environment.apiBaseUrl3}/${url}`;
+  }
+
+  private router = inject(Router);
+
+  // ... existing methods ...
+
+  // Navigate to Feed with optional filters
+  navigateToFeed(options: { search?: string, filter?: string, tab?: string } = {}) {
+    const queryParams: any = {};
+
+    if (options.search) queryParams.search = options.search;
+    if (options.filter) queryParams.filter = options.filter;
+    if (options.tab) queryParams.tab = options.tab;
+    /* 
+      We pass the current category as part of the route path, 
+      assuming the feed route is structured like /public/feed/:category 
+      or we pass it as a query param if the feed structure is different.
+      Based on nav-bar, route is /public/feed/:categoryName
+    */
+    this.router.navigate(['/public/feed', this.activeTheme?.path || 'news'], { queryParams });
+  }
+
+  onSearch(event: any) {
+    const query = event.target.value;
+    if (query && query.length > 2) {
+      // Navigate on Enter or if length is sufficient (usually execute on Enter)
+      // Since it's a "Search in..." we might want to wait for Enter key in HTML
+      // For now, let's assume this is called on Enter
+      this.navigateToFeed({ search: query });
+    }
   }
 
   get dynamicDescription(): string {

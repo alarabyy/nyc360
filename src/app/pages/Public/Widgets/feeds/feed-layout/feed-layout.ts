@@ -97,8 +97,10 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
   }
 
   loadPosts() {
-    this.loading = true;
-    this.cdr.markForCheck(); // إظهار السكيلتون
+    if (this.posts.length === 0) {
+      this.loading = true;
+      this.cdr.markForCheck(); // إظهار السكيلتون فقط لو مفيش داتا
+    }
 
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -119,11 +121,11 @@ export class FeedLayoutComponent implements OnInit, OnDestroy {
           this.generatePageArray();
         }
         this.loading = false;
-        this.cdr.markForCheck(); // تحديث البيانات
+        this.cdr.detectChanges(); // Force immediate update
       },
       error: () => {
         this.loading = false;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
