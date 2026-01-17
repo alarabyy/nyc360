@@ -596,72 +596,163 @@ $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* --- ABOUT SECTION (Simplified for Right Column) --- */
+/* --- ABOUT SECTION & LISTS --- */
 .about-box {
   background: $bg-white;
   border-radius: $radius-card;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: $shadow-sm;
+  overflow: hidden;
 
   .box-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $bg-body;
+    padding-bottom: 12px;
 
     h3 {
       margin: 0;
-      font-size: 1.1rem;
-    }
-
-    button {
-      background: none;
-      border: none;
-      cursor: pointer;
+      font-size: 1.15rem;
+      font-weight: 700;
       color: $primary-color;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      i {
+        font-size: 1.1rem;
+        color: $text-muted;
+      }
+    }
+  }
+
+  /* Timeline Style for Experience/Education */
+  .timeline-list {
+    position: relative;
+    padding-left: 10px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 28px;
+      /* Alignment */
+      width: 2px;
+      background: #e5e7eb;
+      z-index: 0;
     }
   }
 
   .list-item {
     display: flex;
-    gap: 12px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid $bg-body;
-    padding-bottom: 10px;
+    gap: 16px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
 
     &:last-child {
-      border: none;
-      margin: 0;
-      padding: 0;
+      margin-bottom: 0;
     }
 
     .icon {
-      width: 36px;
-      height: 36px;
-      background: #eff6ff;
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border: 2px solid $bg-body;
       color: $primary-color;
-      border-radius: 6px;
+      border-radius: 50%;
+      /* Circle */
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      font-size: 1.1rem;
     }
 
     .text {
-      h4 {
-        margin: 0 0 2px 0;
-        font-size: 0.95rem;
-      }
+      flex: 1;
 
-      span {
-        font-size: 0.85rem;
+      h4 {
+        margin: 0 0 4px 0;
+        font-size: 1rem;
+        font-weight: 700;
         color: $text-main;
       }
 
+      span {
+        // Company / School
+        font-size: 0.9rem;
+        color: #4b5563;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 4px;
+      }
+
       small {
+        // Date
         display: block;
         color: $text-muted;
         font-size: 0.8rem;
+        background: $bg-body;
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
       }
+    }
+  }
+
+  .empty-info-msg {
+    text-align: center;
+    color: $text-muted;
+    font-style: italic;
+    padding: 10px;
+  }
+}
+
+/* Updated Sidebar Styling Tags/Contacts */
+.sidebar-widget {
+  /* Existing base styles in lines 414+ are okay, refining content */
+
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    span {
+      background: #f0f9ff;
+      color: #0369a1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: default;
+
+      &:hover {
+        background: #e0f2fe;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .info-item {
+    padding: 8px 0;
+    border-bottom: 1px dashed $bg-body;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    i {
+      width: 24px;
+      /* Fixed width for alignment */
+      text-align: center;
+      color: $primary-color;
     }
   }
 }
@@ -738,23 +829,136 @@ $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       justify-content: flex-end;
       gap: 10px;
 
-      .btn-save {
-        background: $accent-color;
-        color: #fff;
+      .btn-cancel {
+        padding: 8px 16px;
+        background: #f3f4f6;
         border: none;
-        padding: 8px 20px;
-        border-radius: 20px;
+        border-radius: 6px;
         cursor: pointer;
       }
 
-      .btn-cancel {
-        background: #fff;
-        border: 1px solid $border-color;
-        padding: 8px 20px;
-        border-radius: 20px;
+      .btn-save {
+        padding: 8px 16px;
+        background: $primary-color;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
+
+        &:disabled {
+          background: #ccc;
+        }
       }
     }
+  }
+}
+
+// --- Mobile Responsive ---
+@media (max-width: 900px) {
+  .profile-wrapper {
+    padding: 0 10px;
+    margin-top: -60px;
+  }
+
+  .header-card {
+    .user-info-bar {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px 20px 20px;
+      margin-top: -80px;
+
+      .avatar-holder {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 15px;
+      }
+
+      .info-details {
+        width: 100%;
+
+        .name-row {
+          justify-content: center;
+          flex-wrap: wrap;
+
+          h1 {
+            font-size: 1.5rem;
+          }
+        }
+
+        .headline {
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+
+  /* Tabs Scrollable */
+  .nav-tabs-custom {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 5px;
+    gap: 20px;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Show sidebar on mobile, but maybe after posts */
+  .left-sidebar {
+    display: block; // Unhide
+    order: 2; // Show after main content (optional, or keep 1)
+  }
+
+  main {
+    order: 1;
+  }
+
+  /* Manage Forms Responsive */
+  .add-form>div {
+    grid-template-columns: 1fr !important;
+    /* Force single column form grid */
+  }
+
+  .edit-mode-container {
+    margin-right: 0 !important;
+    margin-bottom: 10px;
+  }
+
+  .list-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+
+    .info {
+      width: 100%;
+    }
+
+    .actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+
+  /* Fix Date Inputs Flex */
+  .add-form .date-row,
+  .edit-mode-container .date-row {
+    flex-direction: column;
+  }
+}
+
+/* Helper for date row in mobile since I used inline style flex before, 
+   I should probably use a class in HTML, but for now specific override */
+@media (max-width: 600px) {
+  div[style*="display: flex; gap: 10px;"] {
+    flex-direction: column;
   }
 }
 
@@ -777,6 +981,154 @@ $shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   color: $text-muted;
   font-size: 0.9rem;
   padding: 10px 0;
+}
+
+/* --- UPDATE / MANAGE TAB STYLES --- */
+.manage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid $border-color;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
+  .info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: $text-main;
+    flex: 1;
+
+    i {
+      font-size: 1.2rem;
+      color: $text-muted;
+    }
+
+    strong {
+      display: block;
+      color: $text-main;
+    }
+
+    small {
+      color: $text-muted;
+    }
+  }
+
+  .edit-mode {
+    flex: 1;
+    margin-right: 15px;
+  }
+}
+
+.form-control-sm {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  font-size: 0.9rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: $text-muted;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #e5e7eb;
+    color: $primary-color;
+  }
+
+  &.text-danger:hover {
+    color: $danger-color;
+    background: rgba($danger-color, 0.1);
+  }
+}
+
+.btn-save-sm {
+  background: $success-color;
+  color: #fff;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-cancel-sm {
+  background: #e5e7eb;
+  color: $text-main;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #d1d5db;
+  }
+}
+
+.edit-images-row {
+  margin-bottom: 10px;
+}
+
+.btn-save-all {
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 51, 102, 0.4);
+  }
+}
+
+.add-form {
+  border: 1px solid $border-color;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .empty-state {

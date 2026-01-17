@@ -13,10 +13,7 @@
                <i class="bi bi-share-fill"></i>
             </button>
 
-            <!-- Edit Button for Owner -->
-            <button *ngIf="isOwner" class="btn-edit-profile" routerLink="/public/profile/settings">
-               <i class="bi bi-pencil-fill"></i> Edit Profile
-            </button>
+
          </div>
 
          <div class="user-info-bar">
@@ -27,7 +24,6 @@
                <div class="name-row">
                   <h1>{{ displayName }}</h1>
                   <i class="bi bi-patch-check-fill verified-badge" *ngIf="isVerified" title="Verified Account"></i>
-                  <span class="badge-ny">{{ isVerified ? 'Verified New Yorker' : 'Local Soul' }}</span>
                </div>
                <p class="headline">{{ user.headline || 'No headline available' }}</p>
                <div class="location" *ngIf="user.location || user.locationId">
@@ -65,7 +61,7 @@
       </div>
 
       <div class="content-grid">
-
+         <!-- Sidebar and other tabs remain same -->
          <aside class="left-sidebar">
 
             <div class="sidebar-widget">
@@ -73,12 +69,41 @@
                <div class="info-item" *ngIf="user.bio">
                   <i class="bi bi-text-left"></i> <span>{{ user.bio }}</span>
                </div>
+
+               <!-- Contact Info -->
+               <div class="info-item">
+                  <i class="bi bi-envelope"></i>
+                  <span *ngIf="user.email">{{ user.email }}</span>
+                  <span *ngIf="!user.email" style="color: #94a3b8; font-style: italic;">No email provided</span>
+               </div>
+               <div class="info-item">
+                  <i class="bi bi-telephone"></i>
+                  <span *ngIf="user.phoneNumber">{{ user.phoneNumber }}</span>
+                  <span *ngIf="!user.phoneNumber" style="color: #94a3b8; font-style: italic;">No phone provided</span>
+               </div>
+
                <div class="info-item" *ngFor="let link of user.socialLinks">
                   <i class="bi" [ngClass]="getPlatformIcon(link.platform)"></i>
                   <a [href]="link.url" target="_blank">{{ getPlatformName(link.platform) }}</a>
                </div>
-               <div *ngIf="!user.bio && (!user.socialLinks || user.socialLinks.length === 0)" class="empty-mini">
-                  <p>No bio or social links.</p>
+               <div *ngIf="(!user.socialLinks || user.socialLinks.length === 0)" class="empty-mini">
+                  <p>No social links.</p>
+               </div>
+            </div>
+
+            <!-- Interests / Tags -->
+            <div class="sidebar-widget" *ngIf="user.tags && user.tags.length > 0">
+               <h4>Interests</h4>
+               <div class="tags-cloud" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <span *ngFor="let tag of user.tags" style="
+                        background: #e0f2fe; 
+                        color: #0284c7; 
+                        padding: 4px 10px; 
+                        border-radius: 20px; 
+                        font-size: 0.85rem; 
+                        font-weight: 500;">
+                     {{ tag.name }}
+                  </span>
                </div>
             </div>
 
@@ -105,6 +130,7 @@
 
          <main class="main-feed" [ngSwitch]="activeTab">
 
+            <!-- 1. Posts Tab -->
             <div *ngSwitchCase="'posts'">
                <div class="create-post" *ngIf="isOwner">
                   <div class="cp-row">
@@ -127,7 +153,11 @@
                         <p>{{ post.content }}</p>
                      </div>
                      <div class="post-img-container" *ngIf="post.attachments && post.attachments.length > 0">
-                        <!-- <img [src]="resolvePostImage(post)" class="post-main-img"> -->
+                        <ng-container *ngFor="let att of post.attachments">
+                           <!-- Logic for resolving is handled in TS usually or simpler here -->
+                           <img [src]="resolvePostImage({imageUrl: att.url})" class="post-main-img"
+                              style="margin-right:5px; max-height:300px;">
+                        </ng-container>
                      </div>
                   </div>
                </ng-container>
@@ -140,19 +170,38 @@
                </ng-template>
             </div>
 
+            <!-- 2. About Tab -->
             <div *ngSwitchCase="'about'">
+
+               <!-- Overview / Bio (Mobile Friendly duplicate or Main View) -->
                <div class="about-box">
                   <div class="box-header">
-                     <h3>Experience</h3>
+                     <h3><i class="bi bi-person-lines-fill"></i> About Me</h3>
+                  </div>
+                  <div *ngIf="user.bio; else noBio">
+                     <p style="line-height: 1.6; color: #374151;">{{ user.bio }}</p>
+                  </div>
+                  <ng-template #noBio>
+                     <div class="empty-info-msg">No bio information provided.</div>
+                  </ng-template>
+               </div>
+
+               <!-- Experience -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3><i class="bi bi-briefcase-fill"></i> Experience</h3>
                   </div>
                   <ng-container *ngIf="user.positions && user.positions.length > 0; else emptyPositions">
-                     <div class="list-item" *ngFor="let pos of user.positions">
-                        <div class="icon"><i class="bi bi-briefcase"></i></div>
-                        <div class="text">
-                           <h4>{{ pos.title }}</h4>
-                           <span>{{ pos.company }}</span>
-                           <small>{{ pos.startDate | date:'MMM yyyy' }} - {{ pos.isCurrent ? 'Present' : (pos.endDate |
-                              date:'MMM yyyy') }}</small>
+                     <div class="timeline-list">
+                        <div class="list-item" *ngFor="let pos of user.positions">
+                           <div class="icon"><i class="bi bi-briefcase"></i></div>
+                           <div class="text">
+                              <h4>{{ pos.title }}</h4>
+                              <span>{{ pos.company }}</span>
+                              <small>{{ pos.startDate | date:'MMM yyyy' }} - {{ pos.isCurrent ? 'Present' : (pos.endDate
+                                 |
+                                 date:'MMM yyyy') }}</small>
+                           </div>
                         </div>
                      </div>
                   </ng-container>
@@ -161,18 +210,24 @@
                   </ng-template>
                </div>
 
+               <!-- Education -->
                <div class="about-box">
                   <div class="box-header">
-                     <h3>Education</h3>
+                     <h3><i class="bi bi-mortarboard-fill"></i> Education</h3>
                   </div>
                   <ng-container *ngIf="user.education && user.education.length > 0; else emptyEducation">
-                     <div class="list-item" *ngFor="let edu of user.education">
-                        <div class="icon"><i class="bi bi-mortarboard"></i></div>
-                        <div class="text">
-                           <h4>{{ edu.school }}</h4>
-                           <span>{{ edu.degree }}</span>
-                           <small>{{ edu.startDate | date:'yyyy' }} - {{ edu.endDate ? (edu.endDate | date:'yyyy') :
-                              'Present' }}</small>
+                     <div class="timeline-list">
+                        <div class="list-item" *ngFor="let edu of user.education">
+                           <div class="icon"><i class="bi bi-mortarboard"></i></div>
+                           <div class="text">
+                              <h4>{{ edu.school }}</h4>
+                              <span>{{ edu.degree }}</span>
+                              <span *ngIf="edu.fieldOfStudy" style="font-size: 0.85rem; color: #6b7280;">{{
+                                 edu.fieldOfStudy }}</span>
+                              <small style="margin-top: 5px;">{{ edu.startDate | date:'yyyy' }} - {{ edu.endDate ?
+                                 (edu.endDate | date:'yyyy') :
+                                 'Present' }}</small>
+                           </div>
                         </div>
                      </div>
                   </ng-container>
@@ -182,6 +237,7 @@
                </div>
             </div>
 
+            <!-- 3. Saved Tab -->
             <div *ngSwitchCase="'saved'">
                <ng-container *ngIf="savedPosts && savedPosts.length > 0; else emptySaved">
                   <div class="post-card" *ngFor="let post of savedPosts">
@@ -206,8 +262,298 @@
                </ng-template>
             </div>
 
+            <!-- 4. Updates (Manage Everything) Tab -->
+            <div *ngSwitchCase="'manage'">
+
+               <!-- A. Profile Images -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3>Profile Images</h3>
+                  </div>
+                  <div class="edit-images-row" style="display: flex; gap: 20px; align-items: center;">
+                     <div style="text-align: center;">
+                        <img [src]="resolveImage(user.imageUrl)"
+                           style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                        <br>
+                        <button class="btn-check" (click)="avatarInput.click()">Change Avatar</button>
+                        <input #avatarInput type="file" (change)="onAvatarSelected($event)" accept="image/*" hidden>
+                     </div>
+                     <div style="flex:1; height: 80px; background: #cbd5e1; border-radius: 8px; position: relative;">
+                        <img [src]="resolveCover(user.coverImageUrl)"
+                           style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        <button class="btn-check" style="position: absolute; bottom: 10px; right: 10px;"
+                           (click)="coverInput.click()">Change Cover</button>
+                        <input #coverInput type="file" (change)="onCoverSelected($event)" accept="image/*" hidden>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- B. Basic Info -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3>Basic Info</h3>
+                     <button (click)="saveBasicInfo()" class="btn-check" style="background: #003366; color: white;">Save
+                        Changes</button>
+                  </div>
+                  <div class="form-grid" style="display: grid; gap: 15px;">
+                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                           <label style="font-size: 0.85rem; font-weight: 600;">First Name</label>
+                           <input [(ngModel)]="basicInfo.FirstName" class="form-control"
+                              style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                        </div>
+                        <div>
+                           <label style="font-size: 0.85rem; font-weight: 600;">Last Name</label>
+                           <input [(ngModel)]="basicInfo.LastName" class="form-control"
+                              style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                        </div>
+                     </div>
+                     <div>
+                        <label style="font-size: 0.85rem; font-weight: 600;">Headline</label>
+                        <input [(ngModel)]="basicInfo.Headline" class="form-control"
+                           style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                     </div>
+                     <div>
+                        <label style="font-size: 0.85rem; font-weight: 600;">Bio</label>
+                        <textarea [(ngModel)]="basicInfo.Bio" class="form-control" rows="3"
+                           style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;"></textarea>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- C. Social Links -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3>Social Links</h3>
+                     <button (click)="toggleAddLink()" class="btn-check">+ Add Link</button>
+                  </div>
+
+                  <!-- Add Form -->
+                  <div *ngIf="isAddingLink" class="add-form"
+                     style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <select [(ngModel)]="newLink.platform"
+                           style="padding: 8px; border-radius: 6px; border: 1px solid #e5e7eb;">
+                           <option *ngFor="let p of socialPlatforms" [value]="p.id">{{ p.name }}</option>
+                        </select>
+                        <input [(ngModel)]="newLink.url" placeholder="URL..."
+                           style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #e5e7eb;">
+                     </div>
+                     <button (click)="addSocialLink()" class="btn-check"
+                        style="background: #10b981; color: white; margin-right: 5px;">Add</button>
+                     <button (click)="toggleAddLink()" class="btn-check">Cancel</button>
+                  </div>
+
+                  <div class="manage-list">
+                     <div class="list-row" *ngFor="let link of user.socialLinks">
+                        <div class="info">
+                           <i class="bi" [ngClass]="getPlatformIcon(link.platform)"></i>
+                           <ng-container *ngIf="editingLink?.id !== (link.id || link.linkId)">
+                              <span>{{ link.url }}</span>
+                           </ng-container>
+                           <div *ngIf="editingLink?.id === (link.id || link.linkId)" class="edit-mode">
+                              <input [(ngModel)]="editingLink!.url" class="form-control-sm">
+                           </div>
+                        </div>
+                        <div class="actions">
+                           <ng-container *ngIf="editingLink?.id === (link.id || link.linkId)">
+                              <button class="btn-save-sm" (click)="saveLink()">Save</button>
+                              <button class="btn-cancel-sm" (click)="cancelEditLink()">Cancel</button>
+                           </ng-container>
+                           <ng-container *ngIf="editingLink?.id !== (link.id || link.linkId)">
+                              <button class="btn-icon" (click)="editLink(link)"><i class="bi bi-pencil"></i></button>
+                              <button class="btn-icon text-danger" (click)="deleteLink(link.id || link.linkId!)"><i
+                                    class="bi bi-trash"></i></button>
+                           </ng-container>
+                        </div>
+                     </div>
+                     <div *ngIf="user.socialLinks.length === 0 && !isAddingLink" class="empty-info-msg">No links added.
+                     </div>
+                  </div>
+               </div>
+
+               <!-- D. Experience -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3>Experience</h3>
+                     <button (click)="toggleAddPos()" class="btn-check">+ Add Role</button>
+                  </div>
+
+                  <!-- Add Form -->
+                  <div *ngIf="isAddingPos" class="add-form"
+                     style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb;">
+                     <h4 style="margin: 0 0 10px 0; font-size: 0.95rem;">Add New Experience</h4>
+                     <div style="display: grid; gap: 12px; margin-bottom: 15px;">
+                        <input [(ngModel)]="newPosition.Title" placeholder="Job Title" class="form-control-sm">
+                        <input [(ngModel)]="newPosition.Company" placeholder="Company Name" class="form-control-sm">
+                        <div style="display: flex; gap: 10px;">
+                           <div style="flex: 1;">
+                              <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Start Date</label>
+                              <input type="date" [(ngModel)]="newPosition.StartDateStr" class="form-control-sm">
+                           </div>
+                           <div style="flex: 1;" *ngIf="!newPosition.IsCurrent">
+                              <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">End Date</label>
+                              <input type="date" [(ngModel)]="newPosition.EndDateStr" class="form-control-sm">
+                           </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                           <input type="checkbox" [(ngModel)]="newPosition.IsCurrent" id="addPosCurr">
+                           <label for="addPosCurr" style="font-size: 0.85rem; margin: 0;">I currently work here</label>
+                        </div>
+                     </div>
+                     <div style="display: flex; gap: 10px;">
+                        <button (click)="addPosition()" class="btn-check"
+                           style="background: #10b981; color: white;">Save</button>
+                        <button (click)="toggleAddPos()" class="btn-check">Cancel</button>
+                     </div>
+                  </div>
+
+                  <div class="manage-list">
+                     <div class="list-row" *ngFor="let pos of user.positions">
+                        <!-- View Mode -->
+                        <div class="info" *ngIf="editingPos?.PositionId !== pos.id">
+                           <div style="display: flex; flex-direction: column;">
+                              <strong>{{ pos.title }}</strong>
+                              <small>{{ pos.company }}</small>
+                           </div>
+                        </div>
+
+                        <!-- Edit Mode -->
+                        <div class="edit-mode-container" *ngIf="editingPos?.PositionId === pos.id"
+                           style="flex: 1; margin-right: 10px;">
+                           <div style="display: grid; gap: 8px;">
+                              <input [(ngModel)]="editingPos.Title" placeholder="Title" class="form-control-sm"
+                                 style="width: 100%;">
+                              <input [(ngModel)]="editingPos.Company" placeholder="Company" class="form-control-sm"
+                                 style="width: 100%;">
+                           </div>
+                        </div>
+
+                        <div class="actions">
+                           <ng-container *ngIf="editingPos?.PositionId === pos.id">
+                              <button class="btn-save-sm" (click)="savePosition()">Save</button>
+                              <button class="btn-cancel-sm" (click)="cancelEditPos()">Cancel</button>
+                           </ng-container>
+                           <ng-container *ngIf="editingPos?.PositionId !== pos.id">
+                              <button class="btn-icon" (click)="editPos(pos)"><i class="bi bi-pencil"></i></button>
+                              <button class="btn-icon text-danger" (click)="deletePosition(pos.id)"><i
+                                    class="bi bi-trash"></i></button>
+                           </ng-container>
+                        </div>
+                     </div>
+                     <div *ngIf="user.positions.length === 0 && !isAddingPos" class="empty-info-msg">No positions added.
+                     </div>
+                  </div>
+               </div>
+
+               <!-- E. Education -->
+               <div class="about-box">
+                  <div class="box-header">
+                     <h3>Education</h3>
+                     <button (click)="toggleAddEdu()" class="btn-check">+ Add Education</button>
+                  </div>
+
+                  <!-- Add Form -->
+                  <div *ngIf="isAddingEdu" class="add-form"
+                     style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb;">
+                     <h4 style="margin: 0 0 10px 0; font-size: 0.95rem;">Add New Education</h4>
+                     <div style="display: grid; gap: 12px; margin-bottom: 15px;">
+                        <input [(ngModel)]="newEdu.School" placeholder="School / University" class="form-control-sm">
+                        <input [(ngModel)]="newEdu.Degree" placeholder="Degree" class="form-control-sm">
+                        <input [(ngModel)]="newEdu.FieldOfStudy" placeholder="Field of Study" class="form-control-sm">
+                        <div class="date-row" style="display: flex; gap: 10px;">
+                           <div style="flex: 1;">
+                              <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Start Date</label>
+                              <input type="date" [(ngModel)]="newEdu.StartDateStr" class="form-control-sm">
+                           </div>
+                           <div style="flex: 1;">
+                              <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">End Date</label>
+                              <input type="date" [(ngModel)]="newEdu.EndDateStr" class="form-control-sm">
+                           </div>
+                        </div>
+                     </div>
+                     <div style="display: flex; gap: 10px;">
+                        <button (click)="addEducation()" class="btn-check"
+                           style="background: #10b981; color: white;">Save</button>
+                        <button (click)="toggleAddEdu()" class="btn-check">Cancel</button>
+                     </div>
+                  </div>
+
+                  <div class="manage-list">
+                     <div class="list-row" *ngFor="let edu of user.education">
+                        <!-- View Mode -->
+                        <div class="info" *ngIf="editingEdu?.EducationId !== edu.id">
+                           <div style="display: flex; flex-direction: column;">
+                              <strong style="font-size: 1rem;">{{ edu.school }}</strong>
+                              <small>{{ edu.degree }} - {{ edu.fieldOfStudy }}</small>
+                              <small style="font-size: 0.75rem; color: #94a3b8;">
+                                 {{ edu.startDate | date:'mediumDate' }} - {{ edu.endDate ? (edu.endDate |
+                                 date:'mediumDate') : 'Present' }}
+                              </small>
+                           </div>
+                        </div>
+
+                        <!-- Edit Mode -->
+                        <div class="edit-mode-container" *ngIf="editingEdu?.EducationId === edu.id"
+                           style="flex: 1; margin-right: 15px;">
+                           <div
+                              style="display: grid; gap: 10px; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                              <input [(ngModel)]="editingEdu.School" placeholder="School" class="form-control-sm">
+                              <input [(ngModel)]="editingEdu.Degree" placeholder="Degree" class="form-control-sm">
+                              <input [(ngModel)]="editingEdu.FieldOfStudy" placeholder="Field" class="form-control-sm">
+                              <div class="date-row" style="display: flex; gap: 10px;">
+                                 <div style="flex: 1;">
+                                    <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Start
+                                       Date</label>
+                                    <input type="date" [(ngModel)]="editingEdu.StartDateStr" class="form-control-sm">
+                                 </div>
+                                 <div style="flex: 1;">
+                                    <label style="font-size: 0.75rem; font-weight: 600; color: #64748b;">End
+                                       Date</label>
+                                    <input type="date" [(ngModel)]="editingEdu.EndDateStr" class="form-control-sm">
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                        <div class="actions" style="align-self: flex-start; margin-top: 10px;">
+                           <ng-container *ngIf="editingEdu?.EducationId === edu.id">
+                              <button class="btn-save-sm" (click)="saveEducation()">Save</button>
+                              <button class="btn-cancel-sm" (click)="cancelEditEdu()">Cancel</button>
+                           </ng-container>
+                           <ng-container *ngIf="editingEdu?.EducationId !== edu.id">
+                              <button class="btn-icon" (click)="editEdu(edu)" title="Edit"><i
+                                    class="bi bi-pencil"></i></button>
+                              <button class="btn-icon text-danger" (click)="deleteEducation(edu.id)" title="Delete"><i
+                                    class="bi bi-trash"></i></button>
+                           </ng-container>
+                        </div>
+                     </div>
+                     <div *ngIf="user.education.length === 0 && !isAddingEdu" class="empty-info-msg">No education added.
+                     </div>
+                  </div>
+               </div>
+
+               <!-- F. Global Save Button (User Request) -->
+               <div class="save-actions" style="margin-top: 30px; margin-bottom: 20px; text-align: center;">
+                  <button (click)="saveBasicInfo()" class="btn-save-all" style="
+                     background: #003366; 
+                     color: white; 
+                     padding: 12px 40px; 
+                     border-radius: 30px; 
+                     font-size: 1.1rem; 
+                     font-weight: 700; 
+                     border: none; 
+                     box-shadow: 0 4px 10px rgba(0,51,102,0.3); 
+                     cursor: pointer;
+                     transition: transform 0.2s;
+                  ">
+                     Save All Updates
+                  </button>
+               </div>
+
+            </div>
+
          </main>
       </div>
    </div>
-
-</div>
