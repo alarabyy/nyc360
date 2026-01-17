@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } 
 import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
 import { CreateCommunityService } from '../../services/createcommunty';
-import { COMMUNITY_TYPES_LIST, LocationSearchResult } from '../../models/createcommunty';
+import { COMMUNITY_TYPES_LIST, LocationSearchResult, Tag } from '../../models/createcommunty';
 import { ToastService } from '../../../../../../shared/services/toast.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { ToastService } from '../../../../../../shared/services/toast.service';
   styleUrls: ['./create-community.scss']
 })
 export class CreateCommunityComponent implements OnInit {
-  
+
   private fb = inject(FormBuilder);
   private communityService = inject(CreateCommunityService);
   private router = inject(Router);
@@ -37,6 +37,13 @@ export class CreateCommunityComponent implements OnInit {
   selectedLocation: LocationSearchResult | null = null;
   isSearchingLocation = false;
   showLocationResults = false;
+
+  // Tag Search Logic
+  tagSearchControl = new FormControl('');
+  tagResults: Tag[] = [];
+  selectedTags: Tag[] = [];
+  isSearchingTags = false;
+  showTagResults = false;
 
   // Form
   form: FormGroup = this.fb.group({
@@ -73,6 +80,33 @@ export class CreateCommunityComponent implements OnInit {
         this.locationResults = [];
       }
     });
+
+    // Setup Tag Search with Debounce
+    this.tagSearchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      filter(term => (term || '').length >= 1),
+      switchMap(term => {
+        this.isSearchingTags = true;
+        this.showTagResults = true;
+        return this.communityService.searchTags(term || '');
+      })
+    ).subscribe({
+      next: (res) => {
+        this.isSearchingTags = false;
+        if (res.isSuccess) {
+          // Filter out already selected tags
+          const selectedIds = new Set(this.selectedTags.map(t => t.id));
+          this.tagResults = (res.data || []).filter(t => !selectedIds.has(t.id));
+        } else {
+          this.tagResults = [];
+        }
+      },
+      error: () => {
+        this.isSearchingTags = false;
+        this.tagResults = [];
+      }
+    });
   }
 
   // --- Actions ---
@@ -84,9 +118,30 @@ export class CreateCommunityComponent implements OnInit {
     this.showLocationResults = false;
   }
 
-  // Hide results when clicking outside (handled simply by delay for now or overlay)
+  // Tag Actions
+  onTagSelect(tag: Tag) {
+    if (this.selectedTags.length >= 5) {
+      this.toastService.error('You can select up to 5 tags.');
+      return;
+    }
+    if (!this.selectedTags.find(t => t.id === tag.id)) {
+      this.selectedTags.push(tag);
+    }
+    this.tagSearchControl.setValue('', { emitEvent: false });
+    this.showTagResults = false;
+    this.tagResults = [];
+  }
+
+  removeTag(tag: Tag) {
+    this.selectedTags = this.selectedTags.filter(t => t.id !== tag.id);
+  }
+
   onSearchBlur() {
     setTimeout(() => this.showLocationResults = false, 200);
+  }
+
+  onTagBlur() {
+    setTimeout(() => this.showTagResults = false, 200);
   }
 
   // Auto-generate slug
@@ -130,8 +185,12 @@ export class CreateCommunityComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    
-    const formData = this.form.value;
+
+    // Create payload, merging form data with selected tags
+    const formData = {
+      ...this.form.value,
+      tagIds: this.selectedTags.map(t => t.id)
+    };
 
     this.communityService.createCommunity(formData, this.avatarFile || undefined, this.coverFile || undefined)
       .subscribe({

@@ -1,12 +1,15 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // Added checks
 import { environment } from '../../../../../../environments/environment';
 import { AuthService } from '../../../../../Authentication/Service/auth';
 import { CommunityRequestsComponent } from '../community-requests/community-requests';
 import { CommunityProfileService } from '../../services/community-profile';
 import { CommunityDetails, CommunityMember, Post } from '../../models/community-profile';
 import { ToastService } from '../../../../../../shared/services/toast.service';
+import { PostService } from '../../services/post'; // Added
+import { InteractionType, PostComment } from '../../models/post-details'; // Added
 
 // Enum Matching Backend
 export enum CommunityRole {
@@ -15,10 +18,20 @@ export enum CommunityRole {
   Member = 3
 }
 
+// Extends Post locally to support UI states
+interface ExtendedPost extends Omit<Post, 'stats'> {
+  stats: { likes: number; comments: number; shares: number; dislikes?: number };
+  comments?: PostComment[];
+  currentUserInteraction?: number;
+  showComments?: boolean;
+  newCommentContent?: string;
+  activeReplyId?: number | null;
+}
+
 @Component({
   selector: 'app-community-profile',
   standalone: true,
-  imports: [CommonModule, CommunityRequestsComponent, RouterLink],
+  imports: [CommonModule, CommunityRequestsComponent, RouterLink, FormsModule],
   templateUrl: './community-profile.html',
   styleUrls: ['./community-profile.scss']
 })
@@ -26,20 +39,23 @@ export class CommunityProfileComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
   private profileService = inject(CommunityProfileService);
+  private postService = inject(PostService); // Added
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private location = inject(Location);
   private toastService = inject(ToastService);
   protected readonly environment = environment;
+  protected readonly InteractionType = InteractionType; // Expose enum
 
   // Data
   community: CommunityDetails | null = null;
-  posts: Post[] = [];
+  posts: ExtendedPost[] = [];
   members: CommunityMember[] = [];
 
   // Roles & Permissions
   ownerId: number = 0;
   memberRole: number | null = null; // 1=Owner, 2=Mod, 3=Member, null=Not Joined
+  currentUserId: string | null = null; // Added
 
   // UI State
   activeTab: string = 'discussion';
@@ -50,7 +66,6 @@ export class CommunityProfileComponent implements OnInit {
 
   // Getters for Logic
   get isJoined(): boolean {
-    // If role exists and is valid (1, 2, or 3)
     return !!this.memberRole && this.memberRole > 0;
   }
 
@@ -63,6 +78,10 @@ export class CommunityProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      if (user) this.currentUserId = user.id;
+    });
+
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug');
       if (slug) this.loadData(slug);
@@ -77,12 +96,17 @@ export class CommunityProfileComponent implements OnInit {
         if (res.isSuccess && res.data) {
           this.community = res.data.community;
           this.ownerId = res.data.ownerId;
-
-          // API returns numerical role
           this.memberRole = res.data.memberRole ? Number(res.data.memberRole) : null;
 
           if (res.data.posts && Array.isArray(res.data.posts.data)) {
-            this.posts = res.data.posts.data;
+            // Map to ExtendedPost
+            this.posts = res.data.posts.data.map((p: any) => ({
+              ...p,
+              comments: [], // Init empty
+              currentUserInteraction: p.currentUserInteraction || InteractionType.None,
+              showComments: false,
+              newCommentContent: ''
+            }));
           } else {
             this.posts = [];
           }
@@ -175,6 +199,109 @@ export class CommunityProfileComponent implements OnInit {
       }
     });
   }
+
+  // --- Interaction Logic (Likes/Comments) ---
+
+  toggleInteraction(post: ExtendedPost, type: InteractionType) {
+    if (!this.currentUserId) {
+      alert('Please login to interact');
+      return;
+    }
+
+    const oldInteraction = post.currentUserInteraction;
+
+    // Optimistic Update
+    if (post.currentUserInteraction === type) {
+      post.currentUserInteraction = InteractionType.None;
+      if (post.stats) {
+        if (type === InteractionType.Like) {
+          post.stats.likes--;
+        } else {
+          post.stats.dislikes = (post.stats.dislikes || 0) - 1;
+        }
+      }
+    } else {
+      if (post.stats) {
+        if (post.currentUserInteraction === InteractionType.Like) post.stats.likes--;
+        if (post.currentUserInteraction === InteractionType.Dislike) {
+          post.stats.dislikes = (post.stats.dislikes || 0) - 1;
+        }
+
+        if (type === InteractionType.Like) {
+          post.stats.likes++;
+        } else {
+          post.stats.dislikes = (post.stats.dislikes || 0) + 1;
+        }
+      }
+      post.currentUserInteraction = type;
+    }
+
+    this.postService.interact(post.id, type).subscribe({
+      error: () => {
+        post.currentUserInteraction = oldInteraction;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  toggleComments(post: ExtendedPost) {
+    post.showComments = !post.showComments;
+    // Optionally load comments here if they were missing or empty?
+    if (post.showComments && (!post.comments || post.comments.length === 0)) {
+      this.loadCommentsForPost(post);
+    }
+  }
+
+  loadCommentsForPost(post: ExtendedPost) {
+    // Note: Assuming PostService has logic to get comments for a post
+    // If not, we might reuse getPostDetails but that's heavy.
+    // Ideally we assume an endpoint or we just load details.
+    // For now, let's try to get details just to extract comments
+    this.postService.getPostDetails(post.id).subscribe((res) => {
+      if (res.isSuccess && res.data && res.data.comments) {
+        post.comments = res.data.comments;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  submitComment(post: ExtendedPost) {
+    if (!post.newCommentContent?.trim()) return;
+
+    this.postService.addComment(post.id, post.newCommentContent).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          if (!post.comments) post.comments = [];
+          post.comments.unshift(res.data);
+          if (post.stats) post.stats.comments++;
+          post.newCommentContent = '';
+          post.showComments = true;
+          this.cdr.detectChanges();
+        }
+      }
+    });
+  }
+
+  openReplyInput(post: ExtendedPost, commentId: number) {
+    post.activeReplyId = post.activeReplyId === commentId ? null : commentId;
+  }
+
+  submitReply(post: ExtendedPost, parentComment: PostComment, content: string) {
+    if (!content.trim()) return;
+
+    this.postService.addComment(post.id, content, parentComment.id).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          if (!parentComment.replies) parentComment.replies = [];
+          parentComment.replies.push(res.data);
+          if (post.stats) post.stats.comments++;
+          post.activeReplyId = null;
+          this.cdr.detectChanges();
+        }
+      }
+    });
+  }
+
 
   // --- Professional Share Function ---
   onShare() {

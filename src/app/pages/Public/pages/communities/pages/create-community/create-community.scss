@@ -457,6 +457,130 @@ $radius: 12px;
   }
 }
 
+/* Tags Search Styles (Extends Location) */
+.tags-card {
+  .search-wrapper {
+    position: relative;
+
+    input {
+      padding-right: 40px;
+    }
+
+    .search-icon,
+    .spinner-sm {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
+
+    .spinner-sm {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ddd;
+      border-top-color: $primary-orange;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: white;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      margin-top: 5px;
+      max-height: 250px;
+      overflow-y: auto;
+
+      .result-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background 0.1s;
+        border-bottom: 1px solid #f9f9f9;
+
+        &:hover {
+          background: #fff0e6;
+        }
+
+        .loc-icon {
+          color: $primary-orange;
+          font-size: 1.1rem;
+        }
+
+        .loc-info {
+          display: flex;
+          flex-direction: column;
+
+          strong {
+            font-size: 0.95rem;
+            color: $text-dark;
+          }
+
+          span {
+            font-size: 0.8rem;
+            color: #888;
+          }
+        }
+      }
+
+      .no-result {
+        padding: 15px;
+        text-align: center;
+        color: #999;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  /* Tag Chips */
+  .selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .tag-chip {
+      background: #eef2f6;
+      color: $text-dark;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #dee2e6;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #e2e6ea;
+      }
+
+      button {
+        background: none;
+        border: none;
+        color: #999;
+        font-size: 1.2rem;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          color: #e74c3c;
+        }
+      }
+    }
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
