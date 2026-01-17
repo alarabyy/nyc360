@@ -44,6 +44,10 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'tags/update/:id', loadComponent: () => import('../pages/Dashboard/pages/tags/pages/tag-update/tag-update').then(m => m.TagUpdateComponent) },
       { path: 'tags/verifications', loadComponent: () => import('../pages/Dashboard/pages/tags/pages/tag-verifications/tag-verifications').then(m => m.TagVerificationsComponent) },
 
+      // Locations
+      { path: 'locations', loadComponent: () => import('../pages/Dashboard/pages/locations/pages/locations-list/locations-list').then(m => m.LocationsListComponent) },
+      { path: 'locations/create', loadComponent: () => import('../pages/Dashboard/pages/locations/pages/location-form/location-form').then(m => m.LocationFormComponent) },
+      { path: 'locations/edit/:id', loadComponent: () => import('../pages/Dashboard/pages/locations/pages/location-form/location-form').then(m => m.LocationFormComponent) },
 
     ]
   }

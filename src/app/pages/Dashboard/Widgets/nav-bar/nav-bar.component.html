@@ -81,6 +81,11 @@
             <i class="bi bi-tags"></i> Tags
           </a>
         </li>
+        <li *ngIf="canViewRSS">
+          <a routerLink="/admin/locations" routerLinkActive="active">
+            <i class="bi bi-geo-alt"></i> Locations
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -126,6 +131,11 @@
       <li>
         <a routerLink="/admin/tags" routerLinkActive="active" (click)="toggleMenu()">
           <span>Tags & Categories</span> <i class="bi bi-tags"></i>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/locations" routerLinkActive="active" (click)="toggleMenu()">
+          <span>Locations</span> <i class="bi bi-geo-alt"></i>
         </a>
       </li>
       <li>
