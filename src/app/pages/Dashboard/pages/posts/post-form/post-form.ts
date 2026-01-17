@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 import { PostsService } from '../services/posts';
-import { CATEGORY_LIST } from '../../../../../pages/models/category-list';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../Public/Widgets/feeds/models/categories';
 import { ToastService } from '../../../../../shared/services/toast.service';
 
 @Component({
@@ -29,7 +29,10 @@ export class PostFormComponent implements OnInit {
   isLoading = false;
   isSubmitting = false;
 
-  categories = CATEGORY_LIST;
+  categories = Object.entries(CATEGORY_THEMES).map(([key, value]) => ({
+    id: Number(key),
+    ...value
+  }));
 
   postTypes = [
     { id: 0, name: 'Normal' },

@@ -4,7 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { environment } from '../../../../../../environments/environment';
 import { RssService } from '../../services/rss';
 import { RssSource } from '../../models/rss';
-import { CATEGORY_LIST } from '../../../../../models/category-list';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../../Public/Widgets/feeds/models/categories';
 
 @Component({
   selector: 'app-rss-list',
@@ -25,7 +25,10 @@ export class RssListComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
 
-  categories = CATEGORY_LIST;
+  categories = Object.entries(CATEGORY_THEMES).map(([key, value]) => ({
+    id: Number(key),
+    ...value
+  }));
 
   // Dashboard Stats
   stats = {
@@ -73,7 +76,11 @@ export class RssListComponent implements OnInit {
 
   getCategoryName(id: number): string {
     const cat = this.categories.find(c => c.id === id);
-    return cat ? cat.name : 'Unknown';
+    return cat ? cat.label : 'Unknown';
+  }
+
+  getCategoryTheme(id: number) {
+    return CATEGORY_THEMES[id as CategoryEnum] || { color: '#333', label: 'Unknown', path: '' };
   }
 
   onDelete(id: number) {

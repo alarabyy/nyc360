@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { CATEGORY_LIST } from '../../../../../models/category-list';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../../Public/Widgets/feeds/models/categories';
 import { TagRequest, TagModel } from '../../models/tags.model';
 import { TagsService } from '../../service/tags-dashboard.service';
 import { ToastService } from '../../../../../../shared/services/toast.service';
@@ -30,7 +30,10 @@ export class TagCreateComponent implements OnInit {
   parentSearchResults: TagModel[] = [];
   selectedParentName: string = 'NONE (TOP LEVEL)';
 
-  categories = CATEGORY_LIST;
+  categories = Object.entries(CATEGORY_THEMES).map(([key, value]) => ({
+    id: Number(key),
+    ...value
+  }));
   isSubmitting = false;
   formSubmitted = false;
 

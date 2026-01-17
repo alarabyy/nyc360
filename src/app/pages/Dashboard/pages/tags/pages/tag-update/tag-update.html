@@ -29,7 +29,7 @@
           <select [(ngModel)]="selectedDivision" name="division"
             [class.invalid-border]="formSubmitted && selectedDivision === null" required>
             <option [ngValue]="null" disabled>Select Division</option>
-            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.label }}</option>
           </select>
           <span class="error-msg" *ngIf="formSubmitted && selectedDivision === null">Please select a division</span>
         </div>

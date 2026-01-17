@@ -2,9 +2,9 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../../Public/Widgets/feeds/models/categories';
 import { RouterModule } from '@angular/router';
 import { TagModel, TagType } from '../../models/tags.model';
-import { CATEGORY_LIST } from '../../../../../models/category-list';
 import { TagsService } from '../../service/tags-dashboard.service';
 import { TagVerificationService } from '../../service/tag-verification.service';
 import { ToastService } from '../../../../../../shared/services/toast.service';
@@ -23,7 +23,10 @@ export class TagsListComponent implements OnInit {
   private toastService = inject(ToastService);
 
   tags: TagModel[] = [];
-  categories = CATEGORY_LIST;
+  categories = Object.entries(CATEGORY_THEMES).map(([key, value]) => ({
+    id: Number(key),
+    ...value
+  }));
 
   // Filtering & Search
   searchTerm = '';
@@ -118,7 +121,7 @@ export class TagsListComponent implements OnInit {
   }
 
   // Helpers
-  getCatName(id: number) { return this.categories.find(c => c.id === id)?.name || 'General'; }
+  getCatName(id: number) { return this.categories.find(c => c.id === id)?.label || 'General'; }
   getTypeName(type: number) {
     const types: any = { 1: 'Identity', 2: 'Professional', 3: 'Interest', 4: 'Location' };
     return types[type] || 'General';

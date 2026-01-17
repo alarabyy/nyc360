@@ -6,7 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 // Services & Models
 import { TagRequest, TagModel } from '../../models/tags.model';
-import { CATEGORY_LIST } from '../../../../../models/category-list';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../../Public/Widgets/feeds/models/categories';
 import { TagsService } from '../../service/tags-dashboard.service';
 import { ToastService } from '../../../../../../shared/services/toast.service';
 
@@ -26,7 +26,10 @@ export class TagUpdateComponent implements OnInit {
 
   // Data
   tagId: string | null = null;
-  categories = CATEGORY_LIST;
+  categories = Object.entries(CATEGORY_THEMES).map(([key, value]) => ({
+    id: Number(key),
+    ...value
+  }));
   isLoading = true;
   isSubmitting = false;
   formSubmitted = false;

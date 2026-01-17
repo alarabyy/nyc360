@@ -269,7 +269,7 @@ export class PostFormComponent implements OnInit {
         this.isSubmitting = false;
         if (res.isSuccess) {
           this.toastService.success(this.isEditMode ? 'Post updated successfully!' : 'Post published successfully!');
-          this.router.navigate(['/public/feed/all']);
+          this.router.navigate(['/public/feed/home']);
         } else {
           this.toastService.error(res.error?.message || 'Operation failed');
         }

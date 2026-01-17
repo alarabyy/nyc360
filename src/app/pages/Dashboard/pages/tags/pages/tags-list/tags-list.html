@@ -59,7 +59,7 @@
         <div class="col-6 col-lg-3">
           <select class="luxury-select" [(ngModel)]="selectedDiv" (change)="onFilterChange()">
             <option [value]="-1">All Divisions</option>
-            <option *ngFor="let c of categories" [value]="c.id">{{c.name}}</option>
+            <option *ngFor="let c of categories" [value]="c.id">{{c.label}}</option>
           </select>
         </div>
         <div class="col-12 col-lg-1 text-center" *ngIf="isLoading">

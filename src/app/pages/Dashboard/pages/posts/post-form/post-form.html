@@ -45,7 +45,7 @@
             <i class="bi bi-collection-fill"></i>
             <select formControlName="category">
               <option [ngValue]="null" disabled>Select Category</option>
-              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.label }}</option>
             </select>
           </div>
           <small class="error-msg" *ngIf="form.get('category')?.invalid && form.get('category')?.touched">

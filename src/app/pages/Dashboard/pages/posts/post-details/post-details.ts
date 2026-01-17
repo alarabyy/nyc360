@@ -6,6 +6,7 @@ import { environment } from '../../../../../environments/environment';
 import { PostsService } from '../services/posts';
 import { Post, PostCategoryList, InteractionType, Comment, FlagReasonType } from '../models/posts';
 import { AuthService } from '../../../../Authentication/Service/auth';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../Public/Widgets/feeds/models/categories';
 import { ToastService } from '../../../../../shared/services/toast.service';
 import { ConfirmationService } from '../../../../../shared/services/confirmation.service';
 
@@ -33,7 +34,6 @@ export class PostDetailsComponent implements OnInit {
   post: Post | null = null;
   isLoading = true;
   errorMessage = '';
-  categories = PostCategoryList;
 
   // User
   currentUserId: string | null = null;
@@ -161,7 +161,9 @@ export class PostDetailsComponent implements OnInit {
     return this.resolveImageUrl(author?.imageUrl) || 'assets/images/default-avatar.png';
   }
 
-  getCategoryName(id: number): string { return this.categories.find(c => c.id === id)?.name || 'General'; }
+  getCategoryTheme(id: number) {
+    return CATEGORY_THEMES[id as CategoryEnum] || { color: '#333', label: 'Unknown', path: '' };
+  }
 
   // --- Permissions ---
   get isOwnerOrAdmin(): boolean {

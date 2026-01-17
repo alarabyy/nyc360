@@ -8,6 +8,7 @@ import { PostsService } from '../services/posts';
 import { InteractionType } from '../../posts/models/posts';
 import { AuthService } from '../../../../Authentication/Service/auth';
 import { ToastService } from '../../../../../shared/services/toast.service';
+import { CATEGORY_THEMES, CategoryEnum } from '../../../../Public/Widgets/feeds/models/categories';
 
 @Component({
   selector: 'app-trending',
@@ -109,7 +110,7 @@ export class TrendingComponent implements OnInit {
       totalViews += (p.stats.views || 0);
     });
 
-    this.stats.topCategory = CategoryMap[maxCatId] || 'Diverse';
+    this.stats.topCategory = this.getCategoryTheme(maxCatId).label;
 
     // 3. Avg Engagement (Simple proxy: interactions / (unique posts * 100) or just total)
     // Let's just show total interactions nicely formatted
@@ -144,7 +145,9 @@ export class TrendingComponent implements OnInit {
   }
 
   // --- Helpers ---
-  getCategoryName(id: number): string { return CategoryMap[id] || 'General'; }
+  getCategoryTheme(id: number) {
+    return CATEGORY_THEMES[id as CategoryEnum] || { color: '#333', label: 'Unknown', path: '' };
+  }
 
   getPostImage(post: TrendingPost): string {
     if (post.attachments && post.attachments.length > 0) {

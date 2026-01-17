@@ -112,7 +112,10 @@
 
               <!-- Category -->
               <td>
-                <span class="category-pill">{{ getCategoryName(item.category) }}</span>
+                <span class="category-pill text-white" [style.background-color]="getCategoryTheme(item.category).color"
+                  style="padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                  {{ getCategoryTheme(item.category).label }}
+                </span>
               </td>
 
               <!-- Status -->
