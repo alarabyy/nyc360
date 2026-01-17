@@ -15,7 +15,7 @@ import { ToastService } from '../../../../../../shared/services/toast.service';
   styleUrls: ['./create-community.scss']
 })
 export class CreateCommunityComponent implements OnInit {
-  
+
   private fb = inject(FormBuilder);
   private communityService = inject(CreateCommunityService);
   private router = inject(Router);
@@ -130,7 +130,7 @@ export class CreateCommunityComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    
+
     const formData = this.form.value;
 
     this.communityService.createCommunity(formData, this.avatarFile || undefined, this.coverFile || undefined)
