@@ -213,6 +213,7 @@
                       <img
                         [src]="resolveUserAvatar(comment.author.imageUrl)"
                         class="user-avatar-md"
+                        loading="lazy"
                       />
                       <div class="c-content">
                         <div class="c-bubble">
@@ -224,6 +225,13 @@
                         </div>
 
                         <div class="c-actions">
+                          <button
+                            (click)="toggleInteraction(post, InteractionType.Like)"
+                            class="tiny-btn"
+                          >
+                            Like
+                          </button>
+                          <span class="dot">•</span>
                           <button (click)="openReplyInput(post, comment.id)" class="tiny-btn">
                             Reply
                           </button>
