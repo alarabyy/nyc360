@@ -147,26 +147,24 @@
           <h3>Highlights</h3>
           <a [routerLink]="['/public/feed', activeTheme?.path]" class="view-all">View All</a>
         </div>
-        <div class="row g-4">
-          <div class="col-md-4" *ngFor="let post of gridPosts">
-            <div class="grid-card">
-              <div class="img-wrapper">
-                <img
-                  [src]="getImg(post)"
-                  alt="Post Thumb"
-                  [routerLink]="['/public/posts/details', post.id]"
-                />
-                <div class="color-bar"></div>
-              </div>
-              <div class="card-content">
-                <h4 [routerLink]="['/public/posts/details', post.id]">
-                  {{ post.title | slice: 0 : 60 }}...
-                </h4>
-                <p class="desc">{{ post.content | slice: 0 : 100 }}...</p>
-                <a [routerLink]="['/public/posts/details', post.id]" class="read-more"
-                  >Read More <i class="bi bi-arrow-right"></i
-                ></a>
-              </div>
+        <div class="post-grid">
+          <div class="grid-card" *ngFor="let post of gridPosts">
+            <div class="img-wrapper">
+              <img
+                [src]="getImg(post)"
+                alt="Post Thumb"
+                [routerLink]="['/public/posts/details', post.id]"
+              />
+              <div class="color-bar"></div>
+            </div>
+            <div class="card-content">
+              <h4 [routerLink]="['/public/posts/details', post.id]">
+                {{ post.title | slice: 0 : 60 }}...
+              </h4>
+              <p class="desc">{{ post.content | slice: 0 : 100 }}...</p>
+              <a [routerLink]="['/public/posts/details', post.id]" class="read-more"
+                >Read More <i class="bi bi-arrow-right"></i
+              ></a>
             </div>
           </div>
         </div>

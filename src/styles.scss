@@ -45,36 +45,43 @@ body {
      Community | المجتمع
   ========================= */
   --community-bg: #ffe4d7;
-  --community-stroke: #ffbc9b;
+  --community-stroke: #A54E23;
   --community-color: #ff7d3f;
 
   /* =========================
      Culture | الثقافة
   ========================= */
-  --culture-bg: #ffd9d9;
-  --culture-stroke: #ffabab;
-  --culture-color: #dd363a;
+  --culture-bg: #FFD9D9;
+  --culture-stroke: #960B0F;
+  --culture-color: #DD363A;
 
   /* =========================
      Education | التعليم
   ========================= */
-  --education-bg: #afd6f5;
-  --education-stroke: #4d9ad7;
-  --education-color: #0a5796;
+  --education-bg: #CEE5F8;
+  --education-stroke: #053358;
+  --education-color: #0A5796;
+
+  /* =========================
+     events | التعليم
+  ========================= */
+  --events-bg: #F1DEFA;
+  --events-stroke: #5D1A4D;
+  --events-color: #9F2882;
 
   /* =========================
      Housing | السكن
      (Neutral / inferred palette)
   ========================= */
-  --housing-bg: #f3f4f8;
-  --housing-stroke: #e0e0e0;
-  --housing-color: #6c757d;
+  --housing-bg: #FCE9C594;
+  --housing-stroke: #6D592A;
+  --housing-color: #AC8F47;
 
   /* =========================
      Health | الصحة
   ========================= */
   --health-bg: #d5edff;
-  --health-stroke: #93e0ff;
+  --health-stroke: #166F93;
   --health-color: #29c0fe;
 
   /* =========================
@@ -94,36 +101,43 @@ body {
   /* =========================
      News | الأخبار
   ========================= */
-  --news-bg: #bdbdc6;
-  --news-stroke: #7e7e85;
+  --news-bg: #D5D4D9;
+  --news-stroke: #32363A;
   --news-color: #333333;
 
   /* =========================
      Professions | المهن
   ========================= */
   --professions-bg: #afddd0;
-  --professions-stroke: #55b197;
+  --professions-stroke: #184E3F;
   --professions-color: #288369;
 
   /* =========================
      Social | اجتماعي
   ========================= */
-  --social-bg: #dbf2f8;
-  --social-stroke: #53abc2;
-  --social-color: #2d89a0;
+  --social-bg: #DBF2F8;
+  --social-stroke: #236171;
+  --social-color: #2D89A0;
+
+  /* =========================
+     tour | النقل
+  ========================= */
+  --tour-bg: #ffffff;
+  --tour-stroke: #000000;
+  --tour-color: #f2c81e;
 
   /* =========================
      Transportation | النقل
   ========================= */
-  --transportation-bg: #ffffff;
-  --transportation-stroke: #000000;
+  --transportation-bg: #323237;
+  --transportation-stroke: #D0B166;
   --transportation-color: #f2c81e;
 
   /* =========================
      TV | التلفزيون
   ========================= */
-  --tv-bg: #cbdaed;
-  --tv-stroke: #3a6bad;
+  --tv-bg: #CBDAED;
+  --tv-stroke: #001C41;
   --tv-color: #013984;
 
   /* =========================
@@ -190,7 +204,6 @@ body {
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* letter spacing (your spec uses -1% on headings) */
   --ls-tight: -0.01em; // -1%
   --ls-normal: 0em;
 
@@ -203,7 +216,6 @@ body {
   --fs-body2: 18px;
   --fs-info: 14px;
 
-  /* line-height (not shown in your image; these are sensible defaults) */
   --lh-extrahead: 1.05;
   --lh-head: 1.10;
   --lh-grouphead: 1.20;

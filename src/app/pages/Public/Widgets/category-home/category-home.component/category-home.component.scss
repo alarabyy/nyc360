@@ -193,6 +193,7 @@ a {
     gap: 8px;
     border: none;
     cursor: pointer;
+    border: 1px solid var(--theme-color);
 
     &.white {
       background: var(--white);
@@ -210,11 +211,13 @@ a {
     }
 
     &.dark {
-      background: var(--neutral-text-100);
-      color: var(--white);
+      background: var(--theme-bg);
+      color: var(--theme-color);
+      border-color: var(--theme-stoke);
 
       &:hover {
         background: var(--theme-color);
+        color: var(--white);
       }
     }
   }
@@ -229,7 +232,7 @@ a {
 
 .chips-scroll {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   overflow-x: auto;
   padding-bottom: 15px;
   border-bottom: 1px solid $border-color;
@@ -237,22 +240,25 @@ a {
   .chip {
     background: var(--white);
     border: 1px solid #ddd;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-size: 0.85rem;
+    padding: 12px 20px;
+    border-radius: 24px;
+    line-height: 1em;
+    font-weight: 600;
     color: var(--neutral-text-200);
     cursor: pointer;
     white-space: nowrap;
+    min-width: 40px;
 
     &.active {
-      background: var(--theme-color);
-      border-color: var(--theme-color);
-      color: var(--white);
+      background: var(--theme-bg);
+      border-color: var(--theme-stroke);
+      color: var(--theme-color);
     }
 
     &:hover:not(.active) {
-      color: var(--theme-color);
-      border-color: var(--theme-color);
+      color: var(--white);
+      background: var(--theme-color);
+      border-color: var(--theme-stroke);
     }
   }
 
@@ -265,15 +271,40 @@ a {
 }
 
 // --- 4. GRID & LIST ---
+
+.latest-grid-section {
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .view-all {
+      color: var(--theme-color);
+
+      &:hover {
+        color: var(--theme-stroke);
+      }
+    }
+  }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1vw;
+  }
+}
+
 .grid-card {
   height: 100%;
+  background: var(--white);
+  border-radius: 18px;
+  border: 1px solid var(--neutral-tag);
+    overflow: hidden;
 
   .img-wrapper {
     position: relative;
-    height: 220px;
-    overflow: hidden;
-    border-radius: 12px;
-    margin-bottom: 15px;
+    height: 240px;
 
     img {
       width: 100%;
@@ -304,21 +335,23 @@ a {
   }
 
   .card-content {
+    padding: 24px 30px;
+
     h4 {
-      // 
-      font-size: 1.15rem;
+      font-family: "Gelasio", serif;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .desc {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: var(--neutral-text-200);
       margin-bottom: 15px;
     }
 
     .read-more {
-      font-size: 0.85rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--theme-color);
     }
