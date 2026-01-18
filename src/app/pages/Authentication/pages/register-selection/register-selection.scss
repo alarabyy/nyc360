@@ -4,7 +4,7 @@
 $bg-dark: #081223;
 $bg-light: #ffffff;
 $accent: #BC5E3D; // Copper
-$text-dark: #1a1a1a;
+
 $text-muted: #6c757d;
 $border-color: #e9ecef;
 $input-bg: #f8f9fa;
@@ -29,7 +29,7 @@ $error-color: #dc3545; // Standard Red for errors
   right: 20px;
   padding: 8px 18px;
   background: white;
-  color: $text-dark;
+  color: var(--neutral-text-100);
   text-decoration: none !important;
   font-size: 0.85rem;
   font-weight: 700;
@@ -160,7 +160,7 @@ $error-color: #dc3545; // Standard Red for errors
     .main-question {
       font-size: 2.2rem;
       font-weight: 700;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin-bottom: 8px;
     }
 
@@ -226,7 +226,7 @@ $error-color: #dc3545; // Standard Red for errors
         margin: 0 0 4px;
         font-size: 1.1rem;
         font-weight: 700;
-        color: $text-dark;
+        color: var(--neutral-text-100);
       }
 
       p {
@@ -284,7 +284,7 @@ $error-color: #dc3545; // Standard Red for errors
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 5px;
-      color: $text-dark;
+      color: var(--neutral-text-100);
     }
 
     .input-wrapper {
@@ -350,7 +350,7 @@ $error-color: #dc3545; // Standard Red for errors
     .section-label {
       font-size: 0.85rem;
       font-weight: 700;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin-bottom: 10px;
       display: block;
 
@@ -419,7 +419,7 @@ $error-color: #dc3545; // Standard Red for errors
       color: $text-muted;
 
       a {
-        color: $text-dark;
+        color: var(--neutral-text-100);
         font-weight: 600;
       }
     }

@@ -1,39 +1,41 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NYC360</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href="https://myapp.com/home" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="MAIN Blue & Orange.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <title>NYC360</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="canonical" href="https://myapp.com/home">
-  <meta name="robots" content="index, follow">
-  <link rel="icon" href="MAIN Blue & Orange.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <body>
+    <app-root></app-root>
 
-</head>
-
-<body>
-
-
-  <app-root></app-root>
-
-
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "My SSR App",
-  "url": "https://myapp.com",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://myapp.com/search?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-
-</script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-</body>
-
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "My SSR App",
+        "url": "https://myapp.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://myapp.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </body>
 </html>

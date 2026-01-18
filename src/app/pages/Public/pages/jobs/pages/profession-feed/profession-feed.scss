@@ -1,33 +1,45 @@
-$primary-green: #00695C;
-$bg-mint: #E0F2F1;
 $radius: 16px;
-$font-header: 'Merriweather', serif;
 
 .profession-feed-page {
   background: #fcfdfd;
   min-height: 100vh;
 }
 
-.merriweather-font {
-  font-family: $font-header;
-  color: #2c2c2c;
-}
+.category-header {
+  // background-color: #f2f2f2;
+  background-color: var(--professions-bg);
+  padding: 50px 0;
+  margin-bottom: 40px;
+  // border-bottom: 5px solid var(--theme-color);
 
-.page-header {
-  background: $bg-mint;
-  padding: 80px 20px;
+  .main-title {
+    font-family: "Gelasio", serif;
+    font-optical-sizing: auto;
+    // font-size: 3.5rem;
+    // font-weight: 900;
+    margin-bottom: 10px;
+    color: var(--professions-color);
+    // color: #fff;
 
-  h1 {
-    font-size: 3.5rem;
-    color: #3c6e61;
+    @media (min-width: 768px) {
+      font-size: 5rem;
+    }
   }
 
-  p {
-    color: #5a8a7d;
-    font-size: 1.2rem;
+  .sub-meta {
+    font-size: 1rem;
+    color: var(--neutral-text-100);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .top-meta {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--neutral-text-100);
+    text-transform: uppercase;
   }
 }
-
 .btn-view-all {
   font-weight: 700;
   color: #5a8a7d;
@@ -39,8 +51,8 @@ $font-header: 'Merriweather', serif;
   transition: 0.3s;
 
   &:hover {
-    border-color: $primary-green;
-    color: $primary-green;
+    border-color: var(--professions-color);
+    color: var(--white);
   }
 
   &.text-white {
@@ -84,12 +96,12 @@ $font-header: 'Merriweather', serif;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-left: 5px solid $primary-green; // Green Accent
+    border-left: 5px solid var(--professions-color); // Green Accent
 
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-      border-color: $primary-green;
+      border-color: var(--professions-color);
     }
 
     .card-top-row {
@@ -100,7 +112,7 @@ $font-header: 'Merriweather', serif;
 
       .pill-tag {
         background-color: #e0f2f1;
-        color: $primary-green;
+        color: var(--professions-color);
         padding: 5px 15px;
         border-radius: 20px;
         font-weight: 700;
@@ -114,7 +126,7 @@ $font-header: 'Merriweather', serif;
     }
 
     .text-title {
-      font-family: $font-header;
+      
       font-size: 1.5rem;
       font-weight: 800;
       color: #111;
@@ -145,7 +157,7 @@ $font-header: 'Merriweather', serif;
       }
 
       .read-more-link {
-        color: $primary-green;
+        color: var(--professions-color);
         cursor: pointer;
       }
     }

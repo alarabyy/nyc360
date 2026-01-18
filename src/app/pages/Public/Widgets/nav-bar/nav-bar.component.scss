@@ -1,8 +1,6 @@
 // متغيرات عامة والألوان
 $dark-blue: #0A3D91;
 $light-purple: #EFEFF9;
-$text-dark: #333333;
-$text-gray: #555555;
 $grey-pill-bg: #F3F5F7;
 $border-color: #E0E0E0;
 
@@ -37,13 +35,6 @@ $cat-colors: (
   'tv': $c-tv
 );
 
-// Top Line
-.top-thick-line {
-  height: 5px;
-  background-color: $dark-blue;
-  width: 100%;
-}
-
 .nav-wrapper {
   background-color: #ffffff;
   border-bottom: 1px solid $border-color;
@@ -60,6 +51,7 @@ $cat-colors: (
   justify-content: space-between;
   padding: 10px 20px;
   gap: 20px;
+    border-bottom: 1px solid #e6e8ef;
 
   @media(min-width: 1200px) {
     padding: 10px 40px;
@@ -80,7 +72,7 @@ $cat-colors: (
     background: none;
     border: none;
     font-size: 26px;
-    color: $text-dark;
+    color: var(--neutral-text-100);
     cursor: pointer;
     padding: 0;
   }
@@ -106,7 +98,7 @@ $cat-colors: (
 
     .nav-text-link {
       text-decoration: none;
-      color: $text-gray; // Default gray
+      color: var(--neutral-text-200); // Default gray
       font-size: 14px;
       font-weight: 600;
       transition: all 0.2s ease;
@@ -115,18 +107,18 @@ $cat-colors: (
 
       // Default hover (fallback)
       &:hover {
-        color: $text-dark;
+        color: var(--neutral-text-100);
       }
     }
 
     // *** LOOP TO GENERATE COLOR STYLES ***
     @each $name, $color in $cat-colors {
       &.#{$name} .nav-text-link {
+          color: $color;
 
         // On Hover OR Active -> Use the specific category color
         &:hover,
         &.active-link {
-          color: $color !important;
         }
 
         // Active Underline in that color
@@ -240,7 +232,7 @@ $cat-colors: (
 
         .user-name {
           font-weight: 700;
-          color: $text-dark;
+          color: var(--neutral-text-100);
           font-size: 14px;
           display: block;
           overflow: hidden;
@@ -260,7 +252,7 @@ $cat-colors: (
         align-items: center;
         gap: 12px;
         padding: 10px 16px;
-        color: $text-gray;
+        color: var(--neutral-text-200);
         text-decoration: none;
         font-size: 14px;
         font-weight: 600;
@@ -310,7 +302,7 @@ $cat-colors: (
 
   .btn-login-text {
     text-decoration: none;
-    color: $text-dark;
+    color: var(--neutral-text-100);
     font-weight: 700;
     font-size: 14px;
   }
@@ -331,120 +323,119 @@ $cat-colors: (
 }
 
 /* ================= CATEGORIES NAV (Desktop) ================= */
-.categories-nav {
-  padding: 5px 0 15px 0;
-  background-color: #ffffff;
 
-  .cat-scroller {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    overflow-x: auto;
-    padding: 0 2px;
-    scrollbar-width: none;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    @media(min-width: 1200px) {
-      justify-content: center;
-    }
+// Mixin: active/hover styles using 3 vars
+// مكسن: ستايل hover/active باستخدام 3 متغيرات
+@mixin pill-theme($name) {
+  &.active-cat {    
+    background-color: var(--#{$name}-color);
+    color: #fff;
   }
-
-  .cat-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: $grey-pill-bg;
-    color: #555;
-    padding: 8px 16px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-
-    i {
-      font-size: 16px;
-      transition: color 0.2s ease;
-    }
-
-    &:hover {
-      background-color: darken($grey-pill-bg, 5%);
-    }
-  }
-}
-
-// MIXIN FOR DESKTOP (Hover + Active)
-@mixin apply-color($color) {
-
-  &.active-cat,
   &:hover {
-    background-color: $color !important;
-    color: white !important;
-    box-shadow: 0 4px 10px rgba($color, 0.3);
-    border-color: $color;
+    background-color: var(--#{$name}-bg);
+    border-color: var(--#{$name}-stroke);
+    color: var(--#{$name}-color);
 
     i {
-      color: white !important;
+      color: var(--#{$name}-color) !important;
     }
   }
 }
 
-.cat-pill {
-  &.all {
-    @include apply-color($c-all);
+.category-bar {
+  background: #F6F7F8;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border-bottom: 1px solid #e6e8ef;
+
+  /* horizontal scroll */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  /* hide scrollbar */
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  /* drag UX */
+  cursor: grab;
+  user-select: none;
+
+  &.is-dragging {
+    cursor: grabbing;
   }
 
-  &.community {
-    @include apply-color($c-community);
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  &.culture {
-    @include apply-color($c-culture);
-  }
+  .category-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: max-content;
+    width: 100%;
+    max-width: 100vw;
+    justify-content: center;
 
-  &.education {
-    @include apply-color($c-education);
-  }
+    .category-btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
 
-  &.events {
-    @include apply-color($c-events);
-  }
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--neutral-tag);
 
-  &.health {
-    @include apply-color($c-health);
-  }
+      background: var(--neutral-tag, #EAEAF8B2);
+      color: var(--neutral-text-200, #5b5f7a);
 
-  &.lifestyle {
-    @include apply-color($c-lifestyle);
-  }
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
 
-  &.legal {
-    @include apply-color($c-legal);
-  }
+      cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 120ms ease;
 
-  &.news {
-    @include apply-color($c-news);
-  }
 
-  &.profession {
-    @include apply-color($c-profession);
-  }
+      i {
+        display: flex;
+        font-size: 16px;
+        transition: color 0.2s ease;
+        color: currentColor; // important: inherit
+      }
+    }
 
-  &.social {
-    @include apply-color($c-social);
-  }
+    // THEMED OVERRIDES (more specific than a global .category-btn)
+    // تعديلات الثيم (أقوى من .category-btn العامة)
+    .category-btn {
+      &.all {
+        &.active-cat,
+        &:hover {
+          background-color: var(--neutral-tag);
+          border-color: var(--nyc-brand-color);
+          color: var(--nyc-brand-color);
 
-  &.transportation {
-    @include apply-color($c-transportation);
-  }
+          i { color: var(--nyc-brand-color) !important; }
+        }
+      }
 
-  &.tv {
-    @include apply-color($c-tv);
+      &.community { @include pill-theme('community'); }
+      &.culture { @include pill-theme('culture'); }
+      &.education { @include pill-theme('education'); }
+      &.events { @include pill-theme('events'); }
+      &.health { @include pill-theme('health'); }
+      &.housing { @include pill-theme('housing'); }
+      &.lifestyle { @include pill-theme('lifestyle'); }
+      &.legal { @include pill-theme('legal'); }
+      &.news { @include pill-theme('news'); }
+      &.profession { @include pill-theme('professions'); }
+      &.social { @include pill-theme('social'); }
+      &.transportation { @include pill-theme('transportation'); }
+      &.tv { @include pill-theme('tv'); }
+    }
   }
 }
 
@@ -494,7 +485,7 @@ $cat-colors: (
       font-weight: 800;
       letter-spacing: -0.5px;
       text-decoration: none;
-      color: $text-dark;
+      color: var(--neutral-text-100);
 
       span {
         color: $dark-blue;
@@ -541,7 +532,7 @@ $cat-colors: (
       .username {
         font-weight: 700;
         font-size: 16px;
-        color: $text-dark;
+        color: var(--neutral-text-100);
       }
     }
 
@@ -749,7 +740,7 @@ $cat-colors: (
         background: white;
         border-radius: 12px;
         font-weight: 600;
-        color: $text-dark;
+        color: var(--neutral-text-100);
         display: block;
         text-align: center;
         text-decoration: none;

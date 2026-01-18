@@ -1,21 +1,15 @@
 // --- Theme Variables ---
-$primary-green: #00695C; 
-$accent-teal: #26A69A;
+$primary-green: #00695C;
 $light-green: #E0F2F1;
 $bg-faint: #f8fafb;
-$text-dark: #2c2c2c;
-$text-gray: #666;
 $white: #ffffff;
 $radius: 16px;
 
-$font-header: 'Merriweather', serif;
-$font-body: 'Inter', sans-serif;
-
 .job-profile-page {
-  background-color: $bg-faint; min-height: 100vh; font-family: $font-body; padding-bottom: 60px;
+  background-color: $bg-faint; min-height: 100vh; padding-bottom: 60px;
 }
 
-.font-header { font-family: $font-header; color: $text-dark; }
+.font-header {  color: var(--neutral-text-100); }
 
 // Loader
 .loader-container {
@@ -50,9 +44,9 @@ $font-body: 'Inter', sans-serif;
 
     .job-main-info {
       .badge-category { background: $light-green; color: $primary-green; padding: 5px 15px; border-radius: 50px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; }
-      h1 { font-family: $font-header; font-size: 2rem; margin: 8px 0; }
+      h1 {  font-size: 2rem; margin: 8px 0; }
       .meta-row {
-        color: $text-gray; font-size: 0.95rem; display: flex; align-items: center; gap: 15px;
+        color: var(--neutral-text-200); font-size: 0.95rem; display: flex; align-items: center; gap: 15px;
         @media (max-width: 768px) { justify-content: center; flex-wrap: wrap; }
         .sep { width: 5px; height: 5px; background: #ccc; border-radius: 50%; }
         i { color: $primary-green; }
@@ -122,13 +116,13 @@ $font-body: 'Inter', sans-serif;
 .content-section {
   background: $white; border-radius: $radius; padding: 35px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
   &.no-border { background: transparent; padding-left: 0; padding-right: 0; box-shadow: none; }
-  h2 { font-size: 1.5rem; margin-bottom: 25px; border-left: 5px solid $accent-teal; padding-left: 15px; }
+  h2 { font-size: 1.5rem; margin-bottom: 25px; border-left: 5px solid var(--professions-color); padding-left: 15px; }
   .text-body { line-height: 1.8; color: #444; font-size: 1.05rem; white-space: pre-line; }
 }
 
 .styled-list {
   list-style: none; padding: 0;
-  li { display: flex; gap: 15px; margin-bottom: 18px; line-height: 1.6; i { color: $accent-teal; font-size: 1.2rem; } }
+  li { display: flex; gap: 15px; margin-bottom: 18px; line-height: 1.6; i { color: var(--professions-color); font-size: 1.2rem; } }
 }
 
 .requirements-grid .essential {
@@ -150,7 +144,7 @@ $font-body: 'Inter', sans-serif;
             .app-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
             .app-info {
                 h5 { margin: 0; font-size: 1rem; font-weight: 600; }
-                small { color: $text-gray; font-size: 0.8rem; }
+                small { color: var(--neutral-text-200); font-size: 0.8rem; }
             }
         }
         .cover-preview {
@@ -170,7 +164,7 @@ $font-body: 'Inter', sans-serif;
   @media (max-width: 768px) { flex-direction: column; }
   .model-info { flex: 1; padding: 30px; 
     .model-stats { display: flex; align-items: center; gap: 30px; margin-top: 25px; 
-      .stat { text-align: center; strong { display: block; font-size: 1.8rem; color: $primary-green; } span { font-size: 0.75rem; color: $text-gray; text-transform: uppercase; } }
+      .stat { text-align: center; strong { display: block; font-size: 1.8rem; color: $primary-green; } span { font-size: 0.75rem; color: var(--neutral-text-200); text-transform: uppercase; } }
       .divider { width: 1px; height: 40px; background: #eee; }
     }
   }
@@ -185,22 +179,22 @@ $font-body: 'Inter', sans-serif;
 // Sidebar Widgets
 .sidebar-column .widget {
   background: $white; border-radius: $radius; padding: 25px; margin-bottom: 30px;
-  h3 { font-size: 1.1rem; margin-bottom: 20px; color: $text-dark; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+  h3 { font-size: 1.1rem; margin-bottom: 20px; color: var(--neutral-text-100); border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
 }
 
 .glance-list {
   list-style: none; padding: 0;
-  li { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; span { color: $text-gray; } strong { color: $text-dark; } }
+  li { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; span { color: var(--neutral-text-200); } strong { color: var(--neutral-text-100); } }
 }
 
 .related-job-item {
   display: flex; gap: 15px; margin-bottom: 20px; cursor: pointer; transition: 0.3s;
   &:hover { transform: translateX(5px); .job-icon { background: $primary-green; color: white; } }
   .job-icon { width: 45px; height: 45px; background: #f5f5f5; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: $primary-green; transition: 0.3s; }
-  .job-meta { strong { display: block; font-size: 0.95rem; } small { color: $text-gray; font-size: 0.8rem; } }
+  .job-meta { strong { display: block; font-size: 0.95rem; } small { color: var(--neutral-text-200); font-size: 0.8rem; } }
 }
 
-.tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; .path-tag { background: #f0f4f3; color: $text-gray; padding: 6px 15px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; &:hover { background: $light-green; color: $primary-green; } } }
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; .path-tag { background: #f0f4f3; color: var(--neutral-text-200); padding: 6px 15px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; &:hover { background: $light-green; color: $primary-green; } } }
 
 // Modal Overlay
 .modal-overlay {
@@ -218,7 +212,7 @@ $primary-green: #00695C;
 $primary-orange: #ff7f50; // Added based on your saved info
 $white: #ffffff;
 $radius: 16px;
-$text-gray: #666;
+
 
 // ... (Rest of existing styles) ...
 
@@ -241,7 +235,7 @@ $text-gray: #666;
             .small-label {
                 font-size: 0.8rem;
                 font-weight: 600;
-                color: $text-gray;
+                color: var(--neutral-text-200);
             }
 
             .status-select {

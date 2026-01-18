@@ -30,7 +30,7 @@ $radius: 16px;
   display: block;
   min-height: 100vh;
   background-color: #f9fafb; // Very light gray bg
-  font-family: $font-body;
+  
   padding-bottom: 100px;
 }
 
@@ -47,7 +47,7 @@ $radius: 16px;
   text-align: center;
 
   .page-title {
-    font-family: $font-header;
+    
     font-size: 3rem;
     font-weight: 900;
     color: $dark;
@@ -178,7 +178,7 @@ $radius: 16px;
     }
 
     h3 {
-      font-family: $font-header;
+      
       font-size: 1.5rem;
       color: $dark;
       margin-bottom: 10px;
@@ -313,7 +313,7 @@ $radius: 16px;
   }
 
   .card-title {
-    font-family: $font-header;
+    
     font-size: 1.25rem;
     font-weight: 800;
     color: $dark;
