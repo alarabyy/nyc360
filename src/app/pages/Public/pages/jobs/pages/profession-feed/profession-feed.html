@@ -1,35 +1,43 @@
 <div class="profession-feed-page">
-
-  <header class="page-header">
+  <header class="category-header">
     <div class="container text-center">
-      <small class="text-uppercase tracking-wider">Welcome at NYC360</small>
-      <h1 class="merriweather-font display-4 fw-bold my-3">Profession</h1>
-      <p class="lead mx-auto" style="max-width: 650px;">
+      <p class="top-meta">Welcome at NYC360</p>
+      <h1 class="main-title">Profession</h1>
+      <p class="sub-meta">
         Opportunities, career insights, and professional life in New York City.
       </p>
     </div>
   </header>
 
   <div class="container py-5" *ngIf="!isLoading">
-
     <!-- Hero Article (Visual) -->
     <section class="mb-5" *ngIf="heroArticle">
-      <app-article-hero [image]="getArticleImage(heroArticle) || ''" [title]="heroArticle.title"
-        [description]="heroArticle.content" [metaText]="'Published: ' + (heroArticle.createdAt | date:'MMM d, y')"
-        [link]="['/public/posts/details', heroArticle.id]" [customColor]="'#00695C'">
+      <app-article-hero
+        [image]="getArticleImage(heroArticle) || ''"
+        [title]="heroArticle.title"
+        [description]="heroArticle.content"
+        [metaText]="'Published: ' + (heroArticle.createdAt | date: 'MMM d, y')"
+        [link]="['/public/posts/details', heroArticle.id]"
+        [customColor]="'#00695C'"
+      >
       </app-article-hero>
     </section>
 
     <!-- Visual Grid Articles -->
     <section class="mt-5" *ngIf="visualArticles.length > 0">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="merriweather-font h3 border-start border-4 border-success ps-3">Career Path Articles</h2>
+        <h2 class="h3 border-start border-4 border-success ps-3">Career Path Articles</h2>
       </div>
 
       <div class="row g-4">
         <div class="col-lg-4 col-md-6" *ngFor="let article of visualArticles">
-          <app-article-grid-card [image]="getArticleImage(article) || ''" [title]="article.title"
-            [description]="article.content" [link]="['/public/posts/details', article.id]" [customColor]="'#26A69A'">
+          <app-article-grid-card
+            [image]="getArticleImage(article) || ''"
+            [title]="article.title"
+            [description]="article.content"
+            [link]="['/public/posts/details', article.id]"
+            [customColor]="'#26A69A'"
+          >
           </app-article-grid-card>
         </div>
       </div>
@@ -38,25 +46,35 @@
     <!-- Text-Only Articles (Bottom Section) -->
     <section class="text-only-section mt-5 fade-in-up" *ngIf="textArticles.length > 0">
       <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-        <h2 class="merriweather-font h3 text-dark">Community Updates</h2>
+        <h2 class="h3 text-dark">Community Updates</h2>
         <!-- <span class="badge bg-light text-dark">{{ textArticles.length }} New</span> -->
       </div>
 
       <div class="row g-4">
         <div class="col-md-6" *ngFor="let post of textArticles">
-          <div class="text-card-design" [routerLink]="['/public/posts/details', post.id]" style="cursor: pointer;">
+          <div
+            class="text-card-design"
+            [routerLink]="['/public/posts/details', post.id]"
+            style="cursor: pointer"
+          >
             <div class="card-top-row">
               <span class="pill-tag">PROFESSION</span>
-              <span class="post-time">{{ post.createdAt | date:'shortTime' }} ago</span>
+              <span class="post-time">{{ post.createdAt | date: 'shortTime' }} ago</span>
             </div>
             <h3 class="text-title">“{{ post.title }}”</h3>
-            <p class="text-excerpt">{{ post.content | slice:0:120 }}...</p>
+            <p class="text-excerpt">{{ post.content | slice: 0 : 120 }}...</p>
 
             <div class="card-footer-meta">
               <div class="d-flex align-items-center gap-2">
                 <img
-                  [src]="post.author.imageUrl ? (post.author.imageUrl.replace('@local://', environment.apiBaseUrl3 + '/')) : 'assets/images/default-avatar.png'"
-                  class="mini-avatar" onerror="this.src='assets/images/default-avatar.png'">
+                  [src]="
+                    post.author.imageUrl
+                      ? post.author.imageUrl.replace('@local://', environment.apiBaseUrl3 + '/')
+                      : 'assets/images/default-avatar.png'
+                  "
+                  class="mini-avatar"
+                  onerror="this.src = 'assets/images/default-avatar.png'"
+                />
                 <span>{{ post.author.username || 'Member' }}</span>
               </div>
               <span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span>
@@ -69,8 +87,10 @@
     <!-- Hiring News -->
     <section class="hiring-section mt-5 p-5 shadow-lg" *ngIf="hiringNews.length > 0">
       <div class="d-flex justify-content-between align-items-center mb-4 text-white">
-        <h2 class="merriweather-font h3 m-0">Hiring News</h2>
-        <a routerLink="/public/profession/jobs" class="btn-view-all text-white border-white">View All</a>
+        <h2 class="h3 m-0">Hiring News</h2>
+        <a routerLink="/public/profession/jobs" class="btn-view-all text-white border-white"
+          >View All</a
+        >
       </div>
 
       <div class="row g-4">
@@ -90,9 +110,11 @@
       </div>
     </section>
 
-    <div class="text-center py-5" *ngIf="!heroArticle && visualArticles.length === 0 && textArticles.length === 0">
+    <div
+      class="text-center py-5"
+      *ngIf="!heroArticle && visualArticles.length === 0 && textArticles.length === 0"
+    >
       <p class="text-muted italic">No career articles available at the moment.</p>
     </div>
-
   </div>
 </div>

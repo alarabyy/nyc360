@@ -1,7 +1,7 @@
 // --- Variables ---
 $bg-color: #F5F7FA;
 $card-bg: #FFFFFF;
-$text-dark: #1A1A1A;
+
 $primary-orange: #FF7F50;
 $radius: 16px;
 $font-family: 'Inter', sans-serif;
@@ -38,7 +38,7 @@ $font-family: 'Inter', sans-serif;
 
   h3 {
     font-size: 20px;
-    color: $text-dark;
+    color: var(--neutral-text-100);
     font-weight: 700;
   }
 
@@ -62,7 +62,7 @@ $font-family: 'Inter', sans-serif;
   .page-title {
     font-size: 24px;
     font-weight: 800;
-    color: $text-dark;
+    color: var(--neutral-text-100);
     margin-bottom: 20px;
   }
 }
@@ -297,7 +297,7 @@ $font-family: 'Inter', sans-serif;
     h2 {
       font-size: 20px;
       font-weight: 800;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin: 0;
     }
   }
@@ -373,7 +373,7 @@ $font-family: 'Inter', sans-serif;
     h2 {
       font-size: 20px;
       font-weight: 800;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin: 0;
     }
   }
@@ -433,7 +433,7 @@ $font-family: 'Inter', sans-serif;
           font-size: 20px;
           font-weight: 800;
           margin-bottom: 10px;
-          color: $text-dark;
+          color: var(--neutral-text-100);
           line-height: 1.3;
         }
 
@@ -470,7 +470,7 @@ $font-family: 'Inter', sans-serif;
             .auth-name {
               font-weight: 700;
               font-size: 13px;
-              color: $text-dark;
+              color: var(--neutral-text-100);
             }
 
             .post-time {
@@ -517,7 +517,7 @@ $font-family: 'Inter', sans-serif;
       font-size: 15px;
       font-weight: 800;
       margin: 0 0 15px 0;
-      color: $text-dark;
+      color: var(--neutral-text-100);
     }
   }
 }
@@ -753,7 +753,7 @@ $font-family: 'Inter', sans-serif;
     h2 {
       font-size: 20px;
       font-weight: 800;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin: 0;
     }
   }
@@ -830,7 +830,7 @@ $font-family: 'Inter', sans-serif;
     h3 {
       font-size: 18px;
       font-weight: 800;
-      color: $text-dark;
+      color: var(--neutral-text-100);
       margin-bottom: 12px;
       line-height: 1.4;
     }

@@ -2,8 +2,8 @@
 $bg-header: #fff0e6;
 $primary-orange: #ff7f50;
 $primary-hover: #e66a3c;
-$text-dark: #2c2c2c;
-$text-gray: #666;
+
+
 $white: #ffffff;
 $radius: 24px;
 $font-header: 'Merriweather', serif;
@@ -64,25 +64,25 @@ $font-body: 'Inter', sans-serif;
     border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
     box-shadow: 0 5px 15px rgba($primary-orange, 0.3);
   }
-  span { font-family: $font-header; font-weight: 700; font-size: 1.5rem; color: $text-dark; letter-spacing: 1px; }
+  span {  font-weight: 700; font-size: 1.5rem; color: var(--neutral-text-100); letter-spacing: 1px; }
 }
 
 /* --- Text Content --- */
 .text-content {
   margin-bottom: 50px;
   .gradient-text {
-    font-family: $font-header;
+    
     font-size: 3.5rem;
     font-weight: 800;
     margin: 0 0 15px 0;
-    background: linear-gradient(45deg, $text-dark, $primary-orange);
+    background: linear-gradient(45deg, var(--neutral-text-100), $primary-orange);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.2;
     
     @media (max-width: 768px) { font-size: 2.2rem; }
   }
-  p { font-size: 1.1rem; color: $text-gray; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+  p { font-size: 1.1rem; color: var(--neutral-text-200); max-width: 500px; margin: 0 auto; line-height: 1.6; }
 }
 
 /* --- Countdown Timer --- */
@@ -92,19 +92,19 @@ $font-body: 'Inter', sans-serif;
   .time-box {
     display: flex; flex-direction: column; align-items: center; min-width: 80px;
     .number {
-      font-family: $font-header; font-size: 3rem; font-weight: 700; color: $text-dark; line-height: 1;
+       font-size: 3rem; font-weight: 700; color: var(--neutral-text-100); line-height: 1;
       @media (max-width: 768px) { font-size: 2rem; }
     }
-    .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: $text-gray; margin-top: 5px; }
+    .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--neutral-text-200); margin-top: 5px; }
   }
   
-  .separator { font-size: 2.5rem; color: rgba($text-dark, 0.2); padding-bottom: 25px; @media(max-width: 500px){ display: none; } }
+  .separator { font-size: 2.5rem; color: rgba(var(--neutral-text-100), 0.2); padding-bottom: 25px; @media(max-width: 500px){ display: none; } }
 }
 
 /* --- Notify Form --- */
 .notify-section {
   max-width: 500px; margin: 0 auto 40px auto;
-  p { margin-bottom: 15px; color: $text-dark; font-weight: 500; }
+  p { margin-bottom: 15px; color: var(--neutral-text-100); font-weight: 500; }
   
   .input-group {
     display: flex; background: $white; padding: 5px; border-radius: 50px; border: 1px solid #ddd;
@@ -112,7 +112,7 @@ $font-body: 'Inter', sans-serif;
     &:focus-within { border-color: $primary-orange; box-shadow: 0 5px 25px rgba($primary-orange, 0.15); }
     
     input {
-      flex: 1; border: none; padding: 15px 20px; border-radius: 50px; outline: none; font-size: 1rem; color: $text-dark;
+      flex: 1; border: none; padding: 15px 20px; border-radius: 50px; outline: none; font-size: 1rem; color: var(--neutral-text-100);
       &::placeholder { color: #aaa; }
     }
     
@@ -134,7 +134,7 @@ $font-body: 'Inter', sans-serif;
   display: flex; justify-content: center; gap: 20px;
   a {
     width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-    border-radius: 50%; background: #fff; color: $text-gray; font-size: 1.2rem; transition: 0.3s; border: 1px solid #eee;
+    border-radius: 50%; background: #fff; color: var(--neutral-text-200); font-size: 1.2rem; transition: 0.3s; border: 1px solid #eee;
     &:hover { background: $primary-orange; color: white; border-color: $primary-orange; transform: translateY(-3px); }
   }
 }

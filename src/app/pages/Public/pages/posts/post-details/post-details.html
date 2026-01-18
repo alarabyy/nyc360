@@ -3,32 +3,49 @@
 </div>
 
 <div class="page-container">
-
   <div *ngIf="errorMessage" class="state-container text-danger animate__animated animate__fadeIn">
     <i class="bi bi-exclamation-circle me-3 fs-3"></i>
     <span class="fw-bold">{{ errorMessage }}</span>
   </div>
 
   <div *ngIf="post" class="content-grid">
-
     <!-- Main Column -->
-    <main class="main-column animate__animated animate__fadeInLeft"
-      [class.no-image-mode]="!((post.attachments && post.attachments.length > 0) || post.imageUrl)">
-
+    <main
+      class="main-column animate__animated animate__fadeInLeft"
+      [class.no-image-mode]="!((post.attachments && post.attachments.length > 0) || post.imageUrl)"
+    >
       <!-- Image Section (Only if image exists) -->
-      <div class="featured-media animate__animated animate__zoomIn"
-        *ngIf="(post.attachments && post.attachments.length > 0) || post.imageUrl">
-        <img *ngIf="post.attachments && post.attachments.length > 0" [src]="resolveImageUrl(post.attachments[0].url)"
-          alt="Post Image" class="main-feat-img">
-        <img *ngIf="(!post.attachments || post.attachments.length === 0) && post.imageUrl"
-          [src]="resolveImageUrl(post.imageUrl)" alt="Post Image" class="main-feat-img">
+      <div
+        class="featured-media animate__animated animate__zoomIn"
+        *ngIf="(post.attachments && post.attachments.length > 0) || post.imageUrl"
+      >
+        <img
+          *ngIf="post.attachments && post.attachments.length > 0"
+          [src]="resolveImageUrl(post.attachments[0].url)"
+          alt="Post Image"
+          class="main-feat-img"
+        />
+        <img
+          *ngIf="(!post.attachments || post.attachments.length === 0) && post.imageUrl"
+          [src]="resolveImageUrl(post.imageUrl)"
+          alt="Post Image"
+          class="main-feat-img"
+        />
       </div>
 
       <div class="article-header animate__animated animate__fadeInUp">
-        <div class="tags-row"
-          [class.justify-center]="!((post.attachments && post.attachments.length > 0) || post.imageUrl)">
+        <div
+          class="tags-row"
+          [class.justify-center]="
+            !((post.attachments && post.attachments.length > 0) || post.imageUrl)
+          "
+        >
           <span class="tag-link category-link">{{ getCategoryName(post.category) }}</span>
-          <a *ngFor="let tag of post.tags; let i = index" [routerLink]="['/public/posts/tags', tag]" class="tag-link">
+          <a
+            *ngFor="let tag of post.tags; let i = index"
+            [routerLink]="['/public/posts/tags', tag]"
+            class="tag-link"
+          >
             #{{ tag }}
           </a>
         </div>
@@ -36,11 +53,11 @@
         <h1 class="article-title">{{ post.title }}</h1>
 
         <div class="meta-row">
-          <div class="author-info" style="cursor: pointer;">
+          <div class="author-info" style="cursor: pointer">
             <!-- Avatar (Optional, if desired) -->
             <div class="author-meta">
               <span class="author-name">{{ getAuthorName(post.author) }}</span>
-              <span class="post-date">{{ post.createdAt | date:'longDate' }} • 5 min read</span>
+              <span class="post-date">{{ post.createdAt | date: 'longDate' }} • 5 min read</span>
             </div>
           </div>
 
@@ -76,21 +93,42 @@
         </div>
       </div>
 
-      <div class="article-body animate__animated animate__fadeInUp" [innerHTML]="post.content"></div>
+      <div
+        class="article-body animate__animated animate__fadeInUp"
+        [innerHTML]="post.content"
+      ></div>
 
       <!-- Interaction Bar -->
       <div class="interaction-card animate__animated animate__fadeInUp">
-        <button class="btn-action-premium" [class.active-like]="post.userInteraction === InteractionType.Like"
-          (click)="toggleInteraction(InteractionType.Like)">
-          <i class="bi"
-            [ngClass]="post.userInteraction === InteractionType.Like ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'"></i>
+        <button
+          class="btn-action-premium"
+          [class.active-like]="post.userInteraction === InteractionType.Like"
+          (click)="toggleInteraction(InteractionType.Like)"
+        >
+          <i
+            class="bi"
+            [ngClass]="
+              post.userInteraction === InteractionType.Like
+                ? 'bi-hand-thumbs-up-fill'
+                : 'bi-hand-thumbs-up'
+            "
+          ></i>
           <span>{{ post.stats?.likes || 0 }}</span>
         </button>
 
-        <button class="btn-action-premium" [class.active-dislike]="post.userInteraction === InteractionType.Dislike"
-          (click)="toggleInteraction(InteractionType.Dislike)">
-          <i class="bi"
-            [ngClass]="post.userInteraction === InteractionType.Dislike ? 'bi-hand-thumbs-down-fill' : 'bi-hand-thumbs-down'"></i>
+        <button
+          class="btn-action-premium"
+          [class.active-dislike]="post.userInteraction === InteractionType.Dislike"
+          (click)="toggleInteraction(InteractionType.Dislike)"
+        >
+          <i
+            class="bi"
+            [ngClass]="
+              post.userInteraction === InteractionType.Dislike
+                ? 'bi-hand-thumbs-down-fill'
+                : 'bi-hand-thumbs-down'
+            "
+          ></i>
           <span>{{ post.stats?.dislikes || 0 }}</span>
         </button>
 
@@ -117,9 +155,17 @@
         </h3>
 
         <div class="comment-entry">
-          <input type="text" placeholder="Share your perspective..." [(ngModel)]="newCommentContent"
-            (keydown.enter)="submitComment()">
-          <button class="btn-submit-comment" (click)="submitComment()" [disabled]="!newCommentContent.trim()">
+          <input
+            type="text"
+            placeholder="Share your perspective..."
+            [(ngModel)]="newCommentContent"
+            (keydown.enter)="submitComment()"
+          />
+          <button
+            class="btn-submit-comment"
+            (click)="submitComment()"
+            [disabled]="!newCommentContent.trim()"
+          >
             <i class="bi bi-arrow-right-short fs-2"></i>
           </button>
         </div>
@@ -130,7 +176,7 @@
               <div class="comment-content-box">
                 <div class="header">
                   <strong>{{ getAuthorName(comment.author) }}</strong>
-                  <time>{{ comment.createdAt | date:'shortTime' }}</time>
+                  <time>{{ comment.createdAt | date: 'shortTime' }}</time>
                 </div>
                 <div class="text">{{ comment.content }}</div>
                 <div class="footer">
@@ -141,8 +187,12 @@
 
             <!-- Reply Input -->
             <div class="comment-entry mt-3 mx-5" *ngIf="activeReplyId === comment.id">
-              <input #replyIn type="text" placeholder="Replying to {{ getAuthorName(comment.author) }}..."
-                (keydown.enter)="submitReply(comment, replyIn.value)">
+              <input
+                #replyIn
+                type="text"
+                placeholder="Replying to {{ getAuthorName(comment.author) }}..."
+                (keydown.enter)="submitReply(comment, replyIn.value)"
+              />
               <button class="btn-submit-comment" (click)="submitReply(comment, replyIn.value)">
                 <i class="bi bi-arrow-return-right"></i>
               </button>
@@ -155,7 +205,7 @@
                   <div class="comment-content-box">
                     <div class="header">
                       <strong>{{ getAuthorName(reply.author) }}</strong>
-                      <time>{{ reply.createdAt | date:'shortTime' }}</time>
+                      <time>{{ reply.createdAt | date: 'shortTime' }}</time>
                     </div>
                     <div class="text">{{ reply.content }}</div>
                   </div>
@@ -174,7 +224,6 @@
 
     <!-- Sidebar Column -->
     <aside class="sidebar-column animate__animated animate__fadeInRight">
-
       <div class="premium-sidebar-card author-card">
         <h4>{{ getAuthorName(post.author) }}</h4>
         <span class="author-role">Contributor</span>
@@ -184,8 +233,17 @@
       <div class="premium-sidebar-card" *ngIf="relatedPosts.length > 0">
         <h4 class="card-title">More Like This</h4>
         <div class="related-list">
-          <div class="related-post-item" *ngFor="let item of relatedPosts" (click)="goToRelatedPost(item)">
-            <img *ngIf="item.imageUrl" [src]="resolveImageUrl(item.imageUrl)" class="rel-img" alt="">
+          <div
+            class="related-post-item"
+            *ngFor="let item of relatedPosts"
+            (click)="goToRelatedPost(item)"
+          >
+            <img
+              *ngIf="item.imageUrl"
+              [src]="resolveImageUrl(item.imageUrl)"
+              class="rel-img"
+              alt=""
+            />
             <div class="rel-meta">
               <h5 class="rel-title">{{ item.title }}</h5>
               <span class="rel-stats">{{ item.commentsCount }} interactions</span>
@@ -194,33 +252,52 @@
         </div>
       </div>
     </aside>
-
   </div>
 </div>
 
 <!-- All your Modals (Share, Report) stay the same as they were already polished -->
 
 <!-- Share Modal -->
-<div class="modal-overlay animate__animated animate__fadeIn" *ngIf="showShareModal" (click)="closeShareModal()">
-  <div class="modal-card luxury-modal animate__animated animate__zoomIn" (click)="$event.stopPropagation()">
+<div
+  class="modal-overlay animate__animated animate__fadeIn"
+  *ngIf="showShareModal"
+  (click)="closeShareModal()"
+>
+  <div
+    class="modal-card luxury-modal animate__animated animate__zoomIn"
+    (click)="$event.stopPropagation()"
+  >
     <div class="modal-header border-bottom">
       <h3 class="merriweather-font"><i class="bi bi-share text-primary me-2"></i> Share Post</h3>
       <button class="close-btn" (click)="closeShareModal()"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="modal-body p-4">
       <div class="post-preview-mini mb-3 p-2 bg-light rounded d-flex align-items-center gap-3">
-        <img *ngIf="post?.imageUrl" [src]="resolveImageUrl(post?.imageUrl)" class="mini-img" alt="">
+        <img
+          *ngIf="post?.imageUrl"
+          [src]="resolveImageUrl(post?.imageUrl)"
+          class="mini-img"
+          alt=""
+        />
         <span class="small fw-bold text-truncate">{{ post?.title }}</span>
       </div>
       <p class="modal-desc small text-muted mb-3">Add a comment to your shared post:</p>
       <div class="form-group">
-        <textarea class="luxury-textarea form-control" rows="3" placeholder="What's on your mind?..."
-          [(ngModel)]="shareComment"></textarea>
+        <textarea
+          class="luxury-textarea form-control"
+          rows="3"
+          placeholder="What's on your mind?..."
+          [(ngModel)]="shareComment"
+        ></textarea>
       </div>
     </div>
     <div class="modal-footer border-top p-3 d-flex gap-2">
       <button class="btn-cancel-luxury" (click)="closeShareModal()">CANCEL</button>
-      <button class="btn-submit-luxury primary ms-auto" (click)="submitShare()" [disabled]="isSharing">
+      <button
+        class="btn-submit-luxury primary ms-auto"
+        (click)="submitShare()"
+        [disabled]="isSharing"
+      >
         <span *ngIf="isSharing" class="spinner-border spinner-border-sm me-2"></span>
         <i class="bi bi-send me-2" *ngIf="!isSharing"></i> SHARE NOW
       </button>
@@ -229,9 +306,15 @@
 </div>
 
 <!-- Report Modal -->
-<div class="modal-overlay animate__animated animate__fadeIn" *ngIf="showReportModal" (click)="closeReportModal()">
-  <div class="modal-card luxury-modal animate__animated animate__slideInUp" (click)="$event.stopPropagation()">
-
+<div
+  class="modal-overlay animate__animated animate__fadeIn"
+  *ngIf="showReportModal"
+  (click)="closeReportModal()"
+>
+  <div
+    class="modal-card luxury-modal animate__animated animate__slideInUp"
+    (click)="$event.stopPropagation()"
+  >
     <!-- Loading Overlay -->
     <div class="loading-overlay-modal" *ngIf="isReporting">
       <div class="spinner-premium"></div>
@@ -240,15 +323,27 @@
 
     <ng-container *ngIf="!reportSuccess">
       <div class="modal-header border-bottom">
-        <h3 class="merriweather-font text-danger"><i class="bi bi-flag-fill me-2"></i> Feedback & Report</h3>
+        <h3 class="text-danger"><i class="bi bi-flag-fill me-2"></i> Feedback & Report</h3>
         <button class="close-btn" (click)="closeReportModal()"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body p-4">
-        <p class="modal-desc fw-bold text-dark mb-3">Help us understand the issue. What represents this post?</p>
+        <p class="modal-desc fw-bold text-dark mb-3">
+          Help us understand the issue. What represents this post?
+        </p>
 
         <div class="report-reasons-grid mb-1">
-          <label *ngFor="let r of reportReasonsList" class="report-reason-item" [class.active]="reportReason === r.id">
-            <input type="radio" name="reportReason" [value]="r.id" [(ngModel)]="reportReason" class="d-none">
+          <label
+            *ngFor="let r of reportReasonsList"
+            class="report-reason-item"
+            [class.active]="reportReason === r.id"
+          >
+            <input
+              type="radio"
+              name="reportReason"
+              [value]="r.id"
+              [(ngModel)]="reportReason"
+              class="d-none"
+            />
             <i [class]="'bi ' + r.icon + ' reason-icon'"></i>
             <span class="reason-label">{{ r.label }}</span>
           </label>
@@ -260,31 +355,47 @@
         <div class="form-group mb-2">
           <label class="small fw-bold text-muted uppercase mb-2 d-flex justify-content-between">
             <span>Additional Details</span>
-            <span class="text-lowercase fw-normal" *ngIf="reportDetails.length < 10 && isReportingAttempted">(Min 10
-              chars)</span>
+            <span
+              class="text-lowercase fw-normal"
+              *ngIf="reportDetails.length < 10 && isReportingAttempted"
+              >(Min 10 chars)</span
+            >
           </label>
           <div class="luxury-textarea-wrapper">
-            <textarea class="luxury-textarea form-control" rows="4" maxlength="500"
+            <textarea
+              class="luxury-textarea form-control"
+              rows="4"
+              maxlength="500"
               placeholder="Please provide more information to help our moderation team..."
-              [(ngModel)]="reportDetails"></textarea>
+              [(ngModel)]="reportDetails"
+            ></textarea>
             <div class="char-counter" [class.limit-near]="reportDetails.length > 450">
               {{ reportDetails.length }}/500
             </div>
           </div>
-          <div class="error-hint mt-2" *ngIf="reportDetails.length > 0 && reportDetails.length < 10">
+          <div
+            class="error-hint mt-2"
+            *ngIf="reportDetails.length > 0 && reportDetails.length < 10"
+          >
             <i class="bi bi-info-circle"></i> Please provide at least 10 characters.
           </div>
         </div>
 
         <div class="audit-info-box p-3 rounded d-flex gap-3 align-items-center bg-light">
           <i class="bi bi-shield-lock-fill"></i>
-          <p class="mb-0 x-small text-muted">Your report is anonymous. Our safety team will review this content against
-            our community guidelines.</p>
+          <p class="mb-0 x-small text-muted">
+            Your report is anonymous. Our safety team will review this content against our community
+            guidelines.
+          </p>
         </div>
       </div>
       <div class="modal-footer border-top p-3 d-flex gap-2">
         <button class="btn-cancel-luxury" (click)="closeReportModal()">CANCEL</button>
-        <button class="btn-submit-luxury danger ms-auto" (click)="submitReport()" [disabled]="isReporting">
+        <button
+          class="btn-submit-luxury danger ms-auto"
+          (click)="submitReport()"
+          [disabled]="isReporting"
+        >
           <span *ngIf="isReporting" class="spinner-border spinner-border-sm me-2"></span>
           <i class="bi bi-exclamation-triangle me-2" *ngIf="!isReporting"></i> SUBMIT REPORT
         </button>
@@ -295,15 +406,16 @@
     <ng-container *ngIf="reportSuccess">
       <div class="modal-body p-5 text-center animate__animated animate__jackInTheBox">
         <div class="success-checkmark-wrapper mb-4">
-          <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem"></i>
         </div>
         <h2 class="fw-800 mb-2">REPORT RECEIVED</h2>
-        <p class="text-muted">Thank you for making NYC360 a safer place. Our team will review this post shortly.</p>
+        <p class="text-muted">
+          Thank you for making NYC360 a safer place. Our team will review this post shortly.
+        </p>
         <div class="mt-4">
           <button class="btn-submit-luxury primary w-100" (click)="closeReportModal()">DONE</button>
         </div>
       </div>
     </ng-container>
-
   </div>
 </div>

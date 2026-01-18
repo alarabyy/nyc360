@@ -23,3 +23,208 @@ body {
 *::after {
   box-sizing: border-box;
 }
+
+/* =========================================================
+   1) ROOT TOKENS (your palette + semantic defaults)
+========================================================= */
+:root {
+  /* =========================
+     NYC360 Brand
+  ========================= */
+  --nyc-brand-color: #0e235d;
+
+  /* =========================
+     Neutral
+  ========================= */
+  --neutral-bg: #f3f4f8;
+  --neutral-tag: #EAEAF8B2;
+  --neutral-text-100: #072100;
+  --neutral-text-200: #565675;
+
+   /* =========================
+     Community | المجتمع
+  ========================= */
+  --community-bg: #ffe4d7;
+  --community-stroke: #ffbc9b;
+  --community-color: #ff7d3f;
+
+  /* =========================
+     Culture | الثقافة
+  ========================= */
+  --culture-bg: #ffd9d9;
+  --culture-stroke: #ffabab;
+  --culture-color: #dd363a;
+
+  /* =========================
+     Education | التعليم
+  ========================= */
+  --education-bg: #afd6f5;
+  --education-stroke: #4d9ad7;
+  --education-color: #0a5796;
+
+  /* =========================
+     Housing | السكن
+     (Neutral / inferred palette)
+  ========================= */
+  --housing-bg: #f3f4f8;
+  --housing-stroke: #e0e0e0;
+  --housing-color: #6c757d;
+
+  /* =========================
+     Health | الصحة
+  ========================= */
+  --health-bg: #d5edff;
+  --health-stroke: #93e0ff;
+  --health-color: #29c0fe;
+
+  /* =========================
+     Legal | القانون
+  ========================= */
+  --legal-bg: #6183a5;
+  --legal-stroke: #3c5873;
+  --legal-color: #091d32;
+
+  /* =========================
+     Lifestyle | أسلوب الحياة
+  ========================= */
+  --lifestyle-bg: #ccffb5;
+  --lifestyle-stroke: #95df73;
+  --lifestyle-color: #7bc54a;
+
+  /* =========================
+     News | الأخبار
+  ========================= */
+  --news-bg: #bdbdc6;
+  --news-stroke: #7e7e85;
+  --news-color: #333333;
+
+  /* =========================
+     Professions | المهن
+  ========================= */
+  --professions-bg: #afddd0;
+  --professions-stroke: #55b197;
+  --professions-color: #288369;
+
+  /* =========================
+     Social | اجتماعي
+  ========================= */
+  --social-bg: #dbf2f8;
+  --social-stroke: #53abc2;
+  --social-color: #2d89a0;
+
+  /* =========================
+     Transportation | النقل
+  ========================= */
+  --transportation-bg: #ffffff;
+  --transportation-stroke: #000000;
+  --transportation-color: #f2c81e;
+
+  /* =========================
+     TV | التلفزيون
+  ========================= */
+  --tv-bg: #cbdaed;
+  --tv-stroke: #3a6bad;
+  --tv-color: #013984;
+
+  /* =========================
+     Emergency
+  ========================= */
+  --danger-700: #f05252;
+  --danger-800: #f82e2e;
+  --danger-900: #d40011;
+
+  /* =========================
+     Base
+  ========================= */
+  --white: #ffffff;
+  --black: #000000;
+}
+
+
+/* =========================================================
+   3) REUSABLE UI PRIMITIVES (SCSS goodness)
+========================================================= */
+
+/* Small helper: consistent transitions */
+@mixin ui-transition($props...) {
+  transition: $props 150ms ease;
+}
+
+/* Pill button that respects theme vars */
+@mixin pill-button {
+  appearance: none;
+  border: 1px solid var(--neutral-tag);
+  background: var(--neutral-tag);
+  color: var(--neutral-text-200);
+  border-radius: var(--radius-pill);
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+
+  @include ui-transition(background, border-color, color, transform);
+
+  &:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-stroke);
+  }
+
+  &.is-active,
+  &.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    outline-offset: 3px;
+  }
+}
+:root {
+  --font-sans: 'Roboto', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* letter spacing (your spec uses -1% on headings) */
+  --ls-tight: -0.01em; // -1%
+  --ls-normal: 0em;
+
+  /* sizes */
+  --fs-extrahead: 64px;
+  --fs-head: 48px;
+  --fs-grouphead: 32px;
+  --fs-cardhead: 24px;
+  --fs-body1: 20px;
+  --fs-body2: 18px;
+  --fs-info: 14px;
+
+  /* line-height (not shown in your image; these are sensible defaults) */
+  --lh-extrahead: 1.05;
+  --lh-head: 1.10;
+  --lh-grouphead: 1.20;
+  --lh-cardhead: 1.25;
+  --lh-body: 1.55;
+  --lh-info: 1.35;
+
+  /* default text color hook */
+  --text-strong: #0a0a0a;
+  --text-soft: rgba(0,0,0,0.68);
+}
+
+/* Base */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--text-strong);
+  background: #F6F7F8;
+}
+app-root {
+  min-height: 100vh;
+}
+main {
+    margin: 80px 0 24px;
+}

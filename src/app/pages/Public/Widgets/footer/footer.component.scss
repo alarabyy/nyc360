@@ -1,13 +1,11 @@
 // --- Variables ---
-$bg-dark: #002147;      // Deep Blue (From Image)
-$text-white: #ffffff;
-$text-gray: #B0B0B0;    // Light Gray for links
+$bg-dark: #002147;
 $border-color: rgba(255, 255, 255, 0.1); // Faint divider
 $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
 
 .footer-section {
   background-color: $bg-dark;
-  color: $text-white;
+  color: var(--white);
   padding: 80px 0 30px; // Top padding 80px, Bottom 30px
   font-family: $font-main;
   font-size: 14px;
@@ -32,7 +30,7 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: $text-white;
+  color: var(--white);
   margin-bottom: 25px;
 }
 
@@ -47,12 +45,12 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
     
     a {
       text-decoration: none;
-      color: $text-gray;
+      color: var(--neutral-text-200);
       font-size: 14px;
       transition: color 0.2s ease;
       
       &:hover {
-        color: $text-white;
+        color: var(--white);
         text-decoration: underline;
       }
     }
@@ -77,7 +75,7 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
     gap: 15px;
     
     a {
-      color: $text-white;
+      color: var(--white);
       font-size: 18px;
       width: 36px;
       height: 36px;
@@ -90,9 +88,9 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
       text-decoration: none;
 
       &:hover {
-        background-color: $text-white;
+        background-color: var(--white);
         color: $bg-dark;
-        border-color: $text-white;
+        border-color: var(--white);
       }
     }
   }
@@ -105,7 +103,7 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
   border-top: 1px solid $border-color;
   
   p {
-    color: $text-gray;
+    color: var(--neutral-text-200);
     font-size: 12px;
     margin-bottom: 10px; // For mobile stacking
     @media (min-width: 768px) { margin-bottom: 0; }
@@ -121,11 +119,11 @@ $font-main: 'Segoe UI', Helvetica, Arial, sans-serif;
     @media (min-width: 768px) { justify-content: flex-end; } // Desktop right
 
     li a {
-      color: $text-gray;
+      color: var(--neutral-text-200);
       font-size: 12px;
       text-decoration: none;
       transition: color 0.2s;
-      &:hover { color: $text-white; }
+      &:hover { color: var(--white); }
     }
   }
 }

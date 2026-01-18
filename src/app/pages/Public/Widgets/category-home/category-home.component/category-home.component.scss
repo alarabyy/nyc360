@@ -1,18 +1,13 @@
 // User Defined Variables
 $bg-header: #fff0e6;
-$font-header: 'Merriweather', serif;
-$font-body: 'Inter', sans-serif;
-$text-dark: #2c2c2c;
-$text-gray: #666;
-$white: #ffffff;
 $radius: 16px;
 $border-color: #eee;
 
 :host {
   display: block;
-  font-family: $font-body;
-  background-color: $white;
-  color: $text-dark;
+  // font-family: $font-body;
+  // background-color: var(--white);
+  color: var(--neutral-text-100);
   --theme-color: #333; // Default
 }
 
@@ -24,17 +19,22 @@ a {
 
 // --- 1. HEADER & HERO (Previous Styles) ---
 .category-header {
-  background-color: #f2f2f2;
+  // background-color: #f2f2f2;
+  background-color: var(--theme-bg);
   padding: 50px 0;
   margin-bottom: 40px;
-  border-bottom: 5px solid var(--theme-color);
+  // border-bottom: 5px solid var(--theme-color);
 
   .main-title {
-    font-family: $font-header;
-    font-size: 3.5rem;
-    font-weight: 900;
+    // 
+    
+    font-family: "Gelasio", serif;
+    font-optical-sizing: auto;
+    // font-size: 3.5rem;
+    // font-weight: 900;
     margin-bottom: 10px;
     color: var(--theme-color);
+    // color: #fff;
 
     @media (min-width: 768px) {
       font-size: 5rem;
@@ -43,7 +43,7 @@ a {
 
   .sub-meta {
     font-size: 1rem;
-    color: $text-gray;
+    color: var(--neutral-text-200);
     max-width: 600px;
     margin: 0 auto;
   }
@@ -51,7 +51,7 @@ a {
   .top-meta {
     font-size: 0.8rem;
     letter-spacing: 2px;
-    color: $text-gray;
+    color: var(--neutral-text-200);
     text-transform: uppercase;
   }
 }
@@ -84,11 +84,11 @@ a {
     width: 100%;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
     padding: 30px;
-    color: $white;
+    color: var(--white);
 
     .hero-cat-label {
       background: var(--theme-color);
-      color: $white;
+      color: var(--white);
       padding: 5px 12px;
       font-size: 0.7rem;
       font-weight: 700;
@@ -99,7 +99,7 @@ a {
     }
 
     h2 {
-      font-family: $font-header;
+      // 
       font-size: 2rem;
       line-height: 1.2;
       margin-bottom: 10px;
@@ -122,7 +122,7 @@ a {
     align-items: center;
 
     h3 {
-      font-family: $font-header;
+      // 
       font-size: 1.25rem;
       font-weight: 700;
       margin: 0;
@@ -131,7 +131,7 @@ a {
     .view-all {
       font-size: 0.8rem;
       font-weight: 600;
-      color: $text-gray;
+      color: var(--neutral-text-200);
     }
   }
 
@@ -153,7 +153,7 @@ a {
     }
 
     h4 {
-      font-family: $font-header;
+      // 
       font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 8px;
@@ -195,7 +195,7 @@ a {
     cursor: pointer;
 
     &.white {
-      background: $white;
+      background: var(--white);
       border: 1px solid #ddd;
 
       &:hover {
@@ -206,12 +206,12 @@ a {
 
     &.gray {
       background: #f0f0f2;
-      color: $text-dark;
+      color: var(--neutral-text-100);
     }
 
     &.dark {
-      background: $text-dark;
-      color: $white;
+      background: var(--neutral-text-100);
+      color: var(--white);
 
       &:hover {
         background: var(--theme-color);
@@ -220,9 +220,9 @@ a {
   }
 
   .lbl {
-    font-family: $font-header;
+    // 
     font-style: italic;
-    color: $text-gray;
+    color: var(--neutral-text-200);
     margin-right: 15px;
   }
 }
@@ -235,19 +235,19 @@ a {
   border-bottom: 1px solid $border-color;
 
   .chip {
-    background: $white;
+    background: var(--white);
     border: 1px solid #ddd;
     padding: 8px 20px;
     border-radius: 20px;
     font-size: 0.85rem;
-    color: $text-gray;
+    color: var(--neutral-text-200);
     cursor: pointer;
     white-space: nowrap;
 
     &.active {
       background: var(--theme-color);
       border-color: var(--theme-color);
-      color: $white;
+      color: var(--white);
     }
 
     &:hover:not(.active) {
@@ -259,7 +259,7 @@ a {
   .chip-drop {
     @extend .chip;
     background: transparent;
-    color: $text-dark;
+    color: var(--neutral-text-100);
     font-weight: 600;
   }
 }
@@ -305,7 +305,7 @@ a {
 
   .card-content {
     h4 {
-      font-family: $font-header;
+      // 
       font-size: 1.15rem;
       font-weight: 700;
       margin-bottom: 10px;
@@ -313,7 +313,7 @@ a {
 
     .desc {
       font-size: 0.9rem;
-      color: $text-gray;
+      color: var(--neutral-text-200);
       margin-bottom: 15px;
     }
 
@@ -355,7 +355,7 @@ a {
   }
 
   h5 {
-    font-family: $font-header;
+    // 
     font-size: 1.2rem;
     font-weight: 700;
     margin-bottom: 8px;
@@ -368,7 +368,7 @@ a {
 
   .desc {
     font-size: 0.9rem;
-    color: $text-gray;
+    color: var(--neutral-text-200);
     margin-bottom: 8px;
   }
 
@@ -403,7 +403,7 @@ a {
     }
 
     .rank-number {
-      font-family: $font-header;
+      // 
       font-size: 2rem;
       font-weight: 700;
       color: var(--theme-color);
@@ -413,7 +413,7 @@ a {
 
     .trend-info {
       h5 {
-        font-family: $font-header;
+        // 
         font-size: 1rem;
         font-weight: 700;
         line-height: 1.4;
@@ -427,7 +427,7 @@ a {
 
       .trend-meta {
         font-size: 0.75rem;
-        color: $text-gray;
+        color: var(--neutral-text-200);
       }
     }
   }
@@ -477,7 +477,7 @@ a {
     }
 
     .text-title {
-      font-family: $font-header;
+      // 
       font-size: 1.6rem; // Large font
       font-weight: 800; // Bold
       color: #111;
@@ -491,7 +491,7 @@ a {
       gap: 10px;
       font-size: 0.85rem;
       font-weight: 600;
-      color: $text-dark;
+      color: var(--neutral-text-100);
 
       .mini-avatar {
         width: 28px;

@@ -3,7 +3,7 @@ $primary-green: #00695C;
 $bg-light-green: #E0F2F1;
 $active-green: #2E7D32;
 $closed-red: #C62828;
-$text-dark: #2c2c2c;
+
 $text-muted: #666;
 $white: #ffffff;
 $radius: 16px;
@@ -14,11 +14,9 @@ $font-body: 'Inter', sans-serif;
   background-color: #fcfcfc;
   min-height: 100vh;
   font-family: $font-body;
-  color: $text-dark;
+  color: var(--neutral-text-100);
   padding-bottom: 60px;
 }
-
-.merriweather-font { font-family: $font-header; }
 
 // --- Header ---
 .dashboard-header {

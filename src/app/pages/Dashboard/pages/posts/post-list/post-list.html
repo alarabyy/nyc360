@@ -1,10 +1,11 @@
 <div class="posts-dashboard animate__animated animate__fadeIn">
   <div class="container-fluid py-4 px-md-5">
-
     <!-- Header -->
-    <div class="header-section d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
+    <div
+      class="header-section d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3"
+    >
       <div class="title-area">
-        <h1 class="gold-title merriweather-font mb-0">POSTS MANAGER</h1>
+        <h1 class="gold-title mb-0">POSTS MANAGER</h1>
         <p class="text-muted small mb-0">Oversee community content and engagement</p>
       </div>
       <a routerLink="/admin/posts/create" class="btn-luxury-gold shadow-sm text-decoration-none">
@@ -35,8 +36,12 @@
         <div class="col-12 col-lg-5">
           <div class="search-box">
             <i class="bi bi-search text-gold"></i>
-            <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()"
-              placeholder="Search by title, content, or author...">
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="applyFilters()"
+              placeholder="Search by title, content, or author..."
+            />
           </div>
         </div>
 
@@ -66,7 +71,6 @@
 
     <!-- Data Table -->
     <div class="table-card glass-panel animate__animated animate__fadeInUp">
-
       <!-- Empty State -->
       <div *ngIf="!isLoading && filteredPosts.length === 0" class="text-center py-5">
         <i class="bi bi-inbox text-muted display-4"></i>
@@ -86,23 +90,32 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let post of filteredPosts; let i = index" [style.animation-delay]="i * 0.03 + 's'"
-              class="animate__animated animate__fadeInRight table-row">
-
+            <tr
+              *ngFor="let post of filteredPosts; let i = index"
+              [style.animation-delay]="i * 0.03 + 's'"
+              class="animate__animated animate__fadeInRight table-row"
+            >
               <!-- ID -->
-              <td class="id-cell"><span class="id-badge">#{{ post.id }}</span></td>
+              <td class="id-cell">
+                <span class="id-badge">#{{ post.id }}</span>
+              </td>
 
               <!-- Details -->
               <td>
                 <div class="d-flex align-items-center gap-3">
                   <div class="post-thumb-wrapper">
-                    <img [src]="getMainImage(post) || 'assets/images/placeholder-post.png'" class="post-thumb"
-                      loading="lazy" (error)="post.imageUrl = null">
+                    <img
+                      [src]="getMainImage(post) || 'assets/images/placeholder-post.png'"
+                      class="post-thumb"
+                      loading="lazy"
+                      (error)="post.imageUrl = null"
+                    />
                   </div>
                   <div class="post-info">
                     <h5 class="post-title text-truncate-2">{{ post.title }}</h5>
-                    <small class="text-muted"><i class="bi bi-clock"></i> {{ post.createdAt | date:'mediumDate'
-                      }}</small>
+                    <small class="text-muted"
+                      ><i class="bi bi-clock"></i> {{ post.createdAt | date: 'mediumDate' }}</small
+                    >
                   </div>
                 </div>
               </td>
@@ -110,16 +123,19 @@
               <!-- Author -->
               <td>
                 <div class="d-flex align-items-center gap-2 author-info">
-                  <img [src]="getAvatar(post.author)" class="author-avatar" loading="lazy">
+                  <img [src]="getAvatar(post.author)" class="author-avatar" loading="lazy" />
                   <span>{{ $any(post.author)?.fullName || 'Unknown' }}</span>
                 </div>
               </td>
 
               <!-- Category -->
               <td>
-                <span class="category-badge" [style.background-color]="getCategoryTheme(post.category).color + '20'"
-                  [style.color]="getCategoryTheme(post.category).color">
-                  <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+                <span
+                  class="category-badge"
+                  [style.background-color]="getCategoryTheme(post.category).color + '20'"
+                  [style.color]="getCategoryTheme(post.category).color"
+                >
+                  <i class="bi bi-circle-fill me-1" style="font-size: 6px"></i>
                   {{ getCategoryTheme(post.category).label }}
                 </span>
               </td>
@@ -127,23 +143,37 @@
               <!-- Stats -->
               <td>
                 <div class="d-flex gap-3 stats-group">
-                  <span title="Likes" class="text-primary"><i class="bi bi-hand-thumbs-up-fill"></i> {{
-                    post.stats?.likes || 0 }}</span>
-                  <span title="Comments" class="text-secondary"><i class="bi bi-chat-fill"></i> {{ post.stats?.comments
-                    || 0 }}</span>
+                  <span title="Likes" class="text-primary"
+                    ><i class="bi bi-hand-thumbs-up-fill"></i> {{ post.stats?.likes || 0 }}</span
+                  >
+                  <span title="Comments" class="text-secondary"
+                    ><i class="bi bi-chat-fill"></i> {{ post.stats?.comments || 0 }}</span
+                  >
                 </div>
               </td>
 
               <!-- Actions -->
               <td class="text-end">
                 <div class="action-btns">
-                  <button [routerLink]="['/admin/posts/details', post.id]" class="btn-icon view" title="View Details">
+                  <button
+                    [routerLink]="['/admin/posts/details', post.id]"
+                    class="btn-icon view"
+                    title="View Details"
+                  >
                     <i class="bi bi-eye-fill"></i>
                   </button>
-                  <button [routerLink]="['/admin/posts/edit', post.id]" class="btn-icon edit" title="Edit Post">
+                  <button
+                    [routerLink]="['/admin/posts/edit', post.id]"
+                    class="btn-icon edit"
+                    title="Edit Post"
+                  >
                     <i class="bi bi-pencil-fill"></i>
                   </button>
-                  <button (click)="openReportModal(post)" class="btn-icon report" title="Report/Flag">
+                  <button
+                    (click)="openReportModal(post)"
+                    class="btn-icon report"
+                    title="Report/Flag"
+                  >
                     <i class="bi bi-flag-fill"></i>
                   </button>
                   <button (click)="onDelete(post.id)" class="btn-icon delete" title="Delete Post">
@@ -160,14 +190,13 @@
         Showing {{ filteredPosts.length }} of {{ allPosts.length }} total posts
       </div>
     </div>
-
   </div>
 
   <!-- Report Modal -->
   <div class="modal-backdrop" *ngIf="isReportModalOpen">
     <div class="modal-content glass-panel p-0">
       <div class="modal-header p-4 border-bottom">
-        <h3 class="gold-title mb-0" style="font-size: 1.2rem;">REPORT CONTENT</h3>
+        <h3 class="gold-title mb-0" style="font-size: 1.2rem">REPORT CONTENT</h3>
         <button class="btn-close" (click)="closeReportModal()"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body p-4">
@@ -179,17 +208,26 @@
           </select>
         </div>
         <div class="form-group">
-          <textarea class="luxury-input w-100 p-3" [(ngModel)]="reportDetails" rows="4"
-            placeholder="Additional details (optional)..."></textarea>
+          <textarea
+            class="luxury-input w-100 p-3"
+            [(ngModel)]="reportDetails"
+            rows="4"
+            placeholder="Additional details (optional)..."
+          ></textarea>
         </div>
       </div>
       <div class="modal-footer p-4 border-top d-flex gap-2 justify-content-end">
-        <button class="text-muted btn btn-link text-decoration-none" (click)="closeReportModal()">Cancel</button>
-        <button class="btn-luxury-gold py-2 px-4" (click)="submitReport()" [disabled]="!reportReason || isReporting">
+        <button class="text-muted btn btn-link text-decoration-none" (click)="closeReportModal()">
+          Cancel
+        </button>
+        <button
+          class="btn-luxury-gold py-2 px-4"
+          (click)="submitReport()"
+          [disabled]="!reportReason || isReporting"
+        >
           {{ isReporting ? 'SUBMITTING...' : 'SUBMIT REPORT' }}
         </button>
       </div>
     </div>
   </div>
-
 </div>

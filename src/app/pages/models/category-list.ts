@@ -10,7 +10,7 @@ export interface CategoryModel {
 // Community=0, Culture=1, ..., Tv=11
 export const CATEGORY_LIST: CategoryModel[] = [
   { id: 0, name: 'Community', icon: 'bi-people-fill' },
-  { id: 1, name: 'Culture', icon: 'bi-masks' },
+  { id: 1, name: 'Culture', icon: 'bi-masks-fill' },
   { id: 2, name: 'Education', icon: 'bi-book-fill' },
   { id: 3, name: 'Events', icon: 'bi-calendar-event-fill' },
   { id: 4, name: 'Health', icon: 'bi-heart-pulse-fill' },
@@ -20,13 +20,13 @@ export const CATEGORY_LIST: CategoryModel[] = [
   { id: 8, name: 'Professions', icon: 'bi-briefcase-fill' },
   { id: 9, name: 'Social', icon: 'bi-globe-americas' },
   { id: 10, name: 'Tour', icon: 'bi-map-fill' },
-  { id: 11, name: 'TV', icon: 'bi-tv-fill' }
+  { id: 11, name: 'TV', icon: 'bi-tv-fill' },
 ];
 
 // دالة مساعدة لو عايز القائمة ومعاها "All" عشان الفلترة في الهوم والناف بار
 export function getCategoriesWithAll(): CategoryModel[] {
   return [
     { id: -1, name: 'All', icon: 'bi-grid-fill' }, // -1 for UI handling
-    ...CATEGORY_LIST
+    ...CATEGORY_LIST,
   ];
 }

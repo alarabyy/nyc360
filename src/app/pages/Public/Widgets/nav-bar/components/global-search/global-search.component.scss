@@ -6,7 +6,8 @@ $dark-blue: #0A3D91;
 }
 
 .search-bar-purple {
-    background: white;
+    background: #EAEAF8B2;
+    color: #565675;
     border-radius: 25px;
     padding: 8px 18px;
     display: flex;
@@ -27,7 +28,6 @@ $dark-blue: #0A3D91;
     }
 
     .search-icon {
-        color: #94a3b8;
         font-size: 16px;
         transition: color 0.3s;
     }
@@ -46,7 +46,7 @@ $dark-blue: #0A3D91;
         color: #1e293b;
 
         &::placeholder {
-            color: #94a3b8;
+            color: #565675;
             font-weight: 400;
         }
     }
